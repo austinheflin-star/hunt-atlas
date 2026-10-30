@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2b3a26">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hunt Atlas">
 <title>Red River Hunt Atlas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -127,7 +134,7 @@ header{position:relative}
 .hdr-tools{position:absolute;top:12px;right:12px;display:flex;gap:6px}
 .hdr-tools button{border:1px solid var(--rule);background:var(--chip);color:var(--ink);border-radius:999px;font:600 12px var(--body);padding:4px 10px;cursor:pointer}
 .where{font:12px var(--mono);color:var(--olive);margin-top:4px;min-height:1em}
-.dimmap .leaflet-tile-pane{filter:brightness(.62) contrast(1.15) saturate(.8)}
+.dimmap #map .leaflet-tile-pane::after{content:"";position:absolute;inset:-100000px;background:rgba(8,12,8,.34);pointer-events:none;z-index:1000}
 .netbar{position:absolute;top:0;left:0;right:0;height:3px;z-index:1000;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .2s}
 .netbar.on{opacity:1}
 .netbar::before{content:"";position:absolute;inset:0;width:35%;background:var(--blaze);animation:netslide 1.1s ease-in-out infinite}
@@ -296,6 +303,88 @@ header{position:relative}
   .ctx button{padding:12px 14px}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+/* ---------- v8: account tab, settings, offline maps, phone polish ---------- */
+html,body{overscroll-behavior:none}
+.ts{display:none}
+nav{overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{white-space:nowrap}
+aside > nav, aside > header, .sheet-handle{flex:none}
+.lyr-panel{z-index:5}
+.sunbox .full{position:relative}
+.sun-x{margin:-4px -6px 0 6px}
+.offbar{position:absolute;left:50%;transform:translateX(-50%);top:calc(58px + env(safe-area-inset-top,0px));z-index:1001;border:0;border-radius:999px;background:#2b3a26;color:#fff;font:600 13px var(--body);padding:6px 14px;box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap}
+.acct .seg{position:sticky;top:-14px;z-index:2;box-shadow:0 2px 0 var(--panel)}
+.acard{border:1px solid var(--rule);border-radius:10px;padding:14px;background:var(--panel);margin:12px 0}
+.acard > h3:first-child{margin-top:0}
+.acard p{font-size:14px}
+.fld{display:grid;gap:4px;margin:10px 0}
+.fld label{margin:0}
+.fld input,.fld select{width:100%;font:16px var(--body);padding:10px 11px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink)}
+.fld input:focus-visible{outline:2px solid var(--blaze);outline-offset:1px}
+.pw{position:relative}.pw input{padding-right:64px}
+.pw button{position:absolute;right:4px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--olive);font:600 13px var(--body);cursor:pointer;padding:8px}
+.msg{font-size:14px;padding:9px 11px;border-radius:6px;margin:10px 0;border-left:4px solid var(--muted);background:var(--chip)}
+.msg.err{border-color:var(--closed)}.msg.ok{border-color:var(--open)}
+.linkbtn{border:0;background:none;color:var(--olive);font:600 14px var(--body);padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.who{display:flex;gap:12px;align-items:center}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--olive);color:var(--panel);display:grid;place-items:center;font:700 22px var(--display);flex:none;text-transform:uppercase}
+.who .t{min-width:0;flex:1}.who .t b{display:block;overflow-wrap:anywhere;font-size:15px}
+.pill{display:inline-block;font:600 11px var(--mono);padding:1px 8px;border-radius:999px;background:var(--chip);color:var(--muted);margin-top:3px}
+.pill.ok{color:var(--open)}.pill.warn{color:var(--blaze)}
+.setrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule);cursor:pointer;margin:0;font-weight:400;font-size:15px;position:relative}
+.setrow:last-child{border-bottom:0}
+.setrow .lt{flex:1;min-width:0;line-height:1.3}.setrow .lt small{display:block;color:var(--muted);font-size:12px}
+.setrow input[type=checkbox]{position:absolute;opacity:0;pointer-events:none}
+.setrow input:checked+.sw{background:var(--blaze)}.setrow input:checked+.sw::after{left:16px}
+.setrow input:focus-visible+.sw{outline:2px solid var(--blaze);outline-offset:2px}
+.setrow select{width:auto;max-width:55%}
+.chk{display:flex;gap:9px;align-items:flex-start;font-weight:400;font-size:14px;margin:8px 0;cursor:pointer}
+.chk input{margin-top:3px;width:18px;height:18px;accent-color:var(--blaze);flex:none}
+.chk small{display:block;color:var(--muted);font-size:12px}
+.dlprog{height:8px;background:var(--chip);border-radius:4px;overflow:hidden;margin:8px 0}
+.dlprog span{display:block;height:100%;width:0;background:var(--olive);transition:width .2s}
+.est{font:13px/1.5 var(--mono);color:var(--muted);margin:8px 0;font-variant-numeric:tabular-nums}
+.est b{color:var(--ink);font-weight:500}
+.est.over b{color:var(--closed)}
+.danger{color:var(--closed)!important;border-color:var(--closed)!important}
+.meter{height:6px;background:var(--chip);border-radius:3px;overflow:hidden;margin:6px 0}
+.meter span{display:block;height:100%;background:var(--olive)}
+.dli{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--rule);border-radius:8px;padding:9px 10px;margin:8px 0;background:var(--panel)}
+.dli .t{flex:1;min-width:0}.dli .t b{display:block;font-size:15px}.dli .t small{display:block;color:var(--muted);font:12px var(--mono)}
+.dli .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.dli .acts button{border:1px solid var(--rule);background:var(--chip);color:var(--ink);border-radius:6px;font:600 13px var(--body);padding:6px 10px;cursor:pointer}
+.qs2{padding-left:20px;margin:6px 0}.qs2 li{margin:9px 0;font-size:14px}.qs2 b{display:block;font-size:15px}
+/* phone: full-screen map with a bottom sheet you drag or flick between peek, half and full */
+@media (max-width:820px){
+  html,body{position:fixed;inset:0;overflow:hidden;width:100%}
+  aside{height:calc(100dvh - 68px - env(safe-area-inset-top,0px));transform:translateY(calc(100% - var(--sheet,112px)));transition:transform .34s cubic-bezier(.2,.85,.25,1);will-change:transform}
+  aside.dragging{transition:none}
+  .sheet-handle{height:24px;touch-action:none}
+  header{touch-action:none;display:flex;align-items:baseline;gap:10px;padding:0 16px 4px;border-bottom:0;cursor:grab}
+  h1{font-size:19px;white-space:nowrap}
+  .where{margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hdr-tools{display:none}
+  nav{touch-action:pan-x;padding:2px 6px 0;gap:0;border-bottom:1px solid var(--rule)}
+  nav button{flex:1 0 auto;padding:10px 8px;font-size:15px}
+  .tl{display:none}.ts{display:inline}
+  .pane{padding-bottom:calc(var(--sheet-hide,0px) + 48px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain}
+  .leaflet-control-zoom{display:none}
+  .searchbar{top:calc(10px + env(safe-area-inset-top,0px));left:10px;right:124px}
+  .searchbar input,input,select,textarea{font-size:16px!important}
+  .leaflet-top{top:env(safe-area-inset-top,0px)}
+  .leaflet-top.leaflet-left{top:calc(56px + env(safe-area-inset-top,0px))}
+  .lyr-panel{top:calc(62px + env(safe-area-inset-top,0px));max-height:calc(100dvh - var(--sheet,112px) - 84px - env(safe-area-inset-top,0px))}
+  .infobox{max-width:none;width:calc(100vw - 20px);max-height:min(42dvh, calc(100dvh - var(--sheet,112px) - 150px));overflow:auto;font-size:14px;padding:10px 12px;border-radius:10px}
+  .infobox b{font-size:13px}
+  body.ib-open .leaflet-bottom.leaflet-left{display:none}
+  .sunbox{max-width:min(250px, calc(100vw - 24px))}
+  .sunbox.compact{padding:5px 10px;font-size:12px;border-radius:999px}
+  .legend-box{width:auto;max-width:210px}
+  .ctx{max-width:calc(100vw - 16px);max-height:calc(100dvh - var(--sheet,112px) - 24px);overflow:auto}
+  .leaflet-control-attribution{font-size:9px;max-width:58vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .offbar{top:calc(56px + env(safe-area-inset-top,0px))}
+}
 </style>
 </head>
 <body>
@@ -310,10 +399,11 @@ header{position:relative}
     </header>
     <nav role="tablist">
       <button role="tab" aria-selected="true" data-tab="rules" id="tab-rules">States</button>
-      <button role="tab" aria-selected="false" data-tab="scan" id="tab-scan">Spot finder</button>
+      <button role="tab" aria-selected="false" data-tab="scan" id="tab-scan"><span class="tl">Spot finder</span><span class="ts">Spots</span></button>
       <button role="tab" aria-selected="false" data-tab="mine" id="tab-mine">My map</button>
       <button role="tab" aria-selected="false" data-tab="wx" id="tab-wx">Weather</button>
       <button role="tab" aria-selected="false" data-tab="trip" id="tab-trip">Trip</button>
+      <button role="tab" aria-selected="false" data-tab="acct" id="tab-acct">Account</button>
     </nav>
     <div class="pane" id="pane-rules"></div>
     <div class="pane" id="pane-mine" hidden>
@@ -333,6 +423,7 @@ header{position:relative}
       <h3>Lines</h3><div id="lineList"></div>
     </div>
     <div class="pane" id="pane-trip" hidden></div>
+    <div class="pane" id="pane-acct" hidden></div>
     <div class="pane" id="pane-wx" hidden>
       <h2>Weather</h2>
       <div class="meta" id="wxWhere">For the center of the map</div>
@@ -364,7 +455,7 @@ header{position:relative}
       <div id="learn"></div>
     </div>
   </aside>
-  <div class="mapwrap"><div id="map" aria-label="Map"></div><div class="netbar" id="netbar"></div>
+  <div class="mapwrap"><div id="map" aria-label="Map"></div><div class="netbar" id="netbar"></div><button class="offbar" id="offbar" hidden></button>
     <div class="searchbar"><input id="search" type="search" placeholder="Search a place, county, WMA, GMU 34, or lat, lng" aria-label="Search the map" autocomplete="off"><div class="sres" id="sres" hidden></div></div>
     <div class="ctx" id="ctx" hidden></div></div>
 </div>
@@ -739,7 +830,8 @@ const envStr = b => [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map(v
 /* ---------- Tabs ---------- */
 function showTab(t){
   document.querySelectorAll("nav button").forEach(x => x.setAttribute("aria-selected", x.dataset.tab === t));
-  ["rules","scan","mine","wx","trip"].forEach(k => $("#pane-" + k).hidden = k !== t);
+  ["rules","scan","mine","wx","trip","acct"].forEach(k => $("#pane-" + k).hidden = k !== t);
+  if (window.__v8){ if (t === "acct") renderAcct(); drawDlBoxes(); }
   savePref({ tab: t });
   if (isPhone() && typeof sheetTo === "function" && sheetState === 0) sheetTo(1);
 }
@@ -813,13 +905,16 @@ function renderCost(){
 }
 
 /* ---------- Map ---------- */
-const map = L.map("map", { zoomControl: true, preferCanvas: true }).setView(PREF.c || [32.5, -98], PREF.z || 5);
+L.TileLayer.prototype.options.keepBuffer = 4; L.TileLayer.prototype.options.updateWhenZooming = false;
+L.Polyline.prototype.options.smoothFactor = 1.5;
+const map = L.map("map", { zoomControl: true, preferCanvas: true, maxZoom: 20, renderer: L.canvas({ padding: .6, tolerance: isPhone() ? 6 : 0 }),
+  inertiaDeceleration: 2600, wheelPxPerZoomLevel: 90, bounceAtZoomLimits: false, tapTolerance: 18 }).setView(PREF.c || [32.5, -98], PREF.z || 5);
 const base = {
-  "Satellite": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, attribution: "Imagery © Esri" }),
-  "USGS Topo": L.tileLayer("https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}", { maxZoom: 16, attribution: "USGS The National Map" }),
-  "Esri Topo": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, attribution: "© Esri" })
+  "Satellite": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 19, attribution: "Imagery © Esri" }),
+  "USGS Topo": L.tileLayer("https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 16, attribution: "USGS The National Map" }),
+  "Esri Topo": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 19, attribution: "© Esri" })
 };
-const labels = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, opacity: .9 });
+const labels = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 19, opacity: .9 });
 
 // PAD-US public access: tiles when zoomed out, live polygons when zoomed in.
 const padTiles = L.tileLayer("https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/PADUS3_0PublicAccess/MapServer/tile/{z}/{y}/{x}", { maxNativeZoom: 10, maxZoom: 10, minZoom: 2, opacity: .6, attribution: "PAD-US (USGS)" });
@@ -856,7 +951,7 @@ const SlopeLayer = L.GridLayer.extend({
     return t;
   }
 });
-const slope = new SlopeLayer({ minZoom: 11, maxNativeZoom: 15, maxZoom: 19, opacity: .65 });
+const slope = new SlopeLayer({ minZoom: 11, maxNativeZoom: 15, maxZoom: 20, opacity: .65 });
 // Forest Service Motor Vehicle Use Map (which roads and trails are open to vehicles)
 const ExportLayer = L.Layer.extend({
   initialize(url, opts){ this.url = url; L.setOptions(this, opts); },
@@ -1060,7 +1155,7 @@ map.on("click", async e => {
       <p class="meta">Texas StratMap parcels from county appraisal districts. Always get written permission before hunting private land.</p>`).openOn(map);
   } catch {}
 });
-const hillshade = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, opacity: .45, attribution: "Hillshade © Esri" });
+const hillshade = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 16, opacity: .45, attribution: "Hillshade © Esri" });
 const landlockLayer = L.layerGroup();
 // Habitat and access layers
 const yearOf = p => { for (const [k, v] of Object.entries(p || {})){ if (v == null || v === "") continue;
@@ -1168,8 +1263,10 @@ lyrCtl.onAdd = () => { const d = L.DomUtil.create("div"); d.style.position = "re
   d.innerHTML = `<button class="lyr-btn" id="lyrBtn" aria-expanded="false" aria-controls="lyrPanel">▤ Layers <span class="cnt" id="lyrCnt"></span></button><div class="lyr-panel" id="lyrPanel" hidden></div>`;
   L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); return d; };
 lyrCtl.addTo(map);
-$("#lyrBtn").onclick = () => { const p = $("#lyrPanel"), open = p.hidden; p.hidden = !open; $("#lyrBtn").setAttribute("aria-expanded", open); if (open) renderLayerPanel(); };
-document.addEventListener("click", e => { if (!e.target.closest(".lyr-panel, .lyr-btn")) { const p = $("#lyrPanel"); if (p && !p.hidden){ p.hidden = true; $("#lyrBtn").setAttribute("aria-expanded", false); } } });
+function closeLayers(){ const p = $("#lyrPanel"); if (p && !p.hidden){ p.hidden = true; $("#lyrBtn").setAttribute("aria-expanded", false); if (typeof overlayClosed === "function") overlayClosed(); } }
+$("#lyrBtn").onclick = () => { const p = $("#lyrPanel"), open = p.hidden; if (!open){ closeLayers(); return; }
+  if (typeof overlay === "function") overlay("layers"); p.hidden = false; $("#lyrBtn").setAttribute("aria-expanded", true); renderLayerPanel(); };
+document.addEventListener("click", e => { if (!e.target.closest(".lyr-panel, .lyr-btn")) closeLayers(); });
 map.on("zoomend", lyrMeta);
 setBase(PREF.base || "USGS Topo");
 (PREF.on || ["pad"]).forEach(id => { const o = LAYERS.find(x => x.id === id); if (o) map.addLayer(o.layer); });
@@ -1196,6 +1293,11 @@ function padPopup(p){
     ${st ? `<p><b>${esc(st.name)}:</b> ${esc(st.publicNote)}</p>` : ""}`;
 }
 
+// Run heavy redraws after a pan or pinch finishes, so the map never stutters mid-gesture
+let mapBusy = false; const idleQ = [];
+map.on("movestart zoomstart", () => { mapBusy = true; });
+map.on("moveend zoomend", () => { mapBusy = false; requestAnimationFrame(() => { while (idleQ.length && !mapBusy) idleQ.shift()(); }); });
+function whenIdle(fn){ if (mapBusy) idleQ.push(fn); else requestAnimationFrame(fn); }
 const padCache = new Map();
 async function fetchPad(b){
   const env = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map(v => v.toFixed(4)).join(",");
@@ -1204,7 +1306,7 @@ async function fetchPad(b){
     where: "Mang_Type IN ('FED','STAT','LOC','DIST','JNT')", geometry: env, geometryType: "esriGeometryEnvelope", inSR: "4326",
     spatialRel: "esriSpatialRelIntersects", outFields: "Unit_Nm,Mang_Name,Mang_Type,Pub_Access,Des_Tp,GIS_Acres,State_Nm",
     outSR: "4326", f: "geojson", resultRecordCount: "2000", geometryPrecision: "5",
-    maxAllowableOffset: String(((b.getEast()-b.getWest())/1500).toFixed(6))
+    maxAllowableOffset: String(((b.getEast()-b.getWest())/Math.max(700, map.getSize().x * 1.6)).toFixed(6))
   });
   const r = await tracked("pad", fetch("https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?" + q));
   if (!r.ok) throw new Error("PAD-US " + r.status);
@@ -1223,7 +1325,14 @@ function refreshPad(){
   if (padHave && padHave.contains(v) && z - padZ <= 1 && z >= padZ) return; // already have enough detail here
   padTimer = setTimeout(async () => {
     const b = v.pad(.3), s = ++padSeq;
-    try { const j = await fetchPad(b); if (s !== padSeq) return; padLayer.clearLayers(); padLayer.addData(j); padHave = b; padZ = z; layerErr("pad", false); } catch (e) { console.warn(e); layerErr("pad", true); }
+    try {
+      if (typeof netOff === "function" && netOff()) throw new Error("offline");
+      const j = await fetchPad(b); if (s !== padSeq) return;
+      whenIdle(() => { if (s !== padSeq) return; padLayer.clearLayers(); padLayer.addData(j); padHave = b; padZ = z; layerErr("pad", false); });
+    } catch (e) {
+      const off = typeof offlinePad === "function" ? await offlinePad(b) : null; if (s !== padSeq) return;
+      if (off){ whenIdle(() => { padLayer.clearLayers(); padLayer.addData(off); padHave = b; padZ = z; layerErr("pad", false); }); }
+      else { console.warn(e); layerErr("pad", true); } }
   }, 300);
 }
 publicGroup.on("add", () => { padHave = null; refreshPad(); });
@@ -1711,13 +1820,14 @@ function updateMeasure(){
 map.on("dblclick", () => { if (measuring) finishMeasure(false); });
 document.addEventListener("keydown", e => { if (e.key !== "Escape") return;
   if (measuring) finishMeasure(true); if (typeof closeHelp === "function") closeHelp();
-  const lp = $("#lyrPanel"); if (lp && !lp.hidden){ lp.hidden = true; $("#lyrBtn").setAttribute("aria-expanded", false); } });
+  closeLayers(); });
 
 // Info box (bottom right) for clicks and messages
 const infoCtl = L.control({ position: "bottomright" });
 infoCtl.onAdd = () => { const d = L.DomUtil.create("div", "infobox"); d.id = "infobox"; d.hidden = true; L.DomEvent.disableClickPropagation(d); return d; };
 infoCtl.addTo(map);
 function setInfo(html){ const el = $("#infobox"); el.innerHTML = `<button class="ib-x" aria-label="Close">×</button>` + html; el.hidden = false;
+  if (typeof overlay === "function") overlay("info");
   el.querySelector(".ib-x").onclick = () => { el.hidden = true; if (/Wind check/.test(html) && typeof stopPlume === "function") stopPlume(); }; }
 let lastPopupClose = 0; map.on("popupclose", () => { lastPopupClose = Date.now(); });
 let clickTimer;
@@ -1726,9 +1836,15 @@ map.on("click", e => {
   if (measuring){ mPts.push(e.latlng); updateMeasure(); measureInfo(); return; }
   if (dropping){ dropping = false; $("#btnWpt").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; addWaypoint(e.latlng); return; }
   if (Date.now() - lastPopupClose < 400 || (ctxEl && !ctxEl.hidden)) return; // that tap just closed a popup or menu
+  if (typeof overlayAnyOpen === "function" && isPhone() && overlayAnyOpen()){ overlayCloseAll(); return; }
+  if (!(PREF.tapInfo ?? !isPhone())) return;
   clearTimeout(clickTimer);
-  clickTimer = setTimeout(async () => {
-    const { lat, lng } = e.latlng;
+  clickTimer = setTimeout(() => { if (Date.now() - lastPopupOpen < 700) return; pointInfo(e.latlng); }, 250);
+});
+let lastPopupOpen = 0; map.on("popupopen", () => { lastPopupOpen = Date.now(); });
+async function pointInfo(ll){
+  {
+    const { lat, lng } = ll;
     const hint = '<div class="meta" style="margin-top:3px">Right-click or long-press for more options</div>';
     setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span><br>Elevation: looking up…`);
     try {
@@ -1736,8 +1852,8 @@ map.on("click", e => {
       const j = await r.json(); const ft = Math.round(+j.value);
       setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span><br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${hint}`);
     } catch { setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span>`); }
-  }, 250);
-});
+  }
+}
 
 // Sunrise / sunset / legal hours for the map center (NOAA solar equations, no internet needed)
 function sunTimes(date, lat, lng){
@@ -1758,15 +1874,21 @@ function sunTimes(date, lat, lng){
 const sunCtl = L.control({ position: "topright" });
 sunCtl.onAdd = () => { const d = L.DomUtil.create("div", "sunbox"); d.id = "sunbox"; L.DomEvent.disableClickPropagation(d); return d; };
 sunCtl.addTo(map);
-$("#sunbox").addEventListener("click", ev => { if (ev.target.closest("select,button,a")) return; savePref({ sunCompact: !$("#sunbox").classList.contains("compact") }); renderSun(); if (wx) renderWx(); });
+let sunOpen = false;
+$("#sunbox").addEventListener("click", ev => {
+  if (ev.target.closest(".sun-x")){ ev.stopPropagation(); if (isPhone()) sunOpen = false; else savePref({ sunCompact: true }); renderSun(); if (wx) renderWx(); return; }
+  if (ev.target.closest("select,button,a")) return;
+  if (isPhone()){ sunOpen = !sunOpen; if (sunOpen && typeof overlay === "function") overlay("sun"); }
+  else savePref({ sunCompact: !$("#sunbox").classList.contains("compact") });
+  renderSun(); if (wx) renderWx(); });
 function renderSun(){
   const c = map.getCenter(), now = new Date(), { rise, set } = sunTimes(now, c.lat, c.lng);
   const t = d => d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }), add = (d, m) => new Date(d.getTime() + m * 6e4);
   const mo = moonInfo(now, c.lat, c.lng), sb = $("#sunbox");
-  sb.classList.toggle("compact", PREF.sunCompact ?? isPhone());
+  sb.classList.toggle("compact", isPhone() ? !sunOpen : !!PREF.sunCompact); sb.hidden = !!PREF.sunHide;
   sb.title = "Tap to " + (sb.classList.contains("compact") ? "expand" : "shrink");
   sb.innerHTML = `<div class="mini">☀ <span class="n">${t(rise)}–${t(set)}</span> · ${mo.icon} ${Math.round(mo.frac * 100)}%</div>
-    <div class="full"><b>Today at map center</b><br>Sunrise <span class="n">${t(rise)}</span> · Sunset <span class="n">${t(set)}</span><br>
+    <div class="full"><button class="ib-x sun-x" aria-label="Close">×</button><b>Today at map center</b><br>Sunrise <span class="n">${t(rise)}</span> · Sunset <span class="n">${t(set)}</span><br>
     Big game legal light <span class="n">${t(add(rise,-30))}–${t(add(set,30))}</span><br>Waterfowl <span class="n">${t(add(rise,-30))}–${t(set)}</span><br>
     Moon ${mo.icon} ${esc(mo.name)}, ${Math.round(mo.frac * 100)}% lit${mo.day.rise ? " · rises " + t(mo.day.rise) : ""}${mo.day.set ? " · sets " + t(mo.day.set) : ""}
     <div style="color:#5b6656;font-size:11px">Typical hours in these states; times in your device's time zone. Check state rules.</div></div>`;
@@ -1823,7 +1945,7 @@ function drawWpts(){
       el.querySelector(".wr").onclick = () => { m.closePopup(); routeTo(L.latLng(w.lat, w.lng), w.name); };
       el.querySelector(".wsm").onclick = () => { m.closePopup(); sunMoonPopup(L.latLng(w.lat, w.lng), w.name); };
     });
-    w._m = m;
+    Object.defineProperty(w, "_m", { value: m, writable: true, configurable: true, enumerable: false });
   }
 }
 function addWaypoint(ll, o){
@@ -1993,24 +2115,9 @@ function applyTheme(t){
 $("#themeBtn").onclick = () => { const i = THEMES.findIndex(x => x[0] === (PREF.theme || "auto")); applyTheme(THEMES[(i + 1) % THEMES.length][0]); };
 darkMQ.addEventListener && darkMQ.addEventListener("change", () => applyTheme(PREF.theme || "auto"));
 
-/* ---------- Phone: bottom drawer you can drag between peek, half and full ---------- */
+/* Phone bottom sheet: see the v8 module near the end */
 let sheetState = 0;
-const sheetPx = st => st === 0 ? 128 : st === 1 ? Math.round(innerHeight * .5) : Math.round(innerHeight * .88);
-function sheetTo(st){ sheetState = Math.max(0, Math.min(2, st)); document.documentElement.style.setProperty("--sheet", sheetPx(sheetState) + "px"); }
-(() => {
-  const h = $("#sheetHandle"), aside = $("#sheet"); let y0 = null, s0 = 0, moved = false;
-  h.addEventListener("pointerdown", e => { y0 = e.clientY; s0 = sheetPx(sheetState); moved = false; aside.classList.add("dragging"); h.setPointerCapture(e.pointerId); });
-  h.addEventListener("pointermove", e => { if (y0 == null) return; const dy = y0 - e.clientY; if (Math.abs(dy) > 4) moved = true;
-    document.documentElement.style.setProperty("--sheet", Math.max(96, Math.min(innerHeight * .88, s0 + dy)) + "px"); });
-  const end = e => { if (y0 == null) return; aside.classList.remove("dragging");
-    if (!moved){ y0 = null; sheetTo(sheetState === 2 ? 0 : sheetState + 1); return; }
-    const cur = s0 + (y0 - e.clientY); y0 = null;
-    const best = [0, 1, 2].reduce((b, st) => Math.abs(sheetPx(st) - cur) < Math.abs(sheetPx(b) - cur) ? st : b, 0); sheetTo(best); };
-  h.addEventListener("pointerup", end); h.addEventListener("pointercancel", end);
-  addEventListener("resize", () => sheetTo(sheetState));
-  map.on("dragstart", () => { if (isPhone() && sheetState === 2) sheetTo(1); });
-  sheetTo(0);
-})();
+function sheetTo(st){ if (typeof sheetSnap === "function") sheetSnap(st); else sheetState = st; }
 
 /* ---------- Search: places, counties, public land names, hunt units, coordinates ---------- */
 const sIn = $("#search"), sres = $("#sres"), searchLayer = L.layerGroup().addTo(map);
@@ -2116,6 +2223,7 @@ function closeCtx(){ ctxEl.hidden = true; }
 map.on("contextmenu", e => {
   const ll = e.latlng, c = `${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;
   const items = [
+    ["ⓘ", "Elevation and coordinates", () => pointInfo(ll)],
     ["⚑", "Drop a waypoint here", () => addWaypoint(ll)],
     ["⌖", "Scan for spots around here", () => { showTab("scan"); map.setView(ll, Math.max(13, map.getZoom())); map.once("moveend", () => setTimeout(scan, 200)); }],
     ["⤳", "Route here", () => routeTo(ll, "this spot")],
@@ -2132,6 +2240,7 @@ map.on("contextmenu", e => {
   ctxEl.style.left = Math.max(6, Math.min(e.containerPoint.x, sz.x - r.width - 6)) + "px";
   ctxEl.style.top = Math.max(6, Math.min(e.containerPoint.y, sz.y - r.height - 6)) + "px";
   ctxEl.querySelectorAll("button").forEach(b => b.onclick = () => { closeCtx(); items[+b.dataset.i][2](); });
+  if (typeof overlay === "function") overlay("ctx");
 });
 map.on("click movestart zoomstart", closeCtx);
 document.addEventListener("keydown", e => { if (e.key === "Escape"){ closeCtx(); if (routing.on) stopRouting(); } });
@@ -2944,7 +3053,7 @@ function renderLegend(){
   if (mine.length) groups.push(`<h6>Your map</h6>` + mine.join(""));
   box.innerHTML = `<button class="leg-tog" aria-expanded="${open}">Legend <span>${open ? "▾" : "▸"}</span></button>` +
     (open ? `<div class="leg-body">${groups.join("") || '<div class="leg-empty">Turn on layers to see what the colors mean.</div>'}</div>` : "");
-  box.querySelector(".leg-tog").onclick = () => { savePref({ legOpen: !open }); renderLegend(); };
+  box.querySelector(".leg-tog").onclick = () => { savePref({ legOpen: !open }); if (!open && typeof overlay === "function") overlay("legend"); renderLegend(); };
 }
 const legCtl = L.control({ position: "bottomleft" });
 legCtl.onAdd = () => { const d = L.DomUtil.create("div", "legend-box"); d.id = "legend"; L.DomEvent.disableClickPropagation(d); L.DomEvent.disableScrollPropagation(d); return d; };
@@ -2952,10 +3061,491 @@ legCtl.addTo(map);
 let legT; map.on("layeradd layerremove", () => { clearTimeout(legT); legT = setTimeout(renderLegend, 150); });
 drawWpts(); drawLines(); renderMine();
 
+/* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
+const APP_VERSION = "8.0 (Oct 30, 2026)";
+// Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
+const FIREBASE_CONFIG = /*FIREBASE*/null;
+
+/* ---------- One message box at a time (phones) ---------- */
+var ovStash = false;
+function ibEl(){ return $("#infobox"); }
+function isToolInfo(){ return /Measuring|Walking route|Wind check|Plan a route|Route to|Finding the easiest|Drop a waypoint|Downloading/.test(ibEl().textContent); }
+function popupOpen(){ return !!(map._popup && map.hasLayer(map._popup)); }
+function layersOpen(){ const p = $("#lyrPanel"); return !!(p && !p.hidden); }
+function collapseLegend(){ if (PREF.legOpen){ PREF.legOpen = false; savePref({}); renderLegend(); } }
+function overlay(name){
+  if (name !== "sun" && sunOpen){ sunOpen = false; renderSun(); }
+  if (!isPhone()) return;
+  const ib = ibEl();
+  if (name === "info"){
+    if (layersOpen()){ ib.hidden = true; ovStash = true; return; } // shows again when Layers closes
+    closeCtx(); if (popupOpen()) map.closePopup(); collapseLegend(); return;
+  }
+  if (name !== "layers") closeLayers();
+  if (name !== "ctx") closeCtx();
+  if (name !== "popup" && popupOpen()) map.closePopup();
+  if (name !== "legend") collapseLegend();
+  if (!ib.hidden){ ovStash = isToolInfo(); ib.hidden = true; }
+}
+function overlayClosed(){ if (!ovStash || layersOpen() || popupOpen() || !ctxEl.hidden) return; ovStash = false; ibEl().hidden = false; }
+function overlayAnyOpen(){ const ib = ibEl(); return layersOpen() || !ctxEl.hidden || popupOpen() || sunOpen || !!PREF.legOpen || (!ib.hidden && !isToolInfo()); }
+function overlayCloseAll(){ closeLayers(); closeCtx(); if (popupOpen()) map.closePopup(); collapseLegend(); if (sunOpen){ sunOpen = false; renderSun(); }
+  const ib = ibEl(); if (!ib.hidden && !isToolInfo()) ib.hidden = true; }
+map.on("popupopen", () => overlay("popup"));
+map.on("popupclose", () => setTimeout(overlayClosed, 0));
+map.on("dragstart", () => { if (!isPhone()) return; closeLayers(); if (sunOpen){ sunOpen = false; renderSun(); } if (sheetState === 2) sheetSnap(1); });
+new MutationObserver(() => document.body.classList.toggle("ib-open", !ibEl().hidden)).observe(ibEl(), { attributes: true, attributeFilter: ["hidden"] });
+function popupFit(){ const P = L.Popup.prototype.options;
+  if (isPhone()){ P.maxWidth = Math.min(320, innerWidth - 48); P.autoPanPaddingTopLeft = L.point(10, 74); P.autoPanPaddingBottomRight = L.point(10, sheetPx(sheetState) + 16); }
+  else { P.maxWidth = 300; P.autoPanPaddingTopLeft = null; P.autoPanPaddingBottomRight = null; } }
+
+/* ---------- Phone bottom sheet: drag or flick the handle, title or tabs; pull down from the top of a list ---------- */
+var SH = { el: $("#sheet"), drag: false, pid: null, justDragged: 0 };
+var safeB = 0;
+(() => { const p = document.createElement("div"); p.style.cssText = "position:fixed;height:env(safe-area-inset-bottom,0px);visibility:hidden;pointer-events:none"; document.body.appendChild(p); safeB = p.offsetHeight; p.remove(); })();
+function sheetPx(st){ const a = SH.el, full = a.offsetHeight;
+  if (st <= 0){ const n = a.querySelector("nav"); return Math.min(full, n.offsetTop + n.offsetHeight + 4 + safeB); }
+  return st === 1 ? Math.min(full, Math.round(innerHeight * .5)) : full; }
+function sheetApply(px){ const r = document.documentElement.style; r.setProperty("--sheet", Math.round(px) + "px"); r.setProperty("--sheet-hide", Math.max(0, SH.el.offsetHeight - px) + "px"); }
+function sheetSnap(st){ sheetState = Math.max(0, Math.min(2, st)); if (!isPhone()) return;
+  SH.el.classList.remove("dragging"); SH.el.style.transform = ""; sheetApply(sheetPx(sheetState)); SH.el.dataset.state = sheetState; popupFit(); }
+function dragBegin(y){ SH.drag = true; SH.y0 = y; SH.s0 = sheetPx(sheetState); SH.cur = SH.s0; SH.ly = y; SH.lt = performance.now(); SH.v = 0; SH.el.classList.add("dragging"); }
+function dragMove(y){ const full = SH.el.offsetHeight, min = sheetPx(0); let s = SH.s0 + (SH.y0 - y);
+  if (s > full) s = full + (s - full) * .2; if (s < min) s = min - (min - s) * .3; // rubber-band past the ends
+  SH.cur = s; SH.el.style.transform = `translateY(${Math.round(full - s)}px)`;
+  const t = performance.now(), dt = t - SH.lt; if (dt > 0){ SH.v = .75 * ((SH.ly - y) / dt) + .25 * SH.v; SH.ly = y; SH.lt = t; } }
+function dragEnd(){ if (!SH.drag) return; SH.drag = false; SH.justDragged = performance.now();
+  const pts = [0, 1, 2].map(sheetPx); let target;
+  if (Math.abs(SH.v) > .45){ // a flick goes to the next stop in that direction
+    if (SH.v > 0){ target = pts.findIndex(p => p > SH.cur + 6); if (target < 0) target = 2; }
+    else { target = [2, 1, 0].find(i => pts[i] < SH.cur - 6); if (target == null) target = 0; } }
+  else target = pts.reduce((b, p, i) => Math.abs(p - SH.cur) < Math.abs(pts[b] - SH.cur) ? i : b, 0);
+  SH.el.classList.remove("dragging"); requestAnimationFrame(() => sheetSnap(target)); }
+SH.el.querySelectorAll(".sheet-handle, header, nav").forEach(g => {
+  g.addEventListener("pointerdown", e => { if (!isPhone() || e.button > 0 || SH.drag) return; SH.pid = e.pointerId; SH.py = e.clientY; SH.px = e.clientX; SH.pending = true; });
+  g.addEventListener("pointermove", e => { if (e.pointerId !== SH.pid) return;
+    if (SH.pending){ const dy = e.clientY - SH.py, dx = e.clientX - SH.px;
+      if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)){ SH.pending = false; SH.pid = null; return; }
+      if (Math.abs(dy) < 7) return;
+      SH.pending = false; try { g.setPointerCapture(e.pointerId); } catch {} dragBegin(SH.py); }
+    if (SH.drag){ e.preventDefault(); dragMove(e.clientY); } });
+  const up = e => { if (e.pointerId !== SH.pid) return; SH.pid = null; SH.pending = false; if (SH.drag) dragEnd(); };
+  g.addEventListener("pointerup", up); g.addEventListener("pointercancel", up);
+});
+SH.el.addEventListener("click", e => { if (performance.now() - SH.justDragged < 350){ e.stopPropagation(); e.preventDefault(); } }, true);
+$("#sheetHandle").addEventListener("click", () => { if (isPhone()) sheetSnap(sheetState === 2 ? 0 : sheetState + 1); });
+SH.el.querySelectorAll(".pane").forEach(p => {
+  let ty = null, tx = 0, taking = false;
+  p.addEventListener("touchstart", e => { if (!isPhone() || e.touches.length > 1 || SH.drag){ ty = null; return; } ty = e.touches[0].clientY; tx = e.touches[0].clientX; taking = false; }, { passive: true });
+  p.addEventListener("touchmove", e => { if (ty == null) return; const y = e.touches[0].clientY, dy = y - ty, dx = e.touches[0].clientX - tx;
+    if (!taking){ if (Math.abs(dy) < 8) return;
+      if (Math.abs(dx) > Math.abs(dy) || !e.cancelable || e.target.closest(".tw, textarea, input[type=range]")){ ty = null; return; }
+      if ((dy > 0 && p.scrollTop <= 0 && sheetState > 0) || (dy < 0 && sheetState < 2)){ taking = true; dragBegin(ty); } else { ty = null; return; } }
+    e.preventDefault(); dragMove(y); }, { passive: false });
+  const end = () => { if (taking) dragEnd(); ty = null; taking = false; };
+  p.addEventListener("touchend", end); p.addEventListener("touchcancel", end);
+});
+addEventListener("resize", () => { clearTimeout(SH.rt); SH.rt = setTimeout(() => { sheetSnap(sheetState); popupFit(); }, 120); });
+
+/* ---------- Offline: service worker, offline mode, downloaded areas ---------- */
+const rawFetch = window.fetch;                      // keeps the 25 s timeout
+function netOff(){ return !!PREF.offline || navigator.onLine === false; }
+window.fetch = async (u, o) => {
+  const url = typeof u === "string" ? u : (u && u.url) || String(u), method = ((o && o.method) || (u && u.method) || "GET").toUpperCase();
+  if (netOff() && method === "GET" && /^https?:/.test(url) && "caches" in window){
+    const hit = await caches.match(url, { ignoreVary: true }).catch(() => null);
+    if (hit) return hit;
+    throw new TypeError("Offline: this isn't saved on the device");
+  }
+  return rawFetch(u, o);
+};
+const swOk = () => "serviceWorker" in navigator && (location.protocol === "https:" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname));
+function tellSW(){ try { navigator.serviceWorker && navigator.serviceWorker.controller && navigator.serviceWorker.controller.postMessage({ offline: !!PREF.offline }); } catch {} }
+if (swOk()){ navigator.serviceWorker.register("sw.js").then(tellSW).catch(e => console.warn("Offline support unavailable:", e));
+  navigator.serviceWorker.addEventListener("controllerchange", tellSW); }
+function paintOff(){ const b = $("#offbar"), off = netOff(); b.hidden = !off;
+  if (off) b.textContent = PREF.offline ? "Offline mode · saved maps only ›" : "No signal · showing saved maps ›";
+  tellSW(); if (ACCT.sec === "offline" || ACCT.sec === "settings") renderAcct(); }
+addEventListener("online", () => { paintOff(); padHave = null; refreshPad(); if (ACCT.user) syncNow("online"); });
+addEventListener("offline", () => { paintOff(); padHave = null; refreshPad(); });
+$("#offbar").onclick = () => { showTab("acct"); acctSec("offline"); if (isPhone()) sheetSnap(1); };
+
+const DL_MAX = 20000;
+const DL_SRC = [
+  { id: "topo", name: "USGS Topo map", url: () => base["USGS Topo"]._url, max: 16, kb: 22 },
+  { id: "sat", name: "Satellite with place labels", url: () => base.Satellite._url, max: 19, kb: 30, extra: [() => labels._url, 19, 5] },
+  { id: "esri", name: "Esri Topo map", url: () => base["Esri Topo"]._url, max: 19, kb: 22 },
+  { id: "hill", name: "Hillshade", url: () => hillshade._url, max: 16, kb: 10 },
+  { id: "elev", name: "Elevation data", sub: "Slope shading and spot finder terrain", url: () => "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png", max: 15, kb: 100 },
+  { id: "pad", name: "Public land boundaries", sub: "Tap any tract for who manages it, even offline", url: () => padTiles._url, max: 10, kb: 8, vector: true }
+];
+const DETAIL = [[13, "Overview (zoom 13)"], [14, "Standard (zoom 14)"], [15, "Detailed (zoom 15)"], [16, "Close-up (zoom 16)"], [17, "Very close (zoom 17)"]];
+const lon2x = (lon, z) => Math.floor((lon + 180) / 360 * 2 ** z);
+const lat2y = (lat, z) => { const r = lat * Math.PI / 180; return Math.floor((1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * 2 ** z); };
+function tileRange(b, z){ const n = 2 ** z - 1, x0 = Math.max(0, lon2x(b[1], z)), x1 = Math.min(n, lon2x(b[3], z)), y0 = Math.max(0, lat2y(b[2], z)), y1 = Math.min(n, lat2y(b[0], z));
+  return { x0, x1, y0, y1, n: Math.max(0, x1 - x0 + 1) * Math.max(0, y1 - y0 + 1) }; }
+function visibleBounds(){ const sz = map.getSize(), top = isPhone() ? 64 : 10, bot = isPhone() ? Math.max(top + 60, sz.y - sheetPx(sheetState) - 10) : sz.y - 10;
+  const a = map.containerPointToLatLng([10, top]), c = map.containerPointToLatLng([sz.x - 10, bot]);
+  return [Math.min(a.lat, c.lat), Math.min(a.lng, c.lng), Math.max(a.lat, c.lat), Math.max(a.lng, c.lng)].map(v => +v.toFixed(5)); }
+function dlPlan(b, z1, ids, build){
+  const urls = []; let kb = 0, n = 0;
+  const add = (tpl, zmax, k) => { for (let z = 6; z <= Math.min(z1, zmax); z++){ const r = tileRange(b, z); kb += r.n * k; n += r.n;
+    if (!build || n > DL_MAX) continue;
+    for (let x = r.x0; x <= r.x1; x++) for (let y = r.y0; y <= r.y1; y++) urls.push(L.Util.template(tpl, { x, y, z, s: "", r: "" })); } };
+  DL_SRC.filter(s => ids.includes(s.id)).forEach(s => { add(s.url(), s.max, s.kb); if (s.extra) add(s.extra[0](), s.extra[1], s.extra[2]); if (s.vector) kb += 400; });
+  return { urls, kb, n };
+}
+const dlList = () => store.get("rrha_dl", []);
+const dlSave = l => store.set("rrha_dl", l);
+const fmtMB = kb => kb >= 1024 * 1024 ? (kb / 1048576).toFixed(1) + " GB" : kb >= 1024 ? Math.round(kb / 1024) + " MB" : Math.max(1, Math.round(kb)) + " KB";
+let DLJOB = null;
+async function dlPadData(b){
+  const feats = [], url = "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?";
+  for (let page = 0; page < 10; page++){
+    const q = new URLSearchParams({ where: "Mang_Type IN ('FED','STAT','LOC','DIST','JNT')", geometry: [b[1], b[0], b[3], b[2]].join(","), geometryType: "esriGeometryEnvelope", inSR: "4326",
+      spatialRel: "esriSpatialRelIntersects", outFields: "Unit_Nm,Mang_Name,Mang_Type,Pub_Access,Des_Tp,GIS_Acres,State_Nm", outSR: "4326", f: "geojson",
+      resultRecordCount: "1500", resultOffset: String(page * 1500), geometryPrecision: "5", maxAllowableOffset: String(((b[3] - b[1]) / 3000).toFixed(6)) });
+    const r = await rawFetch(url + q); if (!r.ok) throw new Error("Public land " + r.status);
+    const j = await r.json(); (j.features || []).forEach(f => feats.push(f));
+    if (!j.features || j.features.length < 1500) break;
+    if (DLJOB && DLJOB.stop) break;
+  }
+  return { type: "FeatureCollection", features: feats };
+}
+async function runDownload(){
+  if (DLJOB) return;
+  if (!("caches" in window)) { ACCT.dlMsg = ["err", "This browser can't save maps. Open the app from its web link (https) in Safari or Chrome."]; renderAcct(); return; }
+  if (netOff()) { ACCT.dlMsg = ["err", "You need signal to download. Turn off offline mode or wait for a connection."]; renderAcct(); return; }
+  const ids = DL_SRC.filter(s => (PREF.dlLayers || ["topo", "hill", "elev", "pad"]).includes(s.id)).map(s => s.id);
+  if (!ids.length){ ACCT.dlMsg = ["err", "Pick at least one map to save."]; renderAcct(); return; }
+  const b = visibleBounds(), z1 = PREF.dlZ || 15, plan = dlPlan(b, z1, ids, true);
+  if (plan.n > DL_MAX){ ACCT.dlMsg = ["err", "That area is too big at this detail. Zoom in, or pick less detail."]; renderAcct(); return; }
+  const name = ($("#dlName") && $("#dlName").value.trim()) || $("#where").textContent.split("·")[0].trim() || "Saved area";
+  const id = "a" + Date.now().toString(36), cache = await caches.open("rrha-dl-" + id);
+  try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
+  DLJOB = { id, name, done: 0, fail: 0, bytes: 0, total: plan.urls.length, stop: false, quota: false };
+  ACCT.dlMsg = null; renderAcct(); paintJob();
+  let i = 0;
+  const worker = async () => { while (!DLJOB.stop && i < plan.urls.length){ const u = plan.urls[i++];
+    try { const r = await rawFetch(u, { mode: "cors", credentials: "omit" });
+      if (r.ok){ const bl = await r.blob(); await cache.put(u, new Response(bl, { headers: { "Content-Type": r.headers.get("Content-Type") || "image/png" } })); DLJOB.bytes += bl.size; }
+      else if (r.status !== 404) DLJOB.fail++;
+    } catch (e){ if (e && e.name === "QuotaExceededError"){ DLJOB.stop = true; DLJOB.quota = true; } else DLJOB.fail++; }
+    DLJOB.done++; if (DLJOB.done % 8 === 0 || DLJOB.done === DLJOB.total) paintJob(); } };
+  await Promise.all(Array.from({ length: 6 }, worker));
+  let padN = 0;
+  if (ids.includes("pad") && !DLJOB.stop){ try { const fc = await dlPadData(b); padN = fc.features.length; const body = JSON.stringify(fc); DLJOB.bytes += body.length;
+    await cache.put("./__offline/pad-" + id + ".json", new Response(body, { headers: { "Content-Type": "application/json" } })); } catch (e){ console.warn(e); DLJOB.fail++; padN = -1; } }
+  const J = DLJOB; DLJOB = null;
+  if (J.stop && !J.quota){ await caches.delete("rrha-dl-" + id); ACCT.dlMsg = ["", "Download canceled. Nothing was kept."]; }
+  else {
+    const l = dlList(); l.unshift({ id, name: J.name, b, z: z1, layers: ids, tiles: J.done - J.fail, bytes: J.bytes, pad: padN > 0 ? padN : 0, at: Date.now() }); dlSave(l);
+    ACCT.dlMsg = J.quota ? ["err", `Your phone ran out of space for saved maps. Kept what finished (${fmtMB(J.bytes / 1024)}). Delete an old area to make room.`]
+      : J.fail > J.total * .1 ? ["err", `Saved, but ${J.fail} pieces didn't download (weak signal or a source was down). Download again on better signal to fill the gaps.`]
+      : ["ok", `Saved "${J.name}" for offline use (${fmtMB(J.bytes / 1024)}).`];
+  }
+  drawDlBoxes(); renderAcct();
+}
+function paintJob(){ const p = $("#dlProg"); if (!p || !DLJOB) return; const f = DLJOB.total ? DLJOB.done / DLJOB.total : 1;
+  p.querySelector("span").style.width = (f * 100).toFixed(1) + "%"; const t = $("#dlProgT"); if (t) t.textContent = `${DLJOB.done.toLocaleString()} of ${DLJOB.total.toLocaleString()} pieces · ${fmtMB(DLJOB.bytes / 1024)}`; }
+async function dlDelete(id){ try { await caches.delete("rrha-dl-" + id); } catch {} offPadMem.delete(id); dlSave(dlList().filter(d => d.id !== id)); drawDlBoxes(); renderAcct(); }
+const offPadMem = new Map();
+function featBox(f){ let s = 90, w = 180, n = -90, e = -180; const walk = c => { if (typeof c[0] === "number"){ if (c[1] < s) s = c[1]; if (c[1] > n) n = c[1]; if (c[0] < w) w = c[0]; if (c[0] > e) e = c[0]; } else c.forEach(walk); };
+  if (f.geometry) walk(f.geometry.coordinates); return [s, w, n, e]; }
+const bbHit = (a, v) => !(a[0] > v.getNorth() || a[2] < v.getSouth() || a[1] > v.getEast() || a[3] < v.getWest());
+async function offlinePad(view){
+  if (!("caches" in window)) return null;
+  const sets = dlList().filter(d => d.pad && bbHit(d.b, view)); if (!sets.length) return null;
+  const out = [], seen = new Set();
+  for (const d of sets){ let fc = offPadMem.get(d.id);
+    if (!fc){ const r = await caches.match("./__offline/pad-" + d.id + ".json").catch(() => null); if (!r) continue; fc = await r.json(); fc.features.forEach(f => f._bb = featBox(f)); offPadMem.set(d.id, fc); }
+    fc.features.forEach(f => { const k = (f.properties.Unit_Nm || "") + f._bb.join(","); if (!seen.has(k) && bbHit(f._bb, view)){ seen.add(k); out.push(f); } }); }
+  return out.length ? { type: "FeatureCollection", features: out } : null;
+}
+const dlLayer = L.layerGroup();
+function drawDlBoxes(){ dlLayer.clearLayers();
+  dlList().forEach(d => L.rectangle([[d.b[0], d.b[1]], [d.b[2], d.b[3]]], { color: "#3f5a35", weight: 2, dashArray: "6 5", fill: false, interactive: false }).addTo(dlLayer));
+  const on = ACCT.sec === "offline" && !$("#pane-acct").hidden;
+  if (on && !map.hasLayer(dlLayer)) dlLayer.addTo(map); if (!on && map.hasLayer(dlLayer)) map.removeLayer(dlLayer);
+  if (on){ const b = visibleBounds(); if (!ACCT.pick) ACCT.pick = L.rectangle([[b[0], b[1]], [b[2], b[3]]], { color: "#e8601c", weight: 2, fillOpacity: .06, interactive: false });
+    ACCT.pick.setBounds([[b[0], b[1]], [b[2], b[3]]]); if (!map.hasLayer(ACCT.pick)) ACCT.pick.addTo(map); }
+  else if (ACCT.pick && map.hasLayer(ACCT.pick)) map.removeLayer(ACCT.pick); }
+map.on("moveend", () => { if (ACCT.sec === "offline" && !$("#pane-acct").hidden){ drawDlBoxes(); paintEst(); } });
+function paintEst(){ const el = $("#dlEst"); if (!el) return; const ids = PREF.dlLayers || ["topo", "hill", "elev", "pad"], b = visibleBounds(), z1 = PREF.dlZ || 15, p = dlPlan(b, z1, ids);
+  const mi = (map.distance([b[0], b[1]], [b[0], b[3]]) / 1609.34), mj = map.distance([b[0], b[1]], [b[2], b[1]]) / 1609.34, over = p.n > DL_MAX;
+  el.className = "est" + (over ? " over" : "");
+  el.innerHTML = `Area <b>${mi.toFixed(1)} × ${mj.toFixed(1)} mi</b> (orange box on the map)<br>About <b>${over ? "over " + DL_MAX.toLocaleString() : p.n.toLocaleString()}</b> map pieces · <b>${fmtMB(p.kb)}</b>${over ? "<br><b>Too big.</b> Zoom in or pick less detail." : ""}`;
+  const go = $("#dlGo"); if (go) go.disabled = over || !!DLJOB; }
+
+/* ---------- Accounts (Firebase Auth + Firestore, both free) ---------- */
+const ACCT = { fb: null, user: null, mode: "in", sec: null, loading: false, err: null, msg: null, syncing: false, syncErr: null, syncNote: "", dlMsg: null, pick: null, outAsk: false, delAsk: false, eraseAsk: false };
+const AUTH_ERR = { "auth/invalid-email": "That email address doesn't look right.", "auth/missing-password": "Enter your password.", "auth/invalid-credential": "Email or password is wrong.",
+  "auth/invalid-login-credentials": "Email or password is wrong.", "auth/wrong-password": "Email or password is wrong.", "auth/user-not-found": "No account uses that email. Create one instead.",
+  "auth/email-already-in-use": "An account already uses that email. Sign in instead, or reset the password.", "auth/weak-password": "Use at least 8 characters for the password.",
+  "auth/too-many-requests": "Too many tries. Wait a few minutes, or reset your password.", "auth/network-request-failed": "No connection. Signing in needs signal.",
+  "auth/requires-recent-login": "For your security, sign out and back in, then try again.", "auth/operation-not-allowed": "Email sign-in isn't switched on for this app yet.",
+  "auth/unauthorized-domain": "This web address isn't approved for sign-in yet." };
+const authMsg = e => AUTH_ERR[e && e.code] || (e && e.message) || "Something went wrong. Try again.";
+const loadScript = src => new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => no(new Error("Couldn't load sign-in. Check your connection.")); document.head.appendChild(s); });
+async function fbInit(){
+  if (ACCT.fb || !FIREBASE_CONFIG) return ACCT.fb;
+  if (ACCT.loading) return null; ACCT.loading = true;
+  try { const B = "https://www.gstatic.com/firebasejs/10.12.2/";
+    await loadScript(B + "firebase-app-compat.js"); await Promise.all([loadScript(B + "firebase-auth-compat.js"), loadScript(B + "firebase-firestore-compat.js")]);
+    firebase.initializeApp(FIREBASE_CONFIG);
+    ACCT.fb = { auth: firebase.auth(), db: firebase.firestore() };
+    ACCT.fb.auth.onAuthStateChanged(u => { ACCT.user = u; savePref({ signedIn: !!u }); renderAcct(); if (u) syncNow("start"); });
+  } catch (e){ ACCT.err = e.message; } finally { ACCT.loading = false; renderAcct(); }
+  return ACCT.fb;
+}
+// Sync: waypoints, lines and hunt log follow the account; maps you download stay on each device
+const SYNC_KEYS = ["rrha_wpts", "rrha_lines", "rrha_log"];
+let syncApplying = false, syncGen = 0, pushT = null;
+const rawSet = store.set;
+store.set = (k, v) => { rawSet.call(store, k, v);
+  if (!syncApplying && SYNC_KEYS.includes(k)){ syncGen++; const m = store.get("rrha_sync", {}); m.dirty = true; rawSet.call(store, "rrha_sync", m);
+    if (ACCT.user){ clearTimeout(pushT); pushT = setTimeout(() => syncNow("push"), 2500); } } };
+const localData = () => ({ wpts: store.get("rrha_wpts", []), lines: store.get("rrha_lines", []), log: store.get("rrha_log", []) });
+const isEmpty = d => !d || !((d.wpts || []).length || (d.lines || []).length || (d.log || []).length);
+function unionById(pri, sec){ const m = new Map(), k = x => x && x.id ? x.id : JSON.stringify(x); (sec || []).forEach(x => m.set(k(x), x)); (pri || []).forEach(x => m.set(k(x), x)); return [...m.values()]; }
+const mergeData = (pri, sec) => ({ wpts: unionById(pri.wpts, sec.wpts), lines: unionById(pri.lines, sec.lines), log: unionById(pri.log, sec.log).sort((a, b) => String(b.t || "").localeCompare(String(a.t || ""))) });
+function applyData(d){ syncApplying = true;
+  try { store.set("rrha_wpts", d.wpts || []); store.set("rrha_lines", d.lines || []); store.set("rrha_log", d.log || []); } finally { syncApplying = false; }
+  wpts = store.get("rrha_wpts", []); lines = store.get("rrha_lines", []); hlog = store.get("rrha_log", []);
+  try { drawWpts(); drawLines(); renderMine(); renderLog(); renderLegend(); } catch (e){ console.warn(e); } }
+const countStr = d => `${(d.wpts || []).length} waypoints · ${(d.lines || []).length} lines · ${(d.log || []).length} hunts`;
+async function syncNow(why){
+  const u = ACCT.user; if (!u || !ACCT.fb || ACCT.syncing) return;
+  if (netOff()){ ACCT.syncNote = "Will sync when you have signal."; paintSync(); return; }
+  ACCT.syncing = true; ACCT.syncErr = null; paintSync(); const gen = syncGen;
+  try {
+    const ref = ACCT.fb.db.collection("users").doc(u.uid), meta = store.get("rrha_sync", {}), local = localData();
+    const snap = await ref.get(); let cloud = null, cat = 0;
+    if (snap.exists){ const x = snap.data(); try { cloud = JSON.parse(x.data || "{}"); } catch { cloud = null; } cat = x.updatedAt || 0; }
+    let out = null, push = false, note = "";
+    if (isEmpty(cloud)) push = !isEmpty(local) || !snap.exists;
+    else if (meta.uid !== u.uid){ if (isEmpty(local)) out = cloud; else { out = mergeData(local, cloud); push = true; note = "Combined what was on this device with your account."; } }
+    else if (cat > (meta.at || 0)){ if (meta.dirty){ out = mergeData(local, cloud); push = true; } else out = cloud; }
+    else if (meta.dirty) push = true;
+    if (out) applyData(out);
+    let at = cat;
+    if (push){ const body = JSON.stringify(localData());
+      if (body.length > 900000) throw new Error("Your saved data is over the 900 KB sync limit. Delete some long lines or imported tracks.");
+      at = Date.now(); await ref.set({ data: body, updatedAt: at, email: u.email, app: APP_VERSION }); }
+    rawSet.call(store, "rrha_sync", { uid: u.uid, at, dirty: syncGen !== gen, last: Date.now() });
+    ACCT.syncNote = note;
+    if (syncGen !== gen){ clearTimeout(pushT); pushT = setTimeout(() => syncNow("push"), 1500); }
+  } catch (e){ ACCT.syncErr = e && e.code === "permission-denied" ? "Your account's storage refused the save. The app owner needs to check the database rules." : (e && e.message) || String(e); }
+  finally { ACCT.syncing = false; paintSync(); }
+}
+document.addEventListener("visibilitychange", () => { if (!ACCT.user) return; if (document.visibilityState === "visible") syncNow("focus"); else if ((store.get("rrha_sync", {})).dirty) syncNow("leave"); });
+function paintSync(){ const el = $("#syncLine"); if (!el) return; const m = store.get("rrha_sync", {});
+  el.innerHTML = ACCT.syncing ? `<span class="spin"></span> Syncing…` : ACCT.syncErr ? `<span style="color:var(--closed)">${esc(ACCT.syncErr)}</span>`
+    : `${m.last ? "Synced " + new Date(m.last).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "Not synced yet"} · ${countStr(localData())}${ACCT.syncNote ? "<br>" + esc(ACCT.syncNote) : ""}`; }
+
+/* ---------- The Account tab ---------- */
+const SECS = [["account", "Account"], ["offline", "Offline"], ["settings", "Settings"], ["help", "Help"]];
+function acctSec(s){ ACCT.sec = s; savePref({ acctSec: s }); renderAcct(); }
+const fld = (id, label, type, ac, extra) => `<div class="fld"><label for="${id}">${label}</label>${type === "password"
+  ? `<div class="pw"><input id="${id}" type="password" autocomplete="${ac}" ${extra || ""}><button type="button" data-show="${id}">Show</button></div>`
+  : `<input id="${id}" type="${type}" autocomplete="${ac}" ${extra || ""}>`}</div>`;
+const msgBox = m => m ? `<div class="msg ${m[0]}" role="status">${esc(m[1])}</div>` : "";
+const toggleRow = (id, title, sub, on) => `<label class="setrow" for="${id}"><span class="lt">${title}${sub ? `<small>${sub}</small>` : ""}</span><input type="checkbox" id="${id}" ${on ? "checked" : ""}><span class="sw"></span></label>`;
+function renderAcct(){
+  const pane = $("#pane-acct"); if (!pane) return;
+  ACCT.sec = ACCT.sec || PREF.acctSec || "account";
+  const keep = document.activeElement && pane.contains(document.activeElement) ? document.activeElement.id : null;
+  const vals = {}; pane.querySelectorAll("input[id]").forEach(i => { if (i.type !== "checkbox" && i.type !== "file") vals[i.id] = i.value; });
+  const body = { account: acctHtml, offline: offlineHtml, settings: settingsHtml, help: helpHtml }[ACCT.sec]();
+  pane.innerHTML = `<div class="acct"><div class="seg" role="tablist">${SECS.map(([k, t]) => `<button data-sec="${k}" aria-pressed="${k === ACCT.sec}">${t}</button>`).join("")}</div>${body}</div>`;
+  Object.entries(vals).forEach(([k, v]) => { const i = pane.querySelector("#" + k); if (i) i.value = v; });
+  if (keep){ const k = pane.querySelector("#" + keep); if (k) k.focus(); }
+  pane.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => acctSec(b.dataset.sec));
+  pane.querySelectorAll("[data-show]").forEach(b => b.onclick = () => { const i = pane.querySelector("#" + b.dataset.show), sh = i.type === "password"; i.type = sh ? "text" : "password"; b.textContent = sh ? "Hide" : "Show"; });
+  ({ account: acctWire, offline: offlineWire, settings: settingsWire, help: helpWire })[ACCT.sec](pane);
+  drawDlBoxes();
+}
+function acctHtml(){
+  if (!FIREBASE_CONFIG) return `<div class="acard"><h3>Accounts</h3><p>Sign-in isn't switched on for this copy of the app yet. Everything you save (waypoints, lines, hunt log, settings) stays on this device.</p>
+    <p>To move your data to another phone now, use <b>Settings → Back up my data</b>, then restore the file on the other device.</p></div>
+    <div class="acard"><h3>This device</h3><p class="meta">${countStr(localData())}</p></div>`;
+  if (location.protocol === "file:") return `<div class="acard"><h3>Accounts</h3><p>Sign-in only works from the app's web link, not from a downloaded file.</p></div>`;
+  if (!ACCT.fb) { if (!ACCT.err) fbInit(); return `<div class="acard"><h3>Accounts</h3>${ACCT.err ? msgBox(["err", ACCT.err]) + `<button class="btn sm" id="aRetry">Try again</button>` : `<p><span class="spin"></span> Loading sign-in…</p>`}</div>`; }
+  const u = ACCT.user;
+  if (!u){
+    const m = ACCT.mode;
+    const head = m === "reset" ? "Reset your password" : m === "up" ? "Create your free account" : "Sign in";
+    return `<div class="acard"><h3>${head}</h3>
+      ${m !== "reset" ? `<p>Your waypoints, lines and hunt log sync to your account, so they're on every phone and computer you sign in on.</p>` : `<p>We'll email you a link to set a new password.</p>`}
+      ${msgBox(ACCT.msg)}
+      <form id="aForm" novalidate>
+        ${fld("aEmail", "Email", "email", "email", 'inputmode="email" autocapitalize="off" spellcheck="false" required')}
+        ${m !== "reset" ? fld("aPw", "Password", "password", m === "up" ? "new-password" : "current-password", 'required minlength="8"') : ""}
+        ${m === "up" ? fld("aPw2", "Type the password again", "password", "new-password", "required") + `<p class="meta">At least 8 characters.</p>` : ""}
+        <button class="btn" type="submit" id="aGo">${m === "reset" ? "Email me a reset link" : m === "up" ? "Create account" : "Sign in"}</button>
+      </form>
+      <div class="row" style="justify-content:space-between">
+        ${m === "in" ? `<button class="linkbtn" data-mode="up">Create an account</button><button class="linkbtn" data-mode="reset">Forgot password?</button>` : `<button class="linkbtn" data-mode="in">Back to sign in</button>`}
+      </div></div>
+      <div class="acard"><h3>Without an account</h3><p>The whole app works without signing in. Your data just stays on this device.</p></div>`;
+  }
+  return `<div class="acard"><div class="who"><div class="avatar">${esc((u.email || "?")[0])}</div><div class="t"><b>${esc(u.email)}</b>
+      ${u.emailVerified ? `<span class="pill ok">Email verified</span>` : `<span class="pill warn">Email not verified</span>`}</div></div>
+      ${msgBox(ACCT.msg)}
+      ${u.emailVerified ? "" : `<p>Verify your email so you can always reset your password.</p><button class="btn sm ghost" id="aVerify">Send verification email</button>`}
+      <h3>Sync</h3><p class="meta" id="syncLine"></p>
+      <div class="row"><button class="btn sm" id="aSync">Sync now</button><button class="btn sm ghost" id="aOut">Sign out</button></div>
+      ${ACCT.outAsk ? `<div class="msg">What should happen to your data on this device?<div class="row"><button class="btn sm ghost" id="aOutKeep">Keep it here</button><button class="btn sm ghost danger" id="aOutClear">Remove it from this device</button></div><p class="meta" style="margin:0">Either way, it stays safe in your account.</p></div>` : ""}</div>
+    <div class="acard"><h3>Change password</h3>
+      <form id="aPwForm" novalidate>${fld("aCur", "Current password", "password", "current-password")}${fld("aNew", "New password", "password", "new-password", 'minlength="8"')}
+      <button class="btn sm" type="submit">Change password</button></form></div>
+    <div class="acard"><h3>Delete account</h3><p>Deletes your account and everything synced to it. Data on this device stays until you erase it in Settings.</p>
+      ${ACCT.delAsk ? `<form id="aDelForm" novalidate>${fld("aDelPw", "Enter your password to confirm", "password", "current-password")}
+        <div class="row"><button class="btn sm ghost danger" type="submit">Delete my account for good</button><button class="btn sm ghost" type="button" id="aDelNo">Cancel</button></div></form>`
+      : `<button class="btn sm ghost danger" id="aDel">Delete my account…</button>`}</div>`;
+}
+function acctWire(p){
+  const on = (id, f) => { const e = p.querySelector("#" + id); if (e) e.onclick = f; };
+  on("aRetry", () => { ACCT.err = null; fbInit(); renderAcct(); });
+  p.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { ACCT.mode = b.dataset.mode; ACCT.msg = null; renderAcct(); });
+  const busy = (form, b) => form.querySelectorAll("button,input").forEach(x => x.disabled = b);
+  const f = p.querySelector("#aForm");
+  if (f) f.onsubmit = async ev => { ev.preventDefault(); const email = p.querySelector("#aEmail").value.trim(), pw = p.querySelector("#aPw")?.value || "";
+    if (!/^\S+@\S+\.\S+$/.test(email)){ ACCT.msg = ["err", "Enter your email address."]; renderAcct(); return; }
+    if (ACCT.mode === "up"){ if (pw.length < 8){ ACCT.msg = ["err", "Use at least 8 characters for the password."]; renderAcct(); return; }
+      if (pw !== p.querySelector("#aPw2").value){ ACCT.msg = ["err", "The two passwords don't match."]; renderAcct(); return; } }
+    else if (ACCT.mode === "in" && !pw){ ACCT.msg = ["err", "Enter your password."]; renderAcct(); return; }
+    busy(f, true);
+    try { const A = ACCT.fb.auth;
+      if (ACCT.mode === "reset"){ await A.sendPasswordResetEmail(email); ACCT.mode = "in"; ACCT.msg = ["ok", `Reset link sent to ${email}. Check your inbox and spam folder.`]; }
+      else if (ACCT.mode === "up"){ const c = await A.createUserWithEmailAndPassword(email, pw); try { await c.user.sendEmailVerification(); } catch {} ACCT.msg = ["ok", "Account created. We sent a link to verify your email."]; }
+      else { await A.signInWithEmailAndPassword(email, pw); ACCT.msg = null; }
+    } catch (e){ ACCT.msg = ["err", authMsg(e)]; }
+    renderAcct(); };
+  on("aVerify", async () => { try { await ACCT.user.sendEmailVerification(); ACCT.msg = ["ok", "Verification email sent. Tap the link in it, then come back."]; } catch (e){ ACCT.msg = ["err", authMsg(e)]; } renderAcct(); });
+  on("aSync", () => syncNow("button"));
+  on("aOut", () => { ACCT.outAsk = !ACCT.outAsk; renderAcct(); });
+  const signOut = async clear => { if ((store.get("rrha_sync", {})).dirty) await syncNow("signout");
+    await ACCT.fb.auth.signOut(); ACCT.outAsk = false; ACCT.msg = ["ok", "Signed out."];
+    if (clear){ applyData({ wpts: [], lines: [], log: [] }); rawSet.call(store, "rrha_sync", {}); } renderAcct(); };
+  on("aOutKeep", () => signOut(false)); on("aOutClear", () => signOut(true));
+  const pf = p.querySelector("#aPwForm");
+  if (pf) pf.onsubmit = async ev => { ev.preventDefault(); const cur = p.querySelector("#aCur").value, nw = p.querySelector("#aNew").value;
+    if (nw.length < 8){ ACCT.msg = ["err", "Use at least 8 characters for the new password."]; renderAcct(); return; }
+    busy(pf, true);
+    try { const u = ACCT.user; await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email, cur)); await u.updatePassword(nw); ACCT.msg = ["ok", "Password changed."]; p.querySelector("#aCur").value = p.querySelector("#aNew").value = ""; }
+    catch (e){ ACCT.msg = ["err", authMsg(e)]; }
+    renderAcct(); };
+  on("aDel", () => { ACCT.delAsk = true; renderAcct(); }); on("aDelNo", () => { ACCT.delAsk = false; renderAcct(); });
+  const df = p.querySelector("#aDelForm");
+  if (df) df.onsubmit = async ev => { ev.preventDefault(); busy(df, true);
+    try { const u = ACCT.user; await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email, p.querySelector("#aDelPw").value));
+      await ACCT.fb.db.collection("users").doc(u.uid).delete(); await u.delete(); rawSet.call(store, "rrha_sync", {}); ACCT.delAsk = false; ACCT.msg = ["ok", "Your account and synced data were deleted."]; }
+    catch (e){ ACCT.msg = ["err", authMsg(e)]; }
+    renderAcct(); };
+  paintSync();
+}
+function offlineHtml(){
+  const sel = PREF.dlLayers || ["topo", "hill", "elev", "pad"], l = dlList(), canSW = swOk();
+  return `<div class="acard"><h3>Offline mode</h3>
+      ${toggleRow("oMode", "Use saved maps only", "Stops the app from trying the internet, so it's fast with no signal. Turns on by itself when your phone loses signal.", !!PREF.offline)}
+      ${location.protocol === "file:" ? msgBox(["err", "Offline maps need the app's web link (https). They don't work from a downloaded file."]) : ""}</div>
+    <div class="acard"><h3>Download an area</h3>
+      <p>Move the map so the area you'll hunt fills the space above this panel. The orange box shows what gets saved.</p>
+      ${fld("dlName", "Name", "text", "off", `placeholder="e.g. Sam Houston NF, north unit" maxlength="60"`)}
+      <div class="fld"><label for="dlZ">Detail</label><select id="dlZ">${DETAIL.map(([z, t]) => `<option value="${z}" ${z === (PREF.dlZ || 15) ? "selected" : ""}>${t}</option>`).join("")}</select></div>
+      <div style="margin:10px 0 4px;font:600 13px var(--body)">Save these maps</div>
+      ${DL_SRC.map(s => `<label class="chk"><input type="checkbox" data-dls="${s.id}" ${sel.includes(s.id) ? "checked" : ""}><span>${esc(s.name)}${s.sub ? `<small>${esc(s.sub)}</small>` : ""}</span></label>`).join("")}
+      <div id="dlEst" class="est"></div>
+      ${DLJOB ? `<div class="dlprog" id="dlProg"><span></span></div><div class="est" id="dlProgT"></div><button class="btn sm ghost" id="dlStop">Cancel download</button>`
+        : `<button class="btn" id="dlGo" ${location.protocol === "file:" ? "disabled" : ""}>Download this area</button>`}
+      ${msgBox(ACCT.dlMsg)}
+      <p class="meta">Works offline: saved base maps, hillshade, slope, public land boundaries, your waypoints and lines, compass and GPS location, sun and moon times. Needs signal: weather, search, property lines, hunt units and the other live layers.</p></div>
+    <div class="acard"><h3>Saved areas</h3>
+      ${l.length ? l.map(d => `<div class="dli"><div class="t"><b>${esc(d.name)}</b><small>${new Date(d.at).toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" })} · zoom ${d.z} · ${fmtMB(d.bytes / 1024)}${d.pad ? " · " + d.pad.toLocaleString() + " public tracts" : ""}</small></div>
+        <div class="acts"><button data-dlv="${d.id}">Show</button><button data-dlx="${d.id}" class="danger">${ACCT.dlDel === d.id ? "Tap to delete" : "Delete"}</button></div></div>`).join("")
+        : `<p>No saved areas yet.</p>`}
+      <div id="stor" class="est"></div></div>`;
+}
+function offlineWire(p){
+  const m = p.querySelector("#oMode"); if (m) m.onchange = () => { savePref({ offline: m.checked }); store.set("rrha_prefs", PREF); padHave = null; refreshPad(); paintOff(); };
+  const z = p.querySelector("#dlZ"); if (z) z.onchange = () => { savePref({ dlZ: +z.value }); paintEst(); };
+  p.querySelectorAll("[data-dls]").forEach(c => c.onchange = () => { savePref({ dlLayers: [...p.querySelectorAll("[data-dls]:checked")].map(x => x.dataset.dls) }); paintEst(); });
+  const go = p.querySelector("#dlGo"); if (go) go.onclick = () => runDownload();
+  const st = p.querySelector("#dlStop"); if (st) st.onclick = () => { if (DLJOB) DLJOB.stop = true; };
+  p.querySelectorAll("[data-dlv]").forEach(b => b.onclick = () => { const d = dlList().find(x => x.id === b.dataset.dlv); if (!d) return;
+    map.fitBounds([[d.b[0], d.b[1]], [d.b[2], d.b[3]]]); if (isPhone()) sheetSnap(0); });
+  p.querySelectorAll("[data-dlx]").forEach(b => b.onclick = () => { if (ACCT.dlDel === b.dataset.dlx){ ACCT.dlDel = null; dlDelete(b.dataset.dlx); } else { ACCT.dlDel = b.dataset.dlx; renderAcct(); } });
+  paintEst(); paintJob();
+  if (navigator.storage && navigator.storage.estimate) navigator.storage.estimate().then(e => { const s = p.querySelector("#stor"); if (!s || !e.quota) return;
+    s.innerHTML = `Space used on this device: <b>${fmtMB(e.usage / 1024)}</b> of about ${fmtMB(e.quota / 1024)} available<div class="meter"><span style="width:${Math.min(100, e.usage / e.quota * 100).toFixed(1)}%"></span></div>`; }).catch(() => {});
+}
+function settingsHtml(){
+  const th = PREF.theme || "auto";
+  return `<div class="acard"><h3>Display</h3>
+      <label class="setrow" for="sTheme"><span class="lt">Color theme<small>Dark is easier on your eyes before daylight. High contrast reads best in bright sun.</small></span>
+        <select id="sTheme">${THEMES.map(([k, t]) => `<option value="${k}" ${k === th ? "selected" : ""}>${t}</option>`).join("")}</select></label>
+      ${toggleRow("sSun", "Sun and moon box on the map", "Sunrise, sunset, legal light and moon phase for the map center", !PREF.sunHide)}
+      ${toggleRow("sTap", "Tap the map for elevation", "Off: a tap just closes open boxes. Long-press any spot for elevation and more.", PREF.tapInfo ?? !isPhone())}
+      ${toggleRow("sWake", "Keep the screen on", "Stops your phone from locking while the app is open. Uses more battery.", !!PREF.wake)}</div>
+    <div class="acard"><h3>Your data</h3><p class="meta">${countStr(localData())} on this device</p>
+      <div class="row"><button class="btn sm" id="sBack">Back up my data</button><label class="btn sm ghost" for="sRestore">Restore a backup</label><input type="file" id="sRestore" accept=".json,application/json" hidden></div>
+      <p class="meta">A backup is one file with your waypoints, lines, hunt log and settings. Restoring adds it to what's already here.</p>
+      ${msgBox(ACCT.setMsg)}
+      <h3>Erase this device</h3>
+      ${ACCT.eraseAsk ? `<div class="msg err">This removes every waypoint, line, hunt log entry, setting and saved map on this device. Your account (if you have one) keeps its copy.
+        <div class="row"><button class="btn sm ghost danger" id="sEraseYes">Erase everything</button><button class="btn sm ghost" id="sEraseNo">Cancel</button></div></div>`
+        : `<button class="btn sm ghost danger" id="sErase">Erase everything on this device…</button>`}</div>`;
+}
+function settingsWire(p){
+  p.querySelector("#sTheme").onchange = e => applyTheme(e.target.value);
+  p.querySelector("#sSun").onchange = e => { savePref({ sunHide: !e.target.checked }); renderSun(); if (wx) renderWx(); };
+  p.querySelector("#sTap").onchange = e => savePref({ tapInfo: e.target.checked });
+  p.querySelector("#sWake").onchange = e => { savePref({ wake: e.target.checked }); if (e.target.checked) wake(); else if (wakeL){ wakeL.release().catch(() => {}); wakeL = null; } };
+  p.querySelector("#sBack").onclick = () => { const d = Object.assign({ app: "Red River Hunt Atlas", v: 8, saved: new Date().toISOString() }, localData(), { prefs: PREF });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 1)], { type: "application/json" }));
+    a.download = "hunt-atlas-backup-" + new Date().toISOString().slice(0, 10) + ".json"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    ACCT.setMsg = ["ok", "Backup saved to your downloads."]; renderAcct(); };
+  p.querySelector("#sRestore").onchange = async e => { const f = e.target.files[0]; if (!f) return;
+    try { const d = JSON.parse(await f.text()); if (!d || !(d.wpts || d.lines || d.log)) throw new Error("x");
+      applyData(mergeData(localData(), { wpts: d.wpts || [], lines: d.lines || [], log: d.log || [] })); ACCT.setMsg = ["ok", `Restored. You now have ${countStr(localData())}.`]; }
+    catch { ACCT.setMsg = ["err", "That file isn't a Hunt Atlas backup."]; }
+    renderAcct(); };
+  const on = (id, f) => { const e = p.querySelector("#" + id); if (e) e.onclick = f; };
+  on("sErase", () => { ACCT.eraseAsk = true; renderAcct(); }); on("sEraseNo", () => { ACCT.eraseAsk = false; renderAcct(); });
+  on("sEraseYes", async () => { try { for (const k of await caches.keys()) if (/^rrha-dl-/.test(k)) await caches.delete(k); } catch {}
+    try { Object.keys(localStorage).filter(k => k.startsWith("rrha_")).forEach(k => localStorage.removeItem(k)); } catch {}
+    location.reload(); });
+}
+function helpHtml(){
+  return `<div class="acard"><h3>Quick start</h3><ol class="qs2">${QUICK.map(([t, s]) => `<li><b>${esc(t)}</b>${esc(s)}</li>`).join("")}
+      <li><b>Save maps for no-signal country</b>Account → Offline: frame the area on the map and tap Download this area.</li></ol>
+      <div class="row"><button class="btn sm" id="hSrc">Sources and methods</button><button class="btn sm ghost" id="hTour">Show the welcome guide</button></div></div>
+    <div class="acard"><h3>On your phone</h3>
+      <p><b>Move the panel:</b> drag the bar at the top of this panel, or flick it. Drag down from the top of a list to shrink it.</p>
+      <p><b>Map:</b> pinch to zoom (down to about 20 ft across the screen), long-press for the spot menu, tap once to close boxes.</p>
+      <p><b>Add to your home screen:</b> in Safari tap Share → Add to Home Screen. In Chrome tap ⋮ → Add to Home screen. It then opens full-screen like an app.</p></div>
+    <div class="acard"><h3>About</h3><p>Red River Hunt Atlas ${esc(APP_VERSION)}. Public land, licenses and seasons for Texas, New Mexico, Oklahoma, Arkansas and Louisiana.</p>
+      <p class="meta">Rules change, and individual WMAs have their own regulations. Check the state agency before you hunt. Land status comes from PAD-US and state agencies and can lag behind real-world changes.</p></div>`;
+}
+function helpWire(p){ p.querySelector("#hSrc").onclick = () => openHelp("src"); p.querySelector("#hTour").onclick = () => openHelp("start"); }
+
+/* ---------- Keep the screen on ---------- */
+let wakeL = null;
+async function wake(){ if (!PREF.wake || !navigator.wakeLock || document.visibilityState !== "visible") return; try { wakeL = await navigator.wakeLock.request("screen"); } catch {} }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") wake(); });
+
+/* ---------- Start-up for v8 ---------- */
+function v8Start(){
+  sheetSnap(sheetState); popupFit(); paintOff(); wake();
+  if (FIREBASE_CONFIG && PREF.signedIn) fbInit();
+}
+
+
 
 renderState(PREF.state && D[PREF.state] ? PREF.state : "TX", false);
 refreshPad(); renderLayerPanel(); updateWhere(); refreshLandlock();
-showTab(PREF.tab || "rules"); if (isPhone()) sheetTo(0); renderLegend(); restoreScan();
+showTab(PREF.tab || "rules"); if (isPhone()) sheetTo(0); renderLegend(); restoreScan(); window.__v8 = true; v8Start(); if (PREF.tab === "acct") renderAcct();
 if (!PREF.seenHelp) setTimeout(() => openHelp("start"), 600);
 </script>
 </body>
