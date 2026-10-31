@@ -417,6 +417,8 @@ h1 span{color:var(--blaze)}
 .lp-yes{background:#2f8f4e}.lp-permit{background:#b07a0c}.lp-check{background:#2f6f94}.lp-no{background:#6b6b6b}
 .lpcat{font-size:13px}.lph{font:700 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:#1d5c4d;margin-top:6px}
 .lp .btn.ghost{font-size:13px;padding:5px 9px}
+.stpick{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}.stpick .states{margin:0}
+.stpick select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--ink)}
 </style>
 </head>
 <body>
@@ -2517,6 +2519,7 @@ async function updateWhere(){
   if (s !== whereSeq) return;
   if (!label){ st = Object.keys(ROUGH).find(k => L.latLngBounds(ROUGH[k]).contains(c)) || null; label = st ? D[st].name : ""; }
   $("#where").textContent = label ? "📍 " + label : "";
+  if (st && !D[st]) loadStateData(st);
   if (st !== hereState){ hereState = st; if (st && st !== current && canSwitchState()) renderState(st, false); else renderLayerPanel(); }
 }
 map.on("moveend", () => { clearTimeout(whereT); whereT = setTimeout(updateWhere, 700); });
@@ -3410,7 +3413,7 @@ function landRules(p, hc, st){
     else rules.push("Hunting and firing guns aren't allowed on city or county parks, golf courses, sports fields, historic sites and similar land.", "Many cities also ban discharging firearms anywhere inside city limits.");
     return { need, rules };
   }
-  need.push(lic);
+  need.push(lic); if (S && S.everywhere) need.push(S.everywhere);
   if (m === "USFS" || d === "NF" || d === "NG"){
     rules.push("No Forest Service permit needed. State seasons and bag limits apply.",
       "No shooting within 150 yd of a home, campsite or developed recreation site, or across a road or body of water (36 CFR 261.10).",
@@ -3457,7 +3460,8 @@ function seasonsNow(st){
   next.sort((a, b) => a[1] - b[1]); return { open, next: next[0] };
 }
 function padPopup(p){
-  const hc = huntClass(p), st = D[p.State_Nm] ? p.State_Nm : STATE_ABBR[p.State_Nm], m = (p.Mang_Name || "").toUpperCase();
+  const hc = huntClass(p), st = D[p.State_Nm] || ALLST[p.State_Nm] ? p.State_Nm : STATE_ABBR[p.State_Nm], m = (p.Mang_Name || "").toUpperCase();
+  if (st && !D[st]) loadStateData(st);
   const cat = p.Mang_Type === "LOC" ? ({ CITY: "City land", CNTY: "County land" }[m] || "Local government land") : (DES[p.Des_Tp] || "Public land");
   const { need, rules } = landRules(p, hc, st), sn = hc === "no" ? null : seasonsNow(st), V = VERDICT[hc];
   const li = a => a.map(x => `<li>${esc(x)}</li>`).join("");
@@ -3487,6 +3491,49 @@ map.on("click", async e => {
   } catch {}
 });
 
+
+/* ===================== All 50 states: every state is listed; full guides load from data/states/XX.json when needed ===================== */
+const ALLST = {"AL":["Alabama","Alabama DCNR Wildlife and Freshwater Fisheries","https://www.outdooralabama.com"],"AK":["Alaska","Alaska Department of Fish and Game","https://www.adfg.alaska.gov"],"AZ":["Arizona","Arizona Game and Fish Department","https://www.azgfd.com"],"AR":["Arkansas","Arkansas Game and Fish Commission","https://www.agfc.com"],"CA":["California","California Department of Fish and Wildlife","https://wildlife.ca.gov"],"CO":["Colorado","Colorado Parks and Wildlife","https://cpw.state.co.us"],"CT":["Connecticut","CT DEEP Wildlife Division","https://portal.ct.gov/deep"],"DE":["Delaware","DNREC Division of Fish and Wildlife","https://dnrec.delaware.gov/fish-wildlife/"],"FL":["Florida","Florida Fish and Wildlife Conservation Commission","https://myfwc.com"],"GA":["Georgia","Georgia DNR Wildlife Resources Division","https://georgiawildlife.com"],"HI":["Hawaii","DLNR Division of Forestry and Wildlife","https://dlnr.hawaii.gov/dofaw/"],"ID":["Idaho","Idaho Department of Fish and Game","https://idfg.idaho.gov"],"IL":["Illinois","Illinois DNR","https://dnr.illinois.gov"],"IN":["Indiana","Indiana DNR Fish and Wildlife","https://www.in.gov/dnr/fish-and-wildlife/"],"IA":["Iowa","Iowa DNR","https://www.iowadnr.gov"],"KS":["Kansas","Kansas Dept of Wildlife and Parks","https://ksoutdoors.com"],"KY":["Kentucky","Kentucky Dept of Fish and Wildlife Resources","https://fw.ky.gov"],"LA":["Louisiana","Louisiana Dept of Wildlife and Fisheries","https://www.wlf.louisiana.gov"],"ME":["Maine","Maine Dept of Inland Fisheries and Wildlife","https://www.maine.gov/ifw/"],"MD":["Maryland","Maryland DNR Wildlife and Heritage","https://dnr.maryland.gov/wildlife/"],"MA":["Massachusetts","MassWildlife","https://www.mass.gov/orgs/division-of-fisheries-and-wildlife"],"MI":["Michigan","Michigan DNR","https://www.michigan.gov/dnr"],"MN":["Minnesota","Minnesota DNR","https://www.dnr.state.mn.us"],"MS":["Mississippi","Mississippi Dept of Wildlife, Fisheries and Parks","https://www.mdwfp.com"],"MO":["Missouri","Missouri Department of Conservation","https://mdc.mo.gov"],"MT":["Montana","Montana Fish, Wildlife and Parks","https://fwp.mt.gov"],"NE":["Nebraska","Nebraska Game and Parks Commission","https://outdoornebraska.gov"],"NV":["Nevada","Nevada Department of Wildlife","https://www.ndow.org"],"NH":["New Hampshire","New Hampshire Fish and Game","https://www.wildlife.nh.gov"],"NJ":["New Jersey","NJ Division of Fish and Wildlife","https://dep.nj.gov/njfw/"],"NM":["New Mexico","New Mexico Department of Game and Fish","https://wildlife.dgf.nm.gov"],"NY":["New York","NYS DEC","https://dec.ny.gov"],"NC":["North Carolina","NC Wildlife Resources Commission","https://www.ncwildlife.org"],"ND":["North Dakota","North Dakota Game and Fish","https://gf.nd.gov"],"OH":["Ohio","Ohio DNR Division of Wildlife","https://ohiodnr.gov"],"OK":["Oklahoma","Oklahoma Dept of Wildlife Conservation","https://www.wildlifedepartment.com"],"OR":["Oregon","Oregon Dept of Fish and Wildlife","https://myodfw.com"],"PA":["Pennsylvania","Pennsylvania Game Commission","https://www.pgc.pa.gov"],"RI":["Rhode Island","RI DEM Fish and Wildlife","https://dem.ri.gov"],"SC":["South Carolina","SC Department of Natural Resources","https://www.dnr.sc.gov"],"SD":["South Dakota","South Dakota Game, Fish and Parks","https://gfp.sd.gov"],"TN":["Tennessee","Tennessee Wildlife Resources Agency","https://www.tn.gov/twra"],"TX":["Texas","Texas Parks and Wildlife Department","https://tpwd.texas.gov"],"UT":["Utah","Utah Division of Wildlife Resources","https://wildlife.utah.gov"],"VT":["Vermont","Vermont Fish and Wildlife","https://vtfishandwildlife.com"],"VA":["Virginia","Virginia Dept of Wildlife Resources","https://dwr.virginia.gov"],"WA":["Washington","Washington Dept of Fish and Wildlife","https://wdfw.wa.gov"],"WV":["West Virginia","West Virginia DNR","https://wvdnr.gov"],"WI":["Wisconsin","Wisconsin DNR","https://dnr.wisconsin.gov"],"WY":["Wyoming","Wyoming Game and Fish Department","https://wgfd.wyo.gov"]};
+const STATE_FILES = new Set(["CO"]);              // states with a full guide file (grows with each update)
+Object.entries(ALLST).forEach(([k, v]) => { STATE_TO[v[0]] = k; STATE_ABBR[v[0]] = k; });
+const stLoads = {};
+function loadStateData(code){
+  if (D[code]) return Promise.resolve(true);
+  if (!STATE_FILES.has(code)) return Promise.resolve(false);
+  return stLoads[code] || (stLoads[code] = fetch("data/states/" + code + ".json").then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(j => { D[code] = j; if (j.nr && NR) NR[code] = j.nr; return true; }).catch(() => { delete stLoads[code]; return false; }));
+}
+function statePicker(code){
+  const full = Object.keys(D).concat([...STATE_FILES].filter(k => !D[k])).sort((a, b) => ALLST[a][0].localeCompare(ALLST[b][0]));
+  return `<div class="stpick"><div class="states">${full.map(k => `<button aria-pressed="${k === code}" data-s="${k}">${k}</button>`).join("")}</div>
+    <select id="stAll" aria-label="All states"><option value="">All 50 states…</option>${Object.entries(ALLST).sort((a, b) => a[1][0].localeCompare(b[1][0])).map(([k, v]) => `<option value="${k}" ${k === code ? "selected" : ""}>${esc(v[0])}${D[k] || STATE_FILES.has(k) ? "" : " (map only for now)"}</option>`).join("")}</select></div>`;
+}
+function renderStateBasic(code, fly, loading){
+  current = code; savePref({ state: code }); const a = ALLST[code];
+  $("#pane-rules").innerHTML = statePicker(code) + `<h2>${esc(a[0])}</h2><div class="meta">${esc(a[1])}</div>
+    ${loading ? `<p><span class="spin"></span> Loading the ${esc(a[0])} guide…</p>` : `
+    <div class="callout"><b>Full ${esc(a[0])} guide coming soon.</b> Seasons, license prices, rules and hunt units for every state are being added a few states at a time.</div>
+    <h3>Works here already</h3><ul>
+      <li>Public land on the map: tap any tract to see if you can hunt it, what category it is and the federal rules</li>
+      <li>National forest and BLM rules, Forest Service roads, trails and mile markers</li>
+      <li>Spot finder, travel corridors, wind and scent, weather, sun and moon, offline maps</li></ul>
+    <h3>Official source</h3><ul><li><a href="${esc(a[2])}" target="_blank" rel="noopener">${esc(a[1])}</a></li></ul>
+    <div class="askbox"><b>Ask about ${esc(a[0])} seasons, licenses or public land</b><textarea id="askq" rows="2" placeholder="e.g. What does a nonresident need to hunt deer here?"></textarea>
+      <div class="row" style="margin:6px 0 0"><button class="btn sm" id="askgo">Ask Claude</button></div></div>`}`;
+  wirePicker();
+  const ag = $("#askgo"); if (ag) ag.onclick = () => { const q = $("#askq").value.trim(); if (q) askClaude(q + " in " + a[0] + " (2026-27 season)"); };
+  if (fly && STATE_VIEW[code]) map.flyTo(STATE_VIEW[code][0], STATE_VIEW[code][1], { duration: .8 });
+}
+function wirePicker(){
+  $("#pane-rules").querySelectorAll(".stpick .states button").forEach(b => b.onclick = () => renderState(b.dataset.s, true));
+  const sel = $("#stAll"); if (sel) sel.onchange = () => { if (sel.value) renderState(sel.value, true); };
+}
+const STATE_VIEW = { AL:[[32.8,-86.8],7], AK:[[63.5,-150],4], AZ:[[34.3,-111.7],7], AR:[[34.9,-92.4],7], CA:[[37.2,-119.5],6], CO:[[39,-105.55],7], CT:[[41.6,-72.7],9], DE:[[39,-75.5],9], FL:[[28.4,-82.4],7],
+  GA:[[32.7,-83.4],7], HI:[[20.6,-157.4],7], ID:[[44.4,-114.6],6], IL:[[40,-89.2],7], IN:[[39.9,-86.3],7], IA:[[42.1,-93.5],7], KS:[[38.5,-98.4],7], KY:[[37.5,-85.3],7], LA:[[31,-92],7], ME:[[45.3,-69.2],7],
+  MD:[[39,-76.8],8], MA:[[42.2,-71.8],8], MI:[[44.3,-85.4],6], MN:[[46.3,-94.3],6], MS:[[32.7,-89.7],7], MO:[[38.4,-92.5],7], MT:[[47,-109.6],6], NE:[[41.5,-99.8],7], NV:[[39.3,-116.6],6],
+  NH:[[43.7,-71.6],8], NJ:[[40.1,-74.7],8], NM:[[34.4,-106.1],7], NY:[[42.9,-75.5],7], NC:[[35.5,-79.4],7], ND:[[47.4,-100.5],7], OH:[[40.3,-82.8],7], OK:[[35.5,-97.5],7], OR:[[44,-120.5],7], PA:[[40.9,-77.7],7], RI:[[41.7,-71.5],10],
+  SC:[[33.9,-80.9],7], SD:[[44.4,-100.2],7], TN:[[35.8,-86.3],7], TX:[[31.2,-99.3],6], UT:[[39.3,-111.7],7], VT:[[44,-72.7],8], VA:[[37.5,-78.8],7], WA:[[47.4,-120.5],7], WV:[[38.6,-80.6],7], WI:[[44.6,-89.9],7], WY:[[43,-107.5],7] };
+
 /* ===================== v9: States tab sections · scent trail on my location · tidy overlays ===================== */
 // The sun & wind box steps aside whenever the Layers panel is open
 new MutationObserver(() => document.body.classList.toggle("lyr-open", layersOpen())).observe($("#lyrPanel"), { attributes: true, attributeFilter: ["hidden"] });
@@ -3495,6 +3542,11 @@ new MutationObserver(() => document.body.classList.toggle("lyr-open", layersOpen
 const ST_SECS = [["over", "Overview"], ["seasons", "Seasons"], ["lic", "Licenses"], ["rules", "Rules"], ["places", "Places"], ["ask", "Ask"], ["terms", "Terms"]];
 const spOf = r => String(r[0]).split(/\s[(–-]|,|:/)[0].trim();
 function renderState(code, fly){
+  if (!D[code]){
+    if (!ALLST[code]) code = "TX";
+    else { if (STATE_FILES.has(code)){ renderStateBasic(code, false, true); loadStateData(code).then(ok => { if (current === code) ok ? renderState(code, false) : renderStateBasic(code, false); }); if (fly && STATE_VIEW[code]) map.flyTo(STATE_VIEW[code][0], STATE_VIEW[code][1], { duration: .8 }); }
+      else renderStateBasic(code, fly); return; }
+  }
   current = code; savePref({ state: code });
   const s = D[code], sec = ST_SECS.some(x => x[0] === PREF.stSec) ? PREF.stSec : "over";
   const btns = Object.keys(D).map(k => `<button aria-pressed="${k === code}" data-s="${k}">${k}</button>`).join("");
@@ -3535,12 +3587,12 @@ function renderState(code, fly){
   } else {
     body = `<div class="gloss"><input id="glossq" placeholder="Search terms, e.g. saddle, OTC, APH" aria-label="Search hunting terms"><dl id="glosslist"></dl></div>`;
   }
-  $("#pane-rules").innerHTML = `<div class="states">${btns}</div><h2>${esc(s.name)}</h2><div class="meta">${esc(s.agency)} · ${esc(s.year)}</div>
+  $("#pane-rules").innerHTML = statePicker(code) + `<h2>${esc(s.name)}</h2><div class="meta">${esc(s.agency)} · ${esc(s.year)}</div>
     <div class="seg stseg" role="tablist">${ST_SECS.map(([k, t]) => `<button data-st="${k}" aria-pressed="${k === sec}">${t}</button>`).join("")}</div>
     <div class="stbody">${body}</div>
-    <p class="disclaim">Compiled Oct 29, 2026 from agency pages and published summaries. Rules change and individual WMAs have their own regulations. Check the official source before you hunt.</p>`;
+    <p class="disclaim">Compiled ${esc(s.compiled || "Oct 29, 2026")} from agency pages and published summaries. Rules change and individual WMAs have their own regulations. Check the official source before you hunt.</p>`;
   const P = $("#pane-rules"), go = k => { savePref({ stSec: k }); renderState(code, false); P.scrollTop = 0; };
-  P.querySelectorAll(".states button").forEach(b => b.onclick = () => renderState(b.dataset.s, true));
+  wirePicker();
   P.querySelectorAll("[data-st]").forEach(b => b.onclick = () => go(b.dataset.st));
   P.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
   P.querySelectorAll("[data-sp]").forEach(b => b.onclick = () => { savePref({ stSp: b.dataset.sp }); renderState(code, false); });
@@ -3576,7 +3628,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "11.0 (Oct 30, 2026)";
+const APP_VERSION = "12.0 (Oct 30, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
