@@ -1,0 +1,219 @@
+{
+ "compiled": "Oct 31, 2026",
+ "lakes": {
+  "somerville": {
+   "name": "Somerville Lake",
+   "match": "somerville",
+   "district": "Fort Worth",
+   "url": "https://www.swf-wc.usace.army.mil/somerville/Recreation/Hunting.shtml",
+   "verdict": [
+    "permit",
+    "Limited: waterfowl in marked areas, hogs by permit",
+    "Deer hunting is prohibited on Corps land here except on the TPWD WMA (Somerville PHL) and the December challenged-hunter hunt."
+   ],
+   "rules": [
+    [
+     "Deer",
+     "Prohibited at Somerville Lake except the Annual Challenged Hunter Deer Hunt in December (Somerville Lake Office) and the TPWD Wildlife Management Area ((979) 540-6837)."
+    ],
+    [
+     "Feral hogs",
+     "By permit only: bowhunting, live-trapping, shotgun and dogs, through the Hunt Coordinator at the lake office (compartment drawing)."
+    ],
+    [
+     "Waterfowl, daytime public area",
+     "Daytime only, inside the yellow markers, never outside the red markers. Hunt from the shoreline. Temporary blinds must be removed when you leave."
+    ],
+    [
+     "Waterfowl, semi-permanent blinds",
+     "Assigned for the whole season by random drawing on Recreation.gov."
+    ],
+    [
+     "Closed area",
+     "The area near Harge Rd parking lot extending to and across Flag Pond Rd is closed to waterfowl hunting."
+    ],
+    [
+     "All Corps land",
+     "Hunter education, a Texas hunting license, and all federal, state and local rules."
+    ]
+   ],
+   "contact": [
+    "Somerville Lake Office (Hunt Coordinator)",
+    "TPWD WMA (979) 540-6837"
+   ],
+   "source": "U.S. Army Corps of Engineers lake hunting page (Fort Worth District Hunting Guide 2026-27)"
+  },
+  "granger": {
+   "name": "Granger Lake",
+   "match": "granger",
+   "district": "Fort Worth",
+   "url": "https://www.swf-wc.usace.army.mil/granger/Recreation/Hunting.shtml",
+   "verdict": [
+    "permit",
+    "Huntable on the WMA with the APH permit",
+    "The 10,800+ acre WMA is part of TPWD's APH and drawing programs."
+   ],
+   "rules": [
+    [
+     "Where",
+     "10,800+ acres of Wildlife Management Area, run through TPWD's Annual Public Hunting permit and drawings."
+    ],
+    [
+     "Deer",
+     "Archery only, through TPWD's e-Postcard drawing."
+    ]
+   ],
+   "contact": [
+    "Granger Lake Office (512) 859-2668"
+   ],
+   "source": "U.S. Army Corps of Engineers lake hunting page (Fort Worth District Hunting Guide 2026-27)"
+  },
+  "belton": {
+   "name": "Belton Lake",
+   "match": "belton",
+   "district": "Fort Worth",
+   "url": "https://www.swf-wc.usace.army.mil/belton/Recreation/Hunting.shtml",
+   "verdict": [
+    "permit",
+    "Huntable in designated areas with strict method limits",
+    "Shotgun (#2 shot or smaller) and archery only; deer by lottery permit; no turkey."
+   ],
+   "rules": [
+    [
+     "Legal game",
+     "Feral hog, white-tailed deer (permit only), dove, quail, rails, snipe, squirrel, rabbits, waterfowl. Small game and waterfowl Sept 1 \u2013 Mar 31 as TPWD allows."
+    ],
+    [
+     "Deer",
+     "Archery only, by lottery permit (Recreation.gov 'Belton Lake Archery Deer Hunt Permits' or the lake office)."
+    ],
+    [
+     "Feral hog",
+     "Archery only, daylight, year-round except during the permitted deer season; no dogs."
+    ],
+    [
+     "Weapons",
+     "Archery for hogs and deer; shotguns for everything else. Muzzleloaders, rifles, pistols, slugs and shot larger than #2 are prohibited at all times."
+    ],
+    [
+     "Where",
+     "Daylight only in designated areas on the lake maps. No firearms within 600 ft (archery 100 ft) of boundaries, parks, roads, piers, outlets or spillways, or within 600 ft of private property."
+    ],
+    [
+     "Waterfowl",
+     "On land only in designated WMAs; on water under TPWD rules and the spacing distances."
+    ],
+    [
+     "Stands and blinds",
+     "Portable stands and ground blinds only, no bark penetration; remove at the end of each day."
+    ],
+    [
+     "Hunter orange",
+     "400 sq in with orange headgear, 144 sq in front and back (waterfowl hunters exempt once set up)."
+    ],
+    [
+     "Prohibited",
+     "Turkey, furbearers, predators (bobcat, coyote, lions, raptors), night hunting, spotlighting, trapping, target practice, feeders, electronic calls. Baiting only for permitted deer hunters."
+    ],
+    [
+     "Dogs",
+     "Retrieving birds per TPWD; rabbit and squirrel dogs need a lake activity permit, max 6 dogs with GPS collars, handler in orange."
+    ],
+    [
+     "Permits",
+     "Hunter education, Texas license and stamps. APH permit not required."
+    ]
+   ],
+   "contact": [
+    "Belton Lake Office (254) 742-3050"
+   ],
+   "source": "U.S. Army Corps of Engineers lake hunting page (Fort Worth District Hunting Guide 2026-27)"
+  },
+  "stillhouse": {
+   "name": "Stillhouse Hollow Lake",
+   "match": "stillhouse",
+   "district": "Fort Worth",
+   "url": "https://www.swf-wc.usace.army.mil/stillhouse/Recreation/Hunting.shtml",
+   "verdict": [
+    "permit",
+    "Dove, waterfowl and quail only",
+    "Free public hunting in designated areas; deer and turkey prohibited."
+   ],
+   "rules": [
+    [
+     "Species",
+     "Dove, waterfowl and quail only. Deer, turkey, furbearers, non-game and predators prohibited."
+    ],
+    [
+     "Season",
+     "Sept 1 through the end of goose season."
+    ],
+    [
+     "Weapons",
+     "Shotgun with shot only; steel or approved non-toxic shot for waterfowl. No rifles, pistols, buckshot or slugs; no target practice."
+    ],
+    [
+     "Where",
+     "Designated hunting areas (WMAs on the lake map) and adjacent waters only; not within 600 ft of private property or recreation areas."
+    ],
+    [
+     "Blinds",
+     "Temporary or natural blinds; remove temporary blinds at the end of each day."
+    ],
+    [
+     "Other",
+     "Blaze orange required in hunting areas. No Corps waterfowl permit needed. No traps, snares, bait or tranquilizers. Vehicles on designated roads only; camp in designated parks."
+    ]
+   ],
+   "contact": [
+    "Stillhouse Hollow Lake Office (254) 939-2461"
+   ],
+   "source": "U.S. Army Corps of Engineers lake hunting page (Fort Worth District Hunting Guide 2026-27)"
+  },
+  "waco": {
+   "name": "Waco Lake",
+   "match": "waco",
+   "district": "Fort Worth",
+   "url": "https://www.swf-wc.usace.army.mil/waco/Recreation/Hunting.shtml",
+   "verdict": [
+    "permit",
+    "Huntable with a $15 Waco Lake permit",
+    "Required for everyone, any game; shotgun and archery only."
+   ],
+   "rules": [
+    [
+     "Permit",
+     "$15 Waco Lake hunting permit on Recreation.gov (on sale Sept 1), required for all hunters 17+; ages 13 \u2013 16 with a permit holder; 12 and under may not hunt. Max 2 vehicles per permit; carry the printed permit."
+    ],
+    [
+     "Legal game",
+     "Dove, squirrel, rabbits, feral hogs, waterfowl, coyote and deer."
+    ],
+    [
+     "Weapons",
+     "Deer, coyote and hogs: archery only (crossbows OK). Birds and small game: non-toxic #2 shot or smaller. No slugs, sabots, #1, B, BB, BBB or buckshot, no rifles, pistols or muzzleloaders."
+    ],
+    [
+     "Seasons",
+     "Per the Outdoor Annual for McLennan County. Small game, coyotes and hogs any time except during an open deer season. Deer archery only in every season. No night hunting."
+    ],
+    [
+     "Where",
+     "Waterfowl only in the northern and southern zones. No hunting around Waco Wetlands."
+    ],
+    [
+     "Stands and cameras",
+     "Portable non-bark-penetrating stands, cameras and ground blinds may stay out if tagged with name, phone and date; tags good 7 days."
+    ],
+    [
+     "Other",
+     "Baiting by hand-spreading only. No sport-chasing, no target practice or sighting in. Hog trapping by permit only."
+    ]
+   ],
+   "contact": [
+    "Waco Lake Office (254) 756-5359"
+   ],
+   "source": "U.S. Army Corps of Engineers lake hunting page (Fort Worth District Hunting Guide 2026-27)"
+  }
+ }
+}

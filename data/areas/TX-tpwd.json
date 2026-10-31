@@ -1,0 +1,451 @@
+{
+ "compiled": "Oct 31, 2026",
+ "units": {
+  "711": {
+   "name": "Somerville PHL",
+   "acres": 3180,
+   "counties": "Lee, Burleson",
+   "owner": "U.S. Army Corps of Engineers",
+   "pdf": "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/711_1121.pdf",
+   "permits": [
+    "APH permit required for hunters (not for fishing)",
+    "OSR (on-site registration) required each day"
+   ],
+   "game": [
+    [
+     "White-tailed deer",
+     "Archery only. Oct 3 \u2013 Nov 6 and Nov 14 \u2013 29 either sex; Nov 7 \u2013 Jan 3 buck only. Bag 3 (1 buck, 2 antlerless). Legal buck: at least one unbranched antler or 13 in. inside spread."
+    ],
+    [
+     "Feral hog",
+     "Archery only. No closed season, no bag limit. Baiting allowed Mar 30 \u2013 Aug 16."
+    ],
+    [
+     "Squirrel",
+     "Jan 4 \u2013 Aug 31. Dogs allowed. Falconry, shotguns and air rifles only."
+    ],
+    [
+     "Rabbits & hares",
+     "Jan 4 \u2013 Aug 31. Dogs allowed. Falconry, rimfire, shotguns and air rifles only."
+    ],
+    [
+     "Beaver, raccoon, opossum, muskrat, nutria, skunk",
+     "Jan 4 \u2013 Aug 31, night only, dogs allowed. Shotguns only."
+    ],
+    [
+     "Waterfowl",
+     "Each day of the Early Teal, North Zone Duck and Extended Falconry seasons. Non-toxic shot."
+    ],
+    [
+     "Dove",
+     "Each day of the first split of the Central Zone season."
+    ]
+   ],
+   "weapons": [
+    "Firearms limited to shotguns with shot no larger than #2",
+    "Non-toxic shot required for waterfowl",
+    "Archery only for deer and feral hog"
+   ],
+   "access": [
+    "No ORVs or ATVs"
+   ],
+   "special": [
+    "Archery deer postcard selection hunt: see the front of the booklet",
+    "Youth and veteran/active-duty waterfowl: see the TPWD Outdoor Annual"
+   ],
+   "contact": [
+    "Nails Creek State Park: (979) 289-2392"
+   ],
+   "source": "TPWD Public Hunting Lands Map Booklet 2026-27"
+  },
+  "1121": {
+   "name": "Trailway Flag Pond Unit \u2013 Lake Somerville SP (Nails Creek)",
+   "acres": 350,
+   "counties": "Lee",
+   "owner": "U.S. Army Corps of Engineers",
+   "pdf": "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/711_1121.pdf",
+   "permits": [
+    "APH permit required for hunters",
+    "OSR required each day"
+   ],
+   "game": [
+    [
+     "Waterfowl",
+     "Flag Pond only. Same season days as Somerville PHL. Shooting ends at noon."
+    ]
+   ],
+   "weapons": [
+    "Shotguns with shot no larger than #2",
+    "Non-toxic shot for waterfowl"
+   ],
+   "access": [
+    "Boat access only; airboats prohibited",
+    "No hunting from the shoreline"
+   ],
+   "special": [
+    "Closed Dec 5 \u2013 6 and Jan 9 \u2013 10"
+   ],
+   "contact": [
+    "Nails Creek State Park: (979) 289-2392"
+   ],
+   "source": "TPWD Public Hunting Lands Map Booklet 2026-27"
+  },
+  "905": {
+   "name": "Sam Houston National Forest WMA",
+   "acres": 162984,
+   "counties": "Walker, Montgomery, San Jacinto",
+   "owner": "U.S. Forest Service",
+   "pdf": "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/905.pdf",
+   "permits": [
+    "APH permit required for hunters (not for fishing)",
+    "Mandatory electronic on-site registration (eOSR) in the Texas Hunt & Fish app or website; report deer harvest in eOSR",
+    "USFS Antlerless Deer Permit needed for antlerless deer in the General Season (not for archery, muzzleloader or youth seasons)",
+    "Maintained campsites: fee and registration at recreation.gov"
+   ],
+   "game": [
+    [
+     "White-tailed deer",
+     "Bag 2 bucks and 2 antlerless, all seasons combined; only 1 buck with 13 in.+ inside spread. Legal buck: at least one unbranched antler or 13 in. inside spread."
+    ],
+    [
+     "Deer, archery only",
+     "Oct 3 \u2013 Nov 6, either sex"
+    ],
+    [
+     "Deer, general",
+     "Nov 7 \u2013 Jan 3, buck only unless you hold a USFS Antlerless Deer Permit"
+    ],
+    [
+     "Deer, muzzleloader",
+     "Jan 4 \u2013 17, either sex (buck must have at least one unbranched antler)"
+    ],
+    [
+     "Deer, youth only",
+     "Oct 30 \u2013 Nov 1 (either sex) and Jan 4 \u2013 17"
+    ],
+    [
+     "Feral hog & exotic mammals",
+     "Year-round, no bag limit. All legal firearms, air guns, arrow guns and archery equipment."
+    ],
+    [
+     "Waterfowl",
+     "Each day of the Early Teal, North Zone Duck, Falconry and Eastern Zone Goose seasons. Shooting ends at noon."
+    ],
+    [
+     "Woodcock, rail, gallinule",
+     "Each day of the statewide and falconry seasons"
+    ],
+    [
+     "Snipe",
+     "Each day of the statewide season"
+    ],
+    [
+     "Dove",
+     "Each day of the Central Zone and falconry seasons"
+    ],
+    [
+     "Squirrel",
+     "Each day of the East Texas regular season. Youth/adult squirrel Sept 25 \u2013 27 (shotgun, air gun, rimfire only)"
+    ],
+    [
+     "Bullfrog",
+     "Daily limit 25"
+    ],
+    [
+     "Trapping",
+     "Sept 1 \u2013 Aug 31, furbearers and predators only"
+    ]
+   ],
+   "weapons": [
+    "Archery only during the archery season"
+   ],
+   "access": [
+    "No hunting in Stubblefield, Scott's Ridge and Double Lake recreation areas or Big Creek Scenic Area",
+    "Camp in designated or back-country camping areas; maintained campsites need a fee",
+    "Some areas are archery-only (marked on the map)"
+   ],
+   "special": [
+    "Forest Service rules also apply: portable stands only, moved every 72 hours, no baiting on the national forest"
+   ],
+   "contact": [
+    "Walker Co. Sheriff (936) 435-8001",
+    "Montgomery Co. Sheriff (936) 760-5800",
+    "San Jacinto Co. Sheriff (936) 653-4367"
+   ],
+   "source": "TPWD Public Hunting Lands Map Booklet 2026-27"
+  },
+  "903": {
+   "name": "Bannister WMA",
+   "acres": 21131,
+   "counties": "San Augustine",
+   "owner": "U.S. Forest Service",
+   "pdf": "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/903.pdf",
+   "permits": [
+    "APH permit required for hunters",
+    "Mandatory eOSR each day in the Texas Hunt & Fish app; report harvest in eOSR",
+    "USFS Antlerless Deer Permit for antlerless deer in the General Season"
+   ],
+   "game": [
+    [
+     "White-tailed deer",
+     "Bag 1 buck and 2 antlerless, all seasons combined. Legal buck: at least one unbranched antler or 13 in. inside spread."
+    ],
+    [
+     "Deer, archery only",
+     "Oct 3 \u2013 Nov 6, either sex"
+    ],
+    [
+     "Deer, general",
+     "Nov 7 \u2013 Jan 3, buck only unless you hold a USFS Antlerless Deer Permit"
+    ],
+    [
+     "Deer, muzzleloader",
+     "Jan 4 \u2013 17, either sex (buck: at least one unbranched antler)"
+    ],
+    [
+     "Deer, youth only",
+     "Oct 30 \u2013 Nov 1 and Jan 4 \u2013 17"
+    ],
+    [
+     "Feral hog & exotic mammals",
+     "Year-round, no bag limit. All legal firearms, air guns, arrow guns and archery."
+    ],
+    [
+     "Waterfowl",
+     "Each day of the Early Teal, North Zone Duck, Falconry and Eastern Zone Goose seasons. Shooting ends at noon."
+    ],
+    [
+     "Dove",
+     "Each day of the Central Zone and falconry seasons"
+    ],
+    [
+     "Squirrel",
+     "East Texas season. Youth squirrel Sept 25 \u2013 27 (shotgun, air gun, rimfire)"
+    ],
+    [
+     "Woodcock, rail, gallinule, snipe",
+     "Each day of their statewide seasons"
+    ],
+    [
+     "Trapping",
+     "Sept 1 \u2013 Aug 31, furbearers and predators only"
+    ],
+    [
+     "Bullfrog",
+     "Daily limit 25"
+    ]
+   ],
+   "weapons": [
+    "Archery only during archery season"
+   ],
+   "access": [
+    "Designated public hunting roads; roads may close seasonally",
+    "Horses allowed year-round",
+    "Designated camping area and Townsend Campground"
+   ],
+   "special": [
+    "Includes a wilderness area"
+   ],
+   "contact": [
+    "San Augustine Co. Sheriff (936) 639-8605",
+    "National Forest office (936) 897-1068"
+   ],
+   "source": "TPWD Public Hunting Lands Map Booklet 2026-27"
+  },
+  "904": {
+   "name": "Alabama Creek WMA",
+   "acres": 14561,
+   "counties": "Trinity",
+   "owner": "U.S. Forest Service",
+   "pdf": "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/904.pdf",
+   "permits": [
+    "APH permit required for hunters",
+    "Mandatory eOSR each day; report harvest in eOSR",
+    "General-season deer needs a USFS Antlerless (doe) or Antlered (buck) Deer Permit"
+   ],
+   "game": [
+    [
+     "White-tailed deer",
+     "Bag 2 bucks and 2 antlerless, all seasons combined; only 1 buck with 13 in.+ inside spread."
+    ],
+    [
+     "Deer, archery only",
+     "Oct 3 \u2013 Nov 6, either sex"
+    ],
+    [
+     "Deer, general",
+     "Nov 7 \u2013 Jan 3, with a USFS deer permit"
+    ],
+    [
+     "Deer, muzzleloader",
+     "Jan 4 \u2013 17, either sex"
+    ],
+    [
+     "Deer, youth only",
+     "Oct 30 \u2013 Nov 1 and Jan 4 \u2013 17"
+    ],
+    [
+     "Feral hog & exotic mammals",
+     "Year-round, no bag limit, any legal method"
+    ],
+    [
+     "Waterfowl",
+     "Early Teal: every day. North Zone Duck, Eastern Zone Goose and Falconry: Tuesday, Thursday and Saturday only. Shooting ends at noon."
+    ],
+    [
+     "Dove",
+     "Each day of the Central Zone and falconry seasons"
+    ],
+    [
+     "Squirrel",
+     "East Texas season. Youth/adult Sept 25 \u2013 27"
+    ],
+    [
+     "Trapping",
+     "Sept 1 \u2013 Aug 31, furbearers and predators only, 1 per day"
+    ]
+   ],
+   "weapons": [],
+   "access": [
+    "Designated public hunting roads (DR); roads may close seasonally",
+    "Horses allowed year-round",
+    "Camping only in designated camping areas; check in and out in eOSR"
+   ],
+   "special": [],
+   "contact": [
+    "Trinity Co. Sheriff (936) 642-1424",
+    "National Forest office (936) 655-2299"
+   ],
+   "source": "TPWD Public Hunting Lands Map Booklet 2026-27"
+  },
+  "709": {
+   "name": "Granger PHL",
+   "acres": 10888,
+   "counties": "Williamson",
+   "owner": "U.S. Army Corps of Engineers",
+   "pdf": "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/709.pdf",
+   "permits": [
+    "APH permit required for hunters",
+    "OSR required each day",
+    "Blinds, stands and feeders need a gear tag with name, address and date set"
+   ],
+   "game": [
+    [
+     "Deer",
+     "Archery only, by TPWD e-Postcard drawing (see the front of the booklet)"
+    ],
+    [
+     "Feral hog",
+     "Archery only: Sept 1 \u2013 30 and Jan 1 \u2013 Aug 31, no bag limit, half hour before sunrise to half hour after sunset. Baiting allowed."
+    ],
+    [
+     "Squirrel",
+     "Archery and shotgun only. No closed season, 10 per day."
+    ],
+    [
+     "Rabbits & hares",
+     "Archery and shotgun only. No closed season, no limit."
+    ],
+    [
+     "Furbearers & coyotes",
+     "Archery and shotgun only. No closed season, daylight only."
+    ],
+    [
+     "Dove",
+     "Each day of the Central Zone season"
+    ],
+    [
+     "Waterfowl",
+     "Each day of the Early Teal, North Zone Duck and Eastern Zone Goose seasons"
+    ],
+    [
+     "Snipe, rail, woodcock",
+     "Each day of their seasons"
+    ]
+   ],
+   "weapons": [
+    "Shotguns with shot no larger than #2",
+    "Non-toxic shot for waterfowl"
+   ],
+   "access": [
+    "Mountain bikes on maintained trails and roads",
+    "Camping in Corps parks and a primitive camping area"
+   ],
+   "special": [
+    "Don't hunt migratory birds over areas baited for hogs or deer"
+   ],
+   "contact": [
+    "Corps of Engineers, Granger Lake (512) 859-2668"
+   ],
+   "source": "TPWD Public Hunting Lands Map Booklet 2026-27"
+  },
+  "733": {
+   "name": "Big Lake Bottom WMA",
+   "acres": 4253,
+   "counties": "Anderson, Freestone",
+   "owner": "",
+   "pdf": "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/733.pdf",
+   "permits": [
+    "APH and LPU permit required for general access (daylight, at the designated entry point)",
+    "OSR required each day"
+   ],
+   "game": [
+    [
+     "Deer, archery deer, feral hog, squirrel, youth deer",
+     "By TPWD e-Postcard selection hunt only"
+    ],
+    [
+     "Waterfowl",
+     "Dec 5, 8, 12, 15, 19, 22, 26, 29 and Jan 2, 5, 9, 12, 16, 19, 23, 26, 30 (within North Zone duck season). Shooting ends at noon."
+    ],
+    [
+     "Woodcock, gallinule, snipe",
+     "During waterfowl hunt dates and hours, within their seasons"
+    ],
+    [
+     "Squirrel, rabbits, hares",
+     "Dec 1 \u2013 Feb 4. Rimfire, air gun or shotgun."
+    ]
+   ],
+   "weapons": [],
+   "access": [
+    "Enter only at the designated entrance; no access from the Trinity River",
+    "Hunters may not leave the parking area before 5 a.m.",
+    "Camping in the designated campground only",
+    "Dogs prohibited, except one dog per permit holder for waterfowl, squirrel or rabbit"
+   ],
+   "special": [
+    "Whole area closed Oct 2 \u2013 Nov 30 and Feb 5 \u2013 Apr 18"
+   ],
+   "contact": [],
+   "source": "TPWD Public Hunting Lands Map Booklet 2026-27"
+  },
+  "1044": {
+   "name": "Huntsville State Park",
+   "acres": 2087,
+   "counties": "Walker",
+   "owner": "Texas Parks and Wildlife",
+   "pdf": "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/1044.pdf",
+   "permits": [
+    "$20 Regular (daily) Permit at the park, waived with an APH permit; APH permits sold on site 8 a.m. \u2013 5 p.m."
+   ],
+   "game": [
+    [
+     "Squirrel",
+     "Only Dec 7 and 8. Bag 10. Shooting hours half hour before sunrise to noon."
+    ]
+   ],
+   "weapons": [
+    "Only shotguns with no larger than #4 lead shot, or .177 cal+ air rifles (600 fps+)"
+   ],
+   "access": [
+    "Limited spots, first come first served"
+   ],
+   "special": [
+    "Dogs prohibited"
+   ],
+   "contact": [],
+   "source": "TPWD Public Hunting Lands Map Booklet 2026-27"
+  }
+ }
+}
