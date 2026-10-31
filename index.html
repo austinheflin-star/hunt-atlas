@@ -2014,7 +2014,7 @@ async function scan(){
     });
     lastSpots = cards;
     lastScan = { nw, se, w, h, fmaps: r.fmaps, keys }; renderFeatChips();
-    const corrLL = (r.corr || []).map(c => ({ len: c.len, ll: c.pts.reduce((a, v, k) => (k % 2 ? a.push(unproj(gx0 + (c.pts[k - 1] + .5) * f, gy0 + (v + .5) * f, z)) : 0, a), []).map(q => [+q.lat.toFixed(6), +q.lng.toFixed(6)]) }));
+    const corrLL = (r.corr || []).map(c => ({ len: c.len, ll: c.pts.reduce((a, v, k) => (k % 2 ? a.push(unproj(gx0 + (c.pts[k - 1] + .5) * f, gy0 + (v + .5) * f, z)) : 0, a), []).map(q => [+q[0].toFixed(6), +q[1].toFixed(6)]) }));
     drawCorr(corrLL);
     store.set("rrha_scan", { corr: corrLL, t: Date.now(), sp: spKey, spots: cards.map(c => ({ n: c.n, ll: c.ll, contrib: c.contrib, facts: c.facts, info: c.info, sc: c.sc, gr: c.gr, topKeys: c.topKeys })) });
     paintCards(cards);
