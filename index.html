@@ -3574,6 +3574,8 @@ async function areaFor(main, others, tp){
   if (m === "USACE"){
     const db = await areaJSON("USACE.json"); if (!db) return null;
     const names = [main].concat(others || []).map(x => (x.Unit_Nm || "").toLowerCase()).join(" ");
+    if (/\b(park|recreation area|campground)\b/i.test(main.Unit_Nm || "") && !/wildlife|wma|hunting/i.test(main.Unit_Nm || ""))
+      return { title: main.Unit_Nm, verdict: ["no", "No hunting: Corps park", "Developed Corps of Engineers parks are closed to hunting, and firearms can't be fired within 600 ft of one (archery 100 ft)."], sections: [], src: [["Fort Worth District Public Hunting Guide 2026-27", "https://www.swf-wc.usace.army.mil/lake/Fort%20Worth%20District%20Hunting%20Guide%202026-2027_FINAL_11%20AUG%202026.pdf"]] };
     const lake = Object.values(db.lakes).find(l => names.includes(l.match));
     if (lake) return { title: lake.name, verdict: lake.verdict, sections: [["This lake's hunting rules", lake.rules], ["Contacts", lake.contact]], src: [[lake.source, lake.url]], compiled: db.compiled };
     return { title: main.Unit_Nm, sections: [], src: [], note: "This lake's own hunting rules haven't been added yet. Every Corps lake sets its own: where you can hunt, legal game, weapons and permits. Call the lake office or check its hunting page before you go." };
@@ -3792,7 +3794,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "13.1 (Oct 31, 2026)";
+const APP_VERSION = "13.2 (Oct 31, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
