@@ -419,6 +419,9 @@ h1 span{color:var(--blaze)}
 .lp .btn.ghost{font-size:13px;padding:5px 9px}
 .stpick{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}.stpick .states{margin:0}
 .stpick select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--ink)}
+.area{border:1px solid #cfd9d2;border-radius:6px;padding:4px 8px 6px;margin:6px 0;background:#f6faf7}
+.area .ash{font:600 12px var(--body);color:#13201b;margin-top:5px}.area ul{margin:1px 0 4px}
+.lp details.gen summary{cursor:pointer;font:700 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:#1d5c4d;margin-top:6px}
 </style>
 </head>
 <body>
@@ -3488,19 +3491,103 @@ function padPopup(p, ctx){
     need = ["Texas hunting license", "Annual Public Hunting (APH) permit, $48"];
     ctx.others = [p].concat(ctx.others || []);
     rules = [`Legal game, seasons and methods for this unit are listed under unit ${tp.unit || "?"} in TPWD's Public Hunting Lands map booklet.`, "Register on site at the unit's info station (or electronically where the unit allows) before you hunt.", "Stay out of marked no-hunt zones, and follow the unit's rules for stands, vehicles and camping."].concat(rules.filter(r => !/^Each wildlife area/.test(r))); }
+  const area = ctx.area;
+  if (area && area.verdict){ hc = area.verdict[0]; V = [VGLYPH[hc] + area.verdict[1], area.verdict[2]]; }
   const sn = hc === "no" ? null : seasonsNow(st);
   const li = a => a.map(x => `<li>${esc(x)}</li>`).join("");
   return `<div class="lp"><div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
     <h4>${esc(tp && tp.kind === "aph" ? tp.name : p.Unit_Nm || "Unnamed area")}</h4>
     <div class="lpcat">${tp && tp.kind === "aph" ? `<b>TPWD Public Hunting Land</b> · Texas Parks and Wildlife${tp.unit ? " · unit " + esc(tp.unit) : ""}` : `<b>${esc(cat)}</b> · ${esc(MGR[m] || p.Mang_Name || "")}${p.GIS_Acres ? ` · <span class="n">${Math.round(p.GIS_Acres).toLocaleString()} ac</span>` : ""}`}${st && D[st] ? " · " + esc(D[st].name) : ""}</div>
+    ${areaHtml(area)}${ctx.areaPending ? `<p class="meta"><span class="spin"></span> Loading this area's own rules…</p>` : ""}
     ${need.length ? `<div class="lph">What you need</div><ul>${li(need)}</ul>` : ""}
-    ${rules.length ? `<div class="lph">Rules on this land</div><ul>${li(rules)}</ul>` : ""}
+    ${rules.length ? (area && area.sections.length ? `<details class="gen"><summary>General rules for this kind of land</summary><ul>${li(rules)}</ul></details>` : `<div class="lph">Rules on this land</div><ul>${li(rules)}</ul>`) : ""}
     ${sn ? `<div class="lph">In season now in ${esc(D[st].name)}</div>${sn.open.length ? `<ul>${li(sn.open.slice(0, 5).map(r => `${r[0]} (${r[1]}${r[2] && r[2] !== "Statewide" ? ", " + r[2] : ""})`))}</ul>` : `<p class="meta">Nothing open today.</p>`}
       ${sn.next ? `<p class="meta">Next to open: ${esc(sn.next[0][0])} (${esc(sn.next[0][1])}) ${esc(fmtDay(sn.next[1]))}</p>` : ""}` : ""}
     ${hc !== "no" ? `<div class="row" style="margin:6px 0 0"><button class="btn sm ghost askland">Ask Claude about this land</button>${st && D[st] ? `<a class="btn sm ghost" href="${esc(D[st].regsUrl || D[st].agencyUrl)}" target="_blank" rel="noopener">${esc(st)} regulations</a>` : ""}</div>` : ""}
     ${ctx.others && ctx.others.length ? `<div class="lph">Also mapped here as</div><ul>${ctx.others.map(o => `<li>${esc(o.Unit_Nm || "Unnamed")} (${esc(DES[o.Des_Tp] || o.Des_Tp || "")}, ${esc(MGR[(o.Mang_Name || "").toUpperCase()] || o.Mang_Name)})</li>`).join("")}</ul>` : ""}
     ${ctx.tpPending ? `<p class="meta"><span class="spin"></span> Checking Texas public hunting lands…</p>` : ""}
     <p class="meta" style="margin-top:6px">Land type from PAD-US (USGS)${tp ? " and TPWD's public hunting lands map" : ""}. Always check the area's own regulations and any posted signs.</p></div>`;
+}
+
+
+/* ===================== Area rules: each place's own regulations, from the source documents ===================== */
+const AREA_DB = {};
+const areaJSON = f => AREA_DB[f] || (AREA_DB[f] = fetch("data/areas/" + f).then(r => r.ok ? r.json() : null).catch(() => { delete AREA_DB[f]; return null; }));
+// 50 CFR part 32: each state's refuge-specific hunting regulations (§32.20 Alabama … §32.69 Wyoming)
+const CFR32 = { AL:20, AK:21, AZ:22, AR:23, CA:24, CO:25, CT:26, DE:27, FL:28, GA:29, HI:30, ID:31, IL:32, IN:33, IA:34, KS:35, KY:36, LA:37, ME:38, MD:39, MA:40, MI:41, MN:42, MS:43, MO:44, MT:45,
+  NE:46, NV:47, NH:48, NJ:49, NM:50, NY:51, NC:52, ND:53, OH:54, OK:55, OR:56, PA:57, RI:58, SC:59, SD:60, TN:61, TX:62, UT:63, VT:64, VA:65, WA:66, WV:67, WI:68, WY:69 };
+const cfrCache = {};
+function cfrSection(st){
+  const sec = CFR32[st]; if (!sec) return Promise.resolve(null);
+  if (cfrCache[st]) return cfrCache[st];
+  const day = n => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
+  const get = d => fetch(`https://www.ecfr.gov/api/versioner/v1/full/${d}/title-50.xml?part=32&section=32.${sec}`).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); });
+  return cfrCache[st] = get(day(2)).catch(() => get(day(9))).then(x => {
+    const doc = new DOMParser().parseFromString(x, "text/xml"); return { date: day(2), sec: "32." + sec, ps: [...doc.querySelectorAll("P")].map(p => p.textContent.replace(/\s+/g, " ").trim()) };
+  }).catch(e => { delete cfrCache[st]; throw e; });
+}
+const ROM = ["i","ii","iii","iv","v","vi","vii","viii","ix","x","xi","xii","xiii","xiv","xv","xvi","xvii","xviii","xix","xx","xxi","xxii","xxiii","xxiv","xxv"];
+async function refugeRules(name, st){
+  const c = await cfrSection(st); if (!c) return null;
+  const key = s => s.toLowerCase().replace(/national wildlife refuge|nwr|complex|unit/g, "").replace(/[^a-z]/g, "");
+  const want = key(name);
+  let start = -1, letter = "";
+  c.ps.forEach((t, i) => { const m = t.match(/^\(([a-z]+)\)\s+(.+?National Wildlife Refuge)/); if (m && start < 0 && key(m[2]) === want){ start = i; letter = m[1]; } });
+  if (start < 0) return { closed: true, sec: c.sec, date: c.date };
+  let end = c.ps.length; for (let i = start + 1; i < c.ps.length; i++) if (/^\([a-z]+\)\s+.+?National Wildlife Refuge/.test(c.ps[i])){ end = i; break; }
+  const lines = c.ps.slice(start, end), byId = {}, sections = []; let num = 0, cur = null;
+  lines.forEach((t, k) => {
+    let body = k === 0 ? t.replace(/^\([a-z]+\)\s+.+?National Wildlife Refuge—/, "") : t;
+    const n = body.match(/^\((\d+)\)\s+([^.]+)\.\s*(.*)$/);
+    if (n){ num = +n[1]; cur = [n[2], []]; sections.push(cur); if (n[3]) cur[1].push(n[3]); return; }
+    const r = body.match(/^\(([ivxl]+)\)\s+(.*)$/);
+    if (r && cur){ byId[`(${letter})(${num})(${r[1]})`] = r[2]; cur[1].push(r[2]); return; }
+    if (cur) cur[1].push(body);
+  });
+  // "The conditions set forth at paragraphs (p)(1)(iii) and (p)(2)(iii) through (vi) of this section apply." → spell them out
+  const expand = s => { const out = []; const re = /\(([a-z]+)\)\((\d+)\)\(([ivxl]+)\)(?:\s+through\s+\(([ivxl]+)\))?/g; let m;
+    while ((m = re.exec(s))){ const a = ROM.indexOf(m[3]), b = m[4] ? ROM.indexOf(m[4]) : a; for (let i = a; i <= b && i >= 0; i++){ const t = byId[`(${m[1]})(${m[2]})(${ROM[i]})`]; if (t) out.push(t); } }
+    return out; };
+  sections.forEach(sx => { sx[1] = sx[1].flatMap(s => /set forth at paragraph/.test(s) ? (expand(s).length ? expand(s) : [s]) : [s]); });
+  return { sections, sec: c.sec, date: c.date };
+}
+async function areaFor(main, others, tp){
+  const m = (main.Mang_Name || "").toUpperCase(), st = STATE_ABBR[main.State_Nm] || main.State_Nm;
+  // Texas public hunting units: the TPWD map booklet page
+  if (tp && tp.kind === "aph"){
+    const db = await areaJSON("TX-tpwd.json"), u = db && db.units[String(tp.unit)];
+    const pdf = u ? u.pdf : tp.pdf ? "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/" + tp.pdf : null;
+    if (!u) return { title: tp.name, sections: [], src: [pdf ? ["TPWD map booklet page for unit " + tp.unit + " (PDF)", pdf] : null].filter(Boolean),
+      note: "This unit's rules haven't been added to PublicScout yet. Its official map page has the legal game, dates and weapons." };
+    return { title: u.name, src: [[u.source + ", unit " + tp.unit, u.pdf]], compiled: db.compiled,
+      sections: [["Permits and check-in", u.permits], ["Legal game", u.game], ["Weapons", u.weapons], ["Access, camping and vehicles", u.access], ["Special rules and closures", u.special], ["Contacts", u.contact]].filter(s => s[1] && s[1].length) };
+  }
+  // National wildlife refuges: refuge-specific federal regulations, read live from 50 CFR part 32
+  if ((main.Des_Tp === "NWR" || m === "FWS") && /wildlife refuge/i.test(main.Unit_Nm || "") && CFR32[st]){
+    try { const r = await refugeRules(main.Unit_Nm, st); if (!r) return null;
+      const src = [[`50 CFR ${r.sec} (${(ALLST[st] || [st])[0]} refuges), eCFR as of ${r.date}`, `https://www.ecfr.gov/current/title-50/part-32/section-${r.sec}`]];
+      if (r.closed) return { title: main.Unit_Nm, verdict: ["no", "Closed to hunting", "This refuge isn't opened to hunting in 50 CFR part 32, so hunting isn't allowed here."], sections: [], src };
+      return { title: main.Unit_Nm, sections: r.sections, src, note: "Refuge-specific federal rules. State seasons and licenses also apply. Read the refuge's hunt brochure for unit maps and dates." };
+    } catch { return { title: main.Unit_Nm, sections: [], src: [], note: "Couldn't load this refuge's federal hunting rules right now (no connection?)." }; }
+  }
+  // Corps of Engineers lakes: each lake office's hunting page
+  if (m === "USACE"){
+    const db = await areaJSON("USACE.json"); if (!db) return null;
+    const names = [main].concat(others || []).map(x => (x.Unit_Nm || "").toLowerCase()).join(" ");
+    const lake = Object.values(db.lakes).find(l => names.includes(l.match));
+    if (lake) return { title: lake.name, verdict: lake.verdict, sections: [["This lake's hunting rules", lake.rules], ["Contacts", lake.contact]], src: [[lake.source, lake.url]], compiled: db.compiled };
+    return { title: main.Unit_Nm, sections: [], src: [], note: "This lake's own hunting rules haven't been added yet. Every Corps lake sets its own: where you can hunt, legal game, weapons and permits. Call the lake office or check its hunting page before you go." };
+  }
+  return null;
+}
+const VGLYPH = { yes: "✓ ", permit: "! ", check: "? ", no: "✕ " };
+function areaHtml(a){
+  if (!a) return "";
+  const item = x => Array.isArray(x) ? `<li><b>${esc(x[0])}:</b> ${esc(x[1])}</li>` : `<li>${esc(x)}</li>`;
+  return `<div class="area"><div class="lph">Rules for ${esc(a.title || "this area")}</div>
+    ${a.sections.map(([h, l]) => `<div class="ash">${esc(h)}</div><ul>${l.map(item).join("")}</ul>`).join("")}
+    ${a.note ? `<p class="meta">${esc(a.note)}</p>` : ""}
+    ${a.src && a.src.length ? `<p class="meta">Source: ${a.src.map(([t, u]) => u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>` : esc(t)).join(" · ")}${a.compiled ? " · added " + esc(a.compiled) : ""}</p>` : ""}</div>`;
 }
 
 // Every public-land record under a tap point (PAD-US often has overlapping or duplicate records)
@@ -3531,21 +3618,24 @@ async function tpwdAt(ll){
   const B = TPWD + "TPWD_PublicHuntLocatorMap/MapServer/";
   const [zones, areas] = await Promise.all([
     fetch(B + "9/query?" + q + "&outFields=LocName,Class,PH_UnitNum,Name_Acres").then(r => r.json()).catch(() => ({})),
-    fetch(B + "1/query?" + q + "&outFields=LoName,Unit_Num,DeedAcres").then(r => r.json()).catch(() => ({})) ]);
+    fetch(B + "1/query?" + q + "&outFields=LoName,Unit_Num,DeedAcres,MAPBOOK_PG").then(r => r.json()).catch(() => ({})) ]);
   const z = (zones.features || []).map(f => f.attributes), ar = (areas.features || []).map(f => f.attributes);
   const nh = z.find(x => /no hunt/i.test(x.Class || ""));
   if (nh) return { kind: "nohunt", name: nh.LocName || "a TPWD hunt area", unit: nh.PH_UnitNum };
   const pa = ar[0] || z.find(x => /boundary|hunt area/i.test(x.Class || ""));
-  if (pa) return { kind: "aph", name: pa.LoName || pa.LocName, unit: pa.Unit_Num || pa.PH_UnitNum };
+  if (pa) return { kind: "aph", name: pa.LoName || pa.LocName, unit: pa.Unit_Num || pa.PH_UnitNum, pdf: pa.MAPBOOK_PG };
   return null;
 }
 async function openLandPopup(ll, fs){
   if (!fs || !fs.length) return;
   const { main, others } = pickLand(fs), st = main.State_Nm, isTX = st === "TX" || st === "Texas";
-  const pop = L.popup({ minWidth: 260 }).setLatLng(ll).setContent(padPopup(main, { others, tpPending: isTX })).openOn(map);
-  if (!isTX) return;
-  let tp = null; try { tp = await tpwdAt(ll); } catch {}
-  if (map.hasLayer(pop)) pop.setContent(padPopup(main, { others, tp }));
+  const opts = { minWidth: 260, maxHeight: Math.round(innerHeight * (isPhone() ? .55 : .7)), autoPanPadding: [10, 10] };
+  const pop = L.popup(opts).setLatLng(ll).setContent(padPopup(main, { others, tpPending: isTX, areaPending: true })).openOn(map);
+  let tp = null; if (isTX) try { tp = await tpwdAt(ll); } catch {}
+  if (!map.hasLayer(pop)) return;
+  pop.setContent(padPopup(main, { others, tp, areaPending: true }));
+  let area = null; try { area = await areaFor(main, others, tp); } catch {}
+  if (map.hasLayer(pop)) pop.setContent(padPopup(main, { others, tp, area }));
 }
 map.on("popupopen", ev => { const el = ev.popup.getElement(), b = el && el.querySelector(".askland"); if (!b) return;
   const h4 = el.querySelector("h4"), cat = el.querySelector(".lpcat");
@@ -3699,7 +3789,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "12.4 (Oct 30, 2026)";
+const APP_VERSION = "13.0 (Oct 31, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
