@@ -1,0 +1,311 @@
+{
+ "name": "Colorado",
+ "center": [
+  39.0,
+  -105.55
+ ],
+ "zoom": 7,
+ "agency": "Colorado Parks and Wildlife (CPW)",
+ "agencyUrl": "https://cpw.state.co.us",
+ "regsUrl": "https://cpw.state.co.us/activities/hunting/big-game",
+ "year": "2026 license year (big game seasons from CPW's 2025-2029 season structure)",
+ "summary": "Colorado has the largest elk herd in the country and about 23 million acres of public land, mostly national forest and BLM in the western two-thirds. Most deer, pronghorn, moose and many elk licenses come through the spring draw with preference points. Over-the-counter elk licenses are rifle-only in OTC units, and OTC whitetail and bear licenses are also sold.",
+ "publicNote": "Everyone 18-64 who hunts needs the annual Habitat Stamp. On State Wildlife Areas you must carry a valid hunting or fishing license (or an SWA pass). State Trust Land is open only where it's enrolled in the Public Access Program, mostly Sept 1 - end of Feb.",
+ "fees": [
+  {
+   "item": "Elk license (OTC or draw)",
+   "res": "$66.12",
+   "nonres": "$845.16",
+   "note": "Nonresident licenses are sold as a big game + fishing combo. Prices change each year with inflation: verify in CPW Shop."
+  },
+  {
+   "item": "Deer license",
+   "res": "$47.91",
+   "nonres": "$506.92",
+   "note": "verify"
+  },
+  {
+   "item": "Bear license",
+   "res": "$60.05",
+   "nonres": "$302.56",
+   "note": "verify"
+  },
+  {
+   "item": "Habitat Stamp (ages 18-64)",
+   "res": "$12.76",
+   "nonres": "$12.76",
+   "note": "Required for every hunter in that age range."
+  },
+  {
+   "item": "Qualifying license to apply in the draw (small game)",
+   "res": "varies",
+   "nonres": "$104.86",
+   "note": "You must hold a qualifying license (small game or annual fishing) to apply for the big game draw. verify"
+  },
+  {
+   "item": "Youth elk / deer",
+   "res": "$18.45",
+   "nonres": "$122.91",
+   "note": "Ages 12-17. verify"
+  }
+ ],
+ "rules": [
+  "Big game licenses come from the spring draw (preference points) or over the counter where offered. OTC elk licenses are rifle-only and good in OTC units for the 2nd and 3rd rifle seasons.",
+  "Anyone born on or after Jan 1, 1949 needs hunter education.",
+  "Rifle season hunters must wear at least 500 sq in of daylight fluorescent orange or pink above the waist, visible from all sides, plus an orange or pink head covering.",
+  "Baiting big game is illegal.",
+  "Leftover and OTC licenses go on sale in early August (Aug 4 in 2026); the secondary draw closes in late June.",
+  "Some units require mandatory chronic wasting disease (CWD) testing of harvested deer or elk; check your unit in the brochure.",
+  "State Trust Land is closed to hunting unless it's enrolled in the Public Access Program."
+ ],
+ "seasons": [
+  [
+   "Elk",
+   "Archery",
+   "Statewide",
+   "Sep 2 \u2013 Sep 30, 2026"
+  ],
+  [
+   "Elk",
+   "Muzzleloader",
+   "West of I-25",
+   "Sep 12 \u2013 Sep 20, 2026"
+  ],
+  [
+   "Elk",
+   "1st rifle",
+   "West of I-25 (limited)",
+   "Oct 14 \u2013 Oct 18, 2026"
+  ],
+  [
+   "Elk",
+   "2nd rifle",
+   "OTC and limited units",
+   "Oct 24 \u2013 Nov 1, 2026"
+  ],
+  [
+   "Elk",
+   "3rd rifle",
+   "OTC and limited units",
+   "Nov 7 \u2013 Nov 15, 2026"
+  ],
+  [
+   "Elk",
+   "4th rifle",
+   "Limited units",
+   "Nov 18 \u2013 Nov 22, 2026"
+  ],
+  [
+   "Elk",
+   "Late rifle",
+   "Limited units",
+   "Nov 23, 2026 \u2013 Jan 31, 2027"
+  ],
+  [
+   "Elk",
+   "Plains rifle",
+   "East of I-25 (limited)",
+   "Sep 1, 2026 \u2013 Jan 31, 2027"
+  ],
+  [
+   "Deer",
+   "Archery",
+   "West of I-25",
+   "Sep 2 \u2013 Sep 30, 2026"
+  ],
+  [
+   "Deer",
+   "Muzzleloader",
+   "West of I-25",
+   "Sep 12 \u2013 Sep 20, 2026"
+  ],
+  [
+   "Deer",
+   "High country rifle",
+   "Limited units",
+   "Sep 12 \u2013 Sep 20, 2026"
+  ],
+  [
+   "Deer",
+   "Rifle (with elk seasons)",
+   "West of I-25",
+   "Oct 14 \u2013 Oct 18, Oct 24 \u2013 Nov 1, Nov 7 \u2013 Nov 15, Nov 18 \u2013 Nov 22, 2026"
+  ],
+  [
+   "Deer",
+   "Plains archery",
+   "East of I-25",
+   "Oct 1 \u2013 Oct 23, Nov 4 \u2013 Nov 30, Dec 15 \u2013 Dec 31, 2026"
+  ],
+  [
+   "Deer",
+   "Plains muzzleloader",
+   "East of I-25",
+   "Oct 10 \u2013 Oct 18, 2026"
+  ],
+  [
+   "Deer",
+   "Plains rifle",
+   "East of I-25",
+   "Oct 24 \u2013 Nov 3, 2026"
+  ],
+  [
+   "Deer",
+   "Late plains rifle",
+   "East of I-25",
+   "Dec 1 \u2013 Dec 14, 2026"
+  ],
+  [
+   "Pronghorn",
+   "Archery",
+   "Statewide",
+   "Aug 15 \u2013 Aug 31 (bucks), Sep 1 \u2013 Sep 20, 2026"
+  ],
+  [
+   "Pronghorn",
+   "Muzzleloader",
+   "Statewide",
+   "Sep 21 \u2013 Sep 29, 2026"
+  ],
+  [
+   "Pronghorn",
+   "Rifle",
+   "Statewide",
+   "Oct 3 \u2013 Oct 11, 2026"
+  ],
+  [
+   "Moose",
+   "Archery",
+   "Limited units",
+   "Sep 12 \u2013 Sep 30, 2026"
+  ],
+  [
+   "Moose",
+   "Muzzleloader",
+   "Limited units",
+   "Sep 12 \u2013 Sep 20, 2026"
+  ],
+  [
+   "Moose",
+   "Rifle",
+   "Limited units",
+   "Oct 1 \u2013 Oct 14, 2026"
+  ],
+  [
+   "Black bear",
+   "Archery",
+   "Statewide",
+   "Sep 2 \u2013 Sep 30, 2026"
+  ],
+  [
+   "Black bear",
+   "Muzzleloader",
+   "Statewide",
+   "Sep 12 \u2013 Sep 20, 2026"
+  ],
+  [
+   "Black bear",
+   "September rifle",
+   "Limited units",
+   "Sep 2 \u2013 Sep 30, 2026"
+  ],
+  [
+   "Black bear",
+   "Rifle (with deer and elk)",
+   "Statewide",
+   "Oct 14 \u2013 Oct 18, Oct 24 \u2013 Nov 1, Nov 7 \u2013 Nov 15, Nov 18 \u2013 Nov 22, 2026"
+  ]
+ ],
+ "seasonsNote": "Dates are from CPW's 2025-2029 Big Game Season Structure. Private-land-only licenses run Aug 15 - Jan 31. Check your unit in the CPW Big Game Brochure: many units are limited (draw only).",
+ "areasLabel": "Major public lands",
+ "areas": [
+  {
+   "name": "White River National Forest",
+   "where": "Central / northwest",
+   "acres": 2300000
+  },
+  {
+   "name": "Routt National Forest",
+   "where": "North",
+   "acres": 1250000
+  },
+  {
+   "name": "Grand Mesa, Uncompahgre and Gunnison National Forests",
+   "where": "West / southwest",
+   "acres": 3160000
+  },
+  {
+   "name": "San Juan National Forest",
+   "where": "Southwest",
+   "acres": 1870000
+  },
+  {
+   "name": "Rio Grande National Forest",
+   "where": "South",
+   "acres": 1860000
+  },
+  {
+   "name": "Pike and San Isabel National Forests",
+   "where": "Central / south",
+   "acres": 2230000
+  },
+  {
+   "name": "Arapaho and Roosevelt National Forests",
+   "where": "North-central",
+   "acres": 1500000
+  },
+  {
+   "name": "BLM public land",
+   "where": "Western Colorado",
+   "acres": 8300000
+  },
+  {
+   "name": "Comanche National Grassland",
+   "where": "Southeast plains",
+   "acres": 444000
+  },
+  {
+   "name": "Pawnee National Grassland",
+   "where": "Northeast plains",
+   "acres": 193000
+  }
+ ],
+ "links": [
+  [
+   "CPW big game hunting",
+   "https://cpw.state.co.us/activities/hunting/big-game"
+  ],
+  [
+   "Over-the-counter licenses",
+   "https://cpw.state.co.us/activities/hunting/big-game/over-counter-otc-licenses"
+  ],
+  [
+   "2025-2029 Big Game Season Structure (PDF)",
+   "https://cpw.state.co.us/sites/default/files/dam/ifgylu070o/final_bgss2025-2029.pdf"
+  ],
+  [
+   "Hunting elk in Colorado",
+   "https://cpw.state.co.us/activities/hunting/big-game/hunting-elk"
+  ]
+ ],
+ "rut": "Elk bugle and breed mid-September to early October, peaking in late September. Mule deer rut runs mid-November to early December, so the 4th rifle season (Nov 18-22) catches it.",
+ "nr": {
+  "parts": [
+   [
+    "NR deer license (with fishing)",
+    507
+   ],
+   [
+    "Habitat Stamp",
+    13
+   ],
+   [
+    "Qualifying small game license (to apply)",
+    105
+   ]
+  ],
+  "note": "Most deer units are draw-only. OTC whitetail licenses exist in a few eastern units."
+ },
+ "compiled": "Oct 30, 2026",
+ "everywhere": "Colorado Habitat Stamp ($12.76, required for hunters 18-64)"
+}
