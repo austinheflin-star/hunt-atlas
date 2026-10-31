@@ -3473,12 +3473,13 @@ function padPopup(p, ctx){
   if (tp && tp.kind === "nohunt"){ hc = "no"; V = ["✕ No hunting", `Marked no-hunt zone inside ${tp.name} (TPWD).`]; need = []; rules = ["TPWD marks this spot as a no-hunt zone on the public hunting land map. Hunting is allowed elsewhere on the unit."]; }
   else if (tp && tp.kind === "aph"){ hc = "permit"; V = ["! Huntable with the APH permit", `Texas Public Hunting Land: ${tp.name}${tp.unit ? " (map booklet unit " + tp.unit + ")" : ""}.`];
     need = ["Texas hunting license", "Annual Public Hunting (APH) permit, $48"];
+    ctx.others = [p].concat(ctx.others || []);
     rules = [`Legal game, seasons and methods for this unit are listed under unit ${tp.unit || "?"} in TPWD's Public Hunting Lands map booklet.`, "Register on site at the unit's info station (or electronically where the unit allows) before you hunt.", "Stay out of marked no-hunt zones, and follow the unit's rules for stands, vehicles and camping."].concat(rules.filter(r => !/^Each wildlife area/.test(r))); }
   const sn = hc === "no" ? null : seasonsNow(st);
   const li = a => a.map(x => `<li>${esc(x)}</li>`).join("");
   return `<div class="lp"><div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
-    <h4>${esc(p.Unit_Nm || "Unnamed area")}</h4>
-    <div class="lpcat"><b>${esc(cat)}</b> · ${esc(MGR[m] || p.Mang_Name || "")}${p.GIS_Acres ? ` · <span class="n">${Math.round(p.GIS_Acres).toLocaleString()} ac</span>` : ""}${st && D[st] ? " · " + esc(D[st].name) : ""}</div>
+    <h4>${esc(tp && tp.kind === "aph" ? tp.name : p.Unit_Nm || "Unnamed area")}</h4>
+    <div class="lpcat">${tp && tp.kind === "aph" ? `<b>TPWD Public Hunting Land</b> · Texas Parks and Wildlife${tp.unit ? " · unit " + esc(tp.unit) : ""}` : `<b>${esc(cat)}</b> · ${esc(MGR[m] || p.Mang_Name || "")}${p.GIS_Acres ? ` · <span class="n">${Math.round(p.GIS_Acres).toLocaleString()} ac</span>` : ""}`}${st && D[st] ? " · " + esc(D[st].name) : ""}</div>
     ${need.length ? `<div class="lph">What you need</div><ul>${li(need)}</ul>` : ""}
     ${rules.length ? `<div class="lph">Rules on this land</div><ul>${li(rules)}</ul>` : ""}
     ${sn ? `<div class="lph">In season now in ${esc(D[st].name)}</div>${sn.open.length ? `<ul>${li(sn.open.slice(0, 5).map(r => `${r[0]} (${r[1]}${r[2] && r[2] !== "Statewide" ? ", " + r[2] : ""})`))}</ul>` : `<p class="meta">Nothing open today.</p>`}
