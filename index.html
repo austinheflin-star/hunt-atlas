@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2b3a26">
+<meta name="theme-color" content="#12302a">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Hunt Atlas">
-<title>Red River Hunt Atlas</title>
+<meta name="apple-mobile-web-app-title" content="PublicScout">
+<title>PublicScout</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 /* Layout: field-map app. Left: atlas panel (states, costs, scan). Right: full-bleed map. Stacks on phones. */
 :root{
-  --paper:#f3f2ea; --panel:#fbfaf5; --ink:#1f2a1f; --muted:#5b6656; --rule:#d9d8cc;
-  --olive:#3f5a35; --blaze:#e8601c; --blaze-ink:#fff; --chip:#e7e6da;
+  --paper:#eef2ef; --panel:#fbfcfb; --ink:#13201b; --muted:#56665f; --rule:#d2dcd6;
+  --olive:#1d5c4d; --blaze:#f2542d; --blaze-ink:#fff; --chip:#e3eae6;
   --open:#2f8f4e; --restricted:#d39a1c; --closed:#b3392f;
   --display:"Barlow Condensed","Arial Narrow",sans-serif;
   --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
@@ -26,13 +26,13 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]):not([data-theme=hc]){
-  --paper:#141a15; --panel:#1a211b; --ink:#e6e9df; --muted:#9aa594; --rule:#2e3a2f;
-  --olive:#9bbd85; --blaze:#ff7a3a; --blaze-ink:#1a0d05; --chip:#243026; color-scheme:dark;}}
+  --paper:#0d1512; --panel:#131d19; --ink:#e2ebe6; --muted:#90a39a; --rule:#24332d;
+  --olive:#6fd0ae; --blaze:#ff7a52; --blaze-ink:#1a0803; --chip:#1b2823; color-scheme:dark;}}
 :root[data-theme=dark]{
-  --paper:#141a15; --panel:#1a211b; --ink:#e6e9df; --muted:#9aa594; --rule:#2e3a2f;
-  --olive:#9bbd85; --blaze:#ff7a3a; --blaze-ink:#1a0d05; --chip:#243026; color-scheme:dark;}
+  --paper:#0d1512; --panel:#131d19; --ink:#e2ebe6; --muted:#90a39a; --rule:#24332d;
+  --olive:#6fd0ae; --blaze:#ff7a52; --blaze-ink:#1a0803; --chip:#1b2823; color-scheme:dark;}
 :root[data-theme=hc]{
-  --paper:#fff; --panel:#fff; --ink:#000; --muted:#1d1d1d; --rule:#000; --olive:#1d4d12; --blaze:#c23c00; --blaze-ink:#fff; --chip:#f0f0f0;}
+  --paper:#fff; --panel:#fff; --ink:#000; --muted:#1d1d1d; --rule:#000; --olive:#0d4a3c; --blaze:#c4300d; --blaze-ink:#fff; --chip:#f0f0f0;}
 :root[data-theme=hc] body{font-size:17px}
 :root[data-theme=hc] .spot,:root[data-theme=hc] .item,:root[data-theme=hc] .lyr-panel{border-width:2px}
 *{box-sizing:border-box}
@@ -93,11 +93,11 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .pin{background:var(--blaze);color:#fff;border:2px solid #fff;border-radius:50%;width:26px!important;height:26px!important;display:grid;place-items:center;font:700 13px var(--mono);box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .tools{display:flex;flex-direction:column;gap:6px}
 .tools button{width:34px;height:34px;border:2px solid rgba(0,0,0,.25);border-radius:4px;background:#fff;color:#222;font:700 13px var(--mono);cursor:pointer;display:grid;place-items:center;padding:0}
-.tools button[aria-pressed=true]{background:#e8601c;color:#fff;border-color:#e8601c}
+.tools button[aria-pressed=true]{background:#f2542d;color:#fff;border-color:#f2542d}
 .sunbox,.infobox{background:rgba(255,255,255,.92);color:#1f2a1f;border-radius:4px;padding:6px 9px;font:12px/1.45 var(--body);box-shadow:0 1px 4px rgba(0,0,0,.3);max-width:240px}
 .sunbox b,.infobox b{font:600 12px var(--display);letter-spacing:.06em;text-transform:uppercase}
 .sunbox .n{font-family:var(--mono)}
-.mlabel{background:#e8601c;color:#fff;border:0;font:600 12px var(--mono);box-shadow:none;padding:2px 6px}
+.mlabel{background:#f2542d;color:#fff;border:0;font:600 12px var(--mono);box-shadow:none;padding:2px 6px}
 .mlabel::before{display:none}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
 .btn.sm{width:auto;margin:0;padding:7px 12px;font-size:14px;display:inline-block}
@@ -152,7 +152,7 @@ header{position:relative}
 .sres .note{padding:8px 12px;font-size:13px;color:#5b6656}
 /* layers panel */
 .lyr-btn{background:#fff;color:#222;border:2px solid rgba(0,0,0,.25);border-radius:6px;font:700 13px var(--body);padding:7px 11px;cursor:pointer;display:flex;gap:6px;align-items:center}
-.lyr-btn .cnt{background:#e8601c;color:#fff;border-radius:999px;font:700 11px var(--mono);padding:1px 6px}
+.lyr-btn .cnt{background:#f2542d;color:#fff;border-radius:999px;font:700 11px var(--mono);padding:1px 6px}
 .lyr-panel{position:absolute;top:44px;right:0;width:320px;max-height:calc(100vh - 140px);overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:8px;box-shadow:0 4px 18px rgba(0,0,0,.35);padding:10px 12px;font:14px var(--body)}
 .lyr-panel[hidden]{display:none}
 .lyr-panel h5{font:700 13px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 0 6px}
@@ -186,12 +186,12 @@ header{position:relative}
 .ctx button span{width:18px;text-align:center;color:var(--blaze);font-weight:700}
 /* spot cards v2 */
 .grade{float:right;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font:700 20px var(--display);color:#fff;margin-left:8px}
-.grade.A{background:#e8601c}.grade.B{background:#d39a1c}.grade.C{background:#7d8a6d}
+.grade.A{background:#f2542d}.grade.B{background:#d39a1c}.grade.C{background:#7d8a6d}
 .spot .fchips{display:flex;flex-wrap:wrap;gap:4px;margin:5px 0}
 .fchip{display:inline-flex;gap:4px;align-items:center;font:600 12px var(--body);background:var(--chip);border-radius:999px;padding:2px 8px 2px 5px}
 .fchip svg{width:15px;height:15px;stroke:var(--olive);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .spot .walk{font:12px var(--mono);color:var(--olive)}
-.pin.A{background:#e8601c}.pin.B{background:#d39a1c}.pin.C{background:#7d8a6d}
+.pin.A{background:#f2542d}.pin.B{background:#d39a1c}.pin.C{background:#7d8a6d}
 .prog{height:6px;background:var(--chip);border-radius:3px;overflow:hidden;margin-top:8px}
 .prog[hidden]{display:none}
 .prog span{display:block;height:100%;width:0;background:var(--blaze);transition:width .25s}
@@ -313,7 +313,7 @@ aside > nav, aside > header, .sheet-handle{flex:none}
 .lyr-panel{z-index:5}
 .sunbox .full{position:relative}
 .sun-x{margin:-4px -6px 0 6px}
-.offbar{position:absolute;left:50%;transform:translateX(-50%);top:calc(58px + env(safe-area-inset-top,0px));z-index:1001;border:0;border-radius:999px;background:#2b3a26;color:#fff;font:600 13px var(--body);padding:6px 14px;box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap}
+.offbar{position:absolute;left:50%;transform:translateX(-50%);top:calc(58px + env(safe-area-inset-top,0px));z-index:1001;border:0;border-radius:999px;background:#12302a;color:#fff;font:600 13px var(--body);padding:6px 14px;box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:pointer;white-space:nowrap}
 .acct .seg{position:sticky;top:-14px;z-index:2;box-shadow:0 2px 0 var(--panel)}
 .acard{border:1px solid var(--rule);border-radius:10px;padding:14px;background:var(--panel);margin:12px 0}
 .acard > h3:first-child{margin-top:0}
@@ -406,6 +406,10 @@ body.lyr-open .sunbox{display:none!important}
 .plq{width:100%;font:15px var(--body);padding:8px 10px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);margin:6px 0 10px}
 .plgo{border:0;background:none;color:var(--olive);font:600 13px var(--body);padding:0;cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:2px}
 
+/* ---------- v10 ---------- */
+.huntyes,.huntpermit,.huntcheck,.huntno{font-weight:700;margin:2px 0 4px}
+.huntyes{color:#2f8f4e}.huntpermit{color:#a8740c}.huntcheck{color:#2f6f94}.huntno{color:#6b6b6b}
+h1 span{color:var(--blaze)}
 </style>
 </head>
 <body>
@@ -413,7 +417,7 @@ body.lyr-open .sunbox{display:none!important}
   <aside id="sheet">
     <button class="sheet-handle" id="sheetHandle" aria-label="Drag to resize panel"></button>
     <header>
-      <h1>Red River <span>Hunt Atlas</span></h1>
+      <h1>Public<span>Scout</span></h1>
       <div class="sub">Public land, licenses and seasons for TX · NM · OK · AR · LA, with a terrain spot finder.</div>
       <div class="where" id="where"></div>
       <div class="hdr-tools"><button id="helpBtn" title="Quick start and sources">? Help</button><button id="themeBtn" title="Change color theme">Theme: Auto</button></div>
@@ -465,8 +469,9 @@ body.lyr-open .sunbox{display:none!important}
         <option value="hog">Feral hogs</option>
         <option value="duck">Ducks / waterfowl</option>
       </select>
-      <label class="check"><input type="checkbox" id="publicOnly" checked> Only score open or permit-access public land</label>
+      <label class="check"><input type="checkbox" id="publicOnly" checked> Only score public land you can hunt</label>
       <label class="check"><input type="checkbox" id="showHeat" checked> Show heat layer</label>
+      <label class="check"><input type="checkbox" id="showCorr" checked> Show predicted travel corridors</label>
       <button class="btn" id="scanBtn">Scan this view</button>
       <div class="prog" id="scanProg" hidden><span></span></div>
       <div class="status" id="scanStatus">Zoom to level 12 or closer to scan. Current zoom shows at bottom left of the map.</div>
@@ -944,8 +949,36 @@ const labels = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services
 // PAD-US public access: tiles when zoomed out, live polygons when zoomed in.
 const padTiles = L.tileLayer("https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/PADUS3_0PublicAccess/MapServer/tile/{z}/{y}/{x}", { maxNativeZoom: 10, maxZoom: 10, minZoom: 2, opacity: .6, attribution: "PAD-US (USGS)" });
 const ACCESS = { OA: ["Open access", "var(--open)", "#2f8f4e"], RA: ["Restricted (permit, seasonal)", "", "#d39a1c"], XA: ["Closed", "", "#b3392f"], UK: ["Unknown", "", "#8a8a8a"] };
+// "Open access" in PAD-US means the public may enter, not that hunting is allowed. City parks, golf courses,
+// state and national parks and historic sites are open access but closed to hunting, so classify each tract.
+const DES = { NP:"National Park", NM:"National Monument", NCA:"National Conservation Area", NF:"National Forest", NG:"National Grassland", PUB:"BLM public land", NT:"National Trail", NWR:"National Wildlife Refuge",
+  WA:"Wilderness", WSR:"Wild and Scenic River", WSA:"Wilderness Study Area", NRA:"National Recreation Area", NSBV:"National Scenic Area", NLS:"National Lakeshore/Seashore", IRA:"Roadless Area", ACEC:"Area of Critical Environmental Concern",
+  RNA:"Research Natural Area", REC:"Recreation Management Area", RMA:"Resource Management Area", WPA:"Watershed Protection Area", REA:"Research or Educational Area", HCA:"Historic or Cultural Area", MIT:"Mitigation Land",
+  MIL:"Military Land", ACC:"Access Area", SDA:"Special Designation Area", FOTH:"Federal land", TRIBL:"Tribal Land", SP:"State Park", SW:"State Wilderness", SCA:"State Conservation Area", SREC:"State Recreation Area",
+  SHCA:"State Historic Site", SRMA:"State Wildlife / Resource Area", SOTH:"State land", LP:"City or County Park", LCA:"Local Conservation Area", LREC:"Local Recreation Area", LHCA:"Local Historic Site",
+  LRMA:"Local Resource Area", LOTH:"Local government land", CONE:"Conservation Easement (private land)", RECE:"Recreation Easement", AGRE:"Agricultural Easement (private land)", RANE:"Ranch Easement (private land)",
+  FORE:"Forest Easement (private land)", OTHE:"Easement (private land)", UNKE:"Easement (private land)", FACY:"Facility", UNK:"Unknown" };
+const NOHUNT_NAME = /golf|country club|athletic|sports|softball|baseball|soccer|tennis|aquatic|pool|playground|stadium|school|campus|cemetery|airport|museum|library|zoo|courthouse|city hall|plaza|greenway|arboretum|botanic|memorial park|dog park|skate|theat|visitors? center|marina/i;
+function huntClass(p){
+  const d = p.Des_Tp || "", m = (p.Mang_Name || "").toUpperCase(), t = p.Mang_Type || "", n = p.Unit_Nm || "";
+  if (p.Pub_Access === "XA") return "no";
+  if (/E$/.test(d) && d !== "UNKE" || d === "UNKE") return "no";                                  // easements are private land
+  if (["LP", "LREC", "LHCA", "SHCA", "HCA", "FACY", "REA", "RNA"].includes(d)) return "no";
+  if (NOHUNT_NAME.test(n) && (t === "LOC" || t === "DIST" || d === "SP" || d === "SREC")) return "no";
+  if (d === "NP" || ((d === "NM" || d === "NLS" || d === "NRA") && m === "NPS")) return /preserve/i.test(n) ? "check" : (d === "NP" ? "no" : "check");
+  if (m === "NPS") return "no";
+  if (d === "SP" || d === "SREC") return "check";                                                    // a few state parks hold special draw hunts
+  if (d === "MIL" || /DOD|ARMY|USAF|NAVY|DOE/.test(m) || d === "TRIBL") return "permit";
+  if (d === "NWR" || m === "FWS") return "permit";
+  if (m === "USACE" || m === "TVA" || m === "USBR" || m === "SLB" || m === "SDNR" || m === "SDOL") return "check";
+  if (["NF", "NG", "PUB", "WA", "WSA", "IRA", "ACEC", "NCA", "REC", "RMA", "NSBV"].includes(d) || m === "USFS" || m === "BLM") return p.Pub_Access === "RA" ? "permit" : "yes";
+  if (m === "SFW" || d === "SRMA" || d === "SW" || d === "SCA" || /\bWMA\b|wildlife management|game management|hunting/i.test(n)) return "permit";
+  if (t === "LOC" || t === "DIST") return "no";
+  return "check";
+}
+const HUNT = { yes: ["Open to hunting under state rules", "#2f8f4e"], permit: ["Hunting with a permit or special rules", "#d39a1c"], check: ["Check before you hunt: hunting is often limited", "#4a8fb5"], no: ["Public land, but no hunting", "#8d8d8d"] };
 const padLayer = L.geoJSON(null, {
-  style: f => ({ color: (ACCESS[f.properties.Pub_Access]||ACCESS.UK)[2], weight: 1.5, fillOpacity: .18 }),
+  style: f => { const h = huntClass(f.properties); return h === "no" ? { color: "#8d8d8d", weight: 1, dashArray: "3 4", fillOpacity: .05, fillColor: "#8d8d8d" } : { color: HUNT[h][1], weight: 1.5, fillOpacity: h === "check" ? .1 : .18 }; },
   onEachFeature: (f, l) => l.bindPopup(() => padPopup(f.properties))
 });
 const publicGroup = L.layerGroup([padTiles, padLayer]);
@@ -1073,7 +1106,7 @@ function zoneLayer(id, color, kind){
   });
   return lyr;
 }
-const arDeerZones = zoneLayer(1, "#e8601c", "deer"), arTurkeyZones = zoneLayer(3, "#2a7fff", "turkey"),
+const arDeerZones = zoneLayer(1, "#f2542d", "deer"), arTurkeyZones = zoneLayer(3, "#2a7fff", "turkey"),
   arBearZones = zoneLayer(4, "#6b4f2a", "bear"), arElkZones = zoneLayer(2, "#7a5ea8", "elk"), arCwdZone = zoneLayer(10, "#b3392f", "cwd");
 // ---------- More hunt units and public land (official state GIS services) ----------
 // Generic loader for an ArcGIS layer: loads the whole layer once, or only what's in view.
@@ -1142,7 +1175,7 @@ const txMule = agsLayer({ name: "Texas mule deer units", url: TPWD + "TPWD_WL_MD
 const txPronghorn = agsLayer({ name: "Texas pronghorn units", url: TPWD + "TPWD_WL_PMU/MapServer/0", fields: "UnitNumber", color: "#c46a00", weight: 1.5,
   label: p => "Pronghorn unit " + p.UnitNumber, hoverLabel: true,
   popup: p => `<h4>Pronghorn management unit ${esc(p.UnitNumber)}</h4>${seasonRows("TX", /^Pronghorn/)}<p>Texas pronghorn hunting is by landowner permit; there is no public over-the-counter tag.</p>` });
-const txWhitetail = agsLayer({ name: "Texas whitetail units", url: TPWD + "TPWD_WL_WTDMU/MapServer/0", fields: "UnitNumber", color: "#e8601c", weight: 1.5,
+const txWhitetail = agsLayer({ name: "Texas whitetail units", url: TPWD + "TPWD_WL_WTDMU/MapServer/0", fields: "UnitNumber", color: "#f2542d", weight: 1.5,
   label: p => "WT unit " + p.UnitNumber,
   popup: p => `<h4>Whitetail deer management unit ${esc(p.UnitNumber)}</h4><p>TPWD uses these units for herd management and harvest data. Season dates follow the North / South zones and county rules:</p>${seasonRows("TX", /^White-tailed/)}
     <a href="https://tpwd.texas.gov/regulations/outdoor-annual/hunting/seasons/county-listing/" target="_blank" rel="noopener">Seasons by county</a>` });
@@ -1397,12 +1430,12 @@ const LAYERS = [
   { id:"txaph", g:"public", st:"TX", name:"Public hunting lands (APH)", layer:txHuntAreas, color:"#1f7a3a" },
   { id:"txdove", g:"public", st:"TX", name:"Dove & small game leases", layer:txDove, color:"#c9a227" },
   { id:"arwma", g:"public", st:"AR", name:"WMA boundaries", layer:arWma, color:"#1f7a3a" },
-  { id:"txwt", g:"units", st:"TX", name:"Whitetail management units", layer:txWhitetail, color:"#e8601c" },
+  { id:"txwt", g:"units", st:"TX", name:"Whitetail management units", layer:txWhitetail, color:"#f2542d" },
   { id:"txmd", g:"units", st:"TX", name:"Mule deer units", layer:txMule, color:"#8b5a2b" },
   { id:"txph", g:"units", st:"TX", name:"Pronghorn units", layer:txPronghorn, color:"#c46a00" },
   { id:"txcwd", g:"units", st:"TX", name:"CWD zones", layer:txCwd, color:"#b3392f" },
   { id:"nmgmu", g:"units", st:"NM", name:"Game Management Units (GMUs)", layer:nmGmu, color:"#7a5ea8" },
-  { id:"ardeer", g:"units", st:"AR", name:"Deer zones", layer:arDeerZones, color:"#e8601c" },
+  { id:"ardeer", g:"units", st:"AR", name:"Deer zones", layer:arDeerZones, color:"#f2542d" },
   { id:"arturkey", g:"units", st:"AR", name:"Turkey zones", layer:arTurkeyZones, color:"#2a7fff" },
   { id:"arbear", g:"units", st:"AR", name:"Bear zones", layer:arBearZones, color:"#6b4f2a" },
   { id:"arelk", g:"units", st:"AR", name:"Elk zones", layer:arElkZones, color:"#7a5ea8" },
@@ -1492,7 +1525,10 @@ zoomBox.addTo(map);
 
 const STATE_ABBR = { Texas:"TX","New Mexico":"NM",Oklahoma:"OK",Arkansas:"AR",Louisiana:"LA" };
 function padPopup(p){
-  const acc = ACCESS[p.Pub_Access] || ACCESS.UK;
+  const acc = ACCESS[p.Pub_Access] || ACCESS.UK, hc = huntClass(p);
+  if (hc === "no") return `<h4>${esc(p.Unit_Nm || "Unnamed area")}</h4><div class="huntno">✕ ${esc(HUNT.no[0])}</div>
+    <div class="meta">${esc(DES[p.Des_Tp] || p.Des_Tp || "")} · ${esc(p.Mang_Name)}${p.GIS_Acres ? " · " + Math.round(p.GIS_Acres).toLocaleString() + " ac" : ""}</div>
+    <p>Anyone can visit, but hunting and discharging firearms aren't allowed on ${/E$/.test(p.Des_Tp || "") ? "private land under an easement" : "city and county parks, golf courses, historic sites and similar land"}.</p>`;
   const st = D[p.State_Nm] || D[STATE_ABBR[p.State_Nm]];
   const mgr = (p.Mang_Name || "").toUpperCase();
   let hint = "";
@@ -1501,8 +1537,10 @@ function padPopup(p){
   else if (mgr === "USACE") hint = "Army Corps of Engineers land. Hunting areas and rules vary by lake.";
   else if (/DOD|ARMY|USAF|NAVY/.test(mgr)) hint = "Military land. Hunting only through the installation's access program.";
   return `<h4>${esc(p.Unit_Nm || "Unnamed area")}</h4>
-    <div><b>${esc(acc[0])}</b> · ${esc(p.Mang_Name)} (${esc(p.Mang_Type)})</div>
-    <div class="meta">${esc(p.Des_Tp)}${p.GIS_Acres ? " · " + Math.round(p.GIS_Acres).toLocaleString() + " ac" : ""}</div>
+    <div class="hunt${hc}">${hc === "yes" ? "✓" : hc === "permit" ? "!" : "?"} ${esc(HUNT[hc][0])}</div>
+    <div>${esc(DES[p.Des_Tp] || p.Des_Tp || "")} · ${esc(p.Mang_Name)} · <span class="meta">${esc(acc[0])}</span></div>
+    <div class="meta">${p.GIS_Acres ? Math.round(p.GIS_Acres).toLocaleString() + " ac" : ""}</div>
+    ${hc === "check" ? `<p>Hunting here depends on the managing agency. Many ${esc(DES[p.Des_Tp] || "areas like this")}s allow none or only special hunts. Confirm with ${esc(p.Mang_Name)} first.</p>` : ""}
     ${hint ? `<p>${esc(hint)}</p>` : ""}
     ${st ? `<p><b>${esc(st.name)}:</b> ${esc(st.publicNote)}</p>` : ""}`;
 }
@@ -1510,8 +1548,9 @@ function padPopup(p){
 // Run heavy redraws after a pan or pinch finishes, so the map never stutters mid-gesture
 let mapBusy = false; const idleQ = [];
 map.on("movestart zoomstart", () => { mapBusy = true; });
-map.on("moveend zoomend", () => { mapBusy = false; requestAnimationFrame(() => { while (idleQ.length && !mapBusy) idleQ.shift()(); }); });
-function whenIdle(fn){ if (mapBusy) idleQ.push(fn); else requestAnimationFrame(fn); }
+const nextFrame = fn => { let done = false; const go = () => { if (!done){ done = true; fn(); } }; requestAnimationFrame(go); setTimeout(go, 150); };
+map.on("moveend zoomend", () => { mapBusy = false; nextFrame(() => { while (idleQ.length && !mapBusy) idleQ.shift()(); }); });
+function whenIdle(fn){ if (mapBusy) idleQ.push(fn); else nextFrame(fn); }
 const padCache = new Map();
 async function fetchPad(b){
   const env = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map(v => v.toFixed(4)).join(",");
@@ -1587,7 +1626,7 @@ const Cluster = L.LayerGroup.extend({
 });
 // open a marker's popup even if it is currently grouped into a bubble
 function openMarker(mk, ll, zoom){ map.setView(ll, Math.max(map.getZoom(), zoom || 15)); const go = () => { if (mk._map) mk.openPopup(); }; map.once("moveend", () => setTimeout(go, 60)); setTimeout(go, 400); }
-let heat = null, pins = new Cluster({ off: 13, color: "#e8601c" }).addTo(map), lastSpots = [];
+let heat = null, pins = new Cluster({ off: 13, color: "#f2542d" }).addTo(map), lastSpots = [];
 const proj = (lat, lng, z) => { const n = 256 * 2 ** z, s = Math.sin(lat * Math.PI / 180);
   return { x: (lng + 180) / 360 * n, y: (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n }; };
 const unproj = (x, y, z) => { const n = 256 * 2 ** z, lng = x / n * 360 - 180, m = Math.PI - 2 * Math.PI * y / n;
@@ -1808,9 +1847,52 @@ function scoreCore(d, prog){
     if (dRoad && x > 2 && y > 2 && x < w - 3 && y < h - 3){ const gx = dRoad[i + 2] - dRoad[i - 2], gy = dRoad[i + 2*w] - dRoad[i - 2*w]; if (Math.hypot(gx, gy) > 1) roadDir = (Math.atan2(-gx, gy) * 57.2958 + 360) % 360; }
     picked.push({ i, x, y, sc: Math.round(raw[i] / maxRaw * 100), F: Fp, ft: Math.round(e[i] * 3.281), slope: Math.round(slope[i]), road: dRoad ? dRoad[i] : null, water: dWater ? dWater[i] : null,
       asp: asp[i] >= 0 ? Math.round(asp[i]) : null, deer, roadDir, lcf: ln ? { tree: lt / ln, open: lo / ln, crop: lcp / ln, water: lwt / ln } : null }); }
+  // Predicted travel corridors: the lowest-effort, best-hidden route from likely bedding cover to food
+  const corr = [];
+  if (!isDuck){
+    const st = N > 160000 ? 2 : 1, cw = Math.ceil(w / st), ch = Math.ceil(h / st), M = cw * ch, cm = cell * st;
+    const cost = new Float32Array(M), bed = new Float32Array(M), fd = new Float32Array(M);
+    for (let yy = 0; yy < ch; yy++) for (let xx = 0; xx < cw; xx++){
+      const i = Math.min(h - 1, yy * st) * w + Math.min(w - 1, xx * st), j = yy * cw + xx, sl = slope[i], c = lc ? lc[i] : 0;
+      let k = 1 + (sl / 14) ** 2;
+      if (c === 5 || c === 11 || c === 8) k += 1.2; if (c === 7) k += 30; if ((wm && wm[i]) || c === 1) k += 25; if (dRoad && dRoad[i] < 60) k += 2.5;
+      const t = Math.max(fv.bench[i], fv.saddle[i], .8 * fv.drain[i], fv.pinch[i], .8 * fv.edge[i], fv.crossing[i], .7 * fv.corner[i]);
+      cost[j] = k * (1 - .6 * t) * st;
+      bed[j] = fv.cover[i] + .7 * fv.bench[i] + .6 * fv.leeward[i] + .4 * fv.ridge[i] + .4 * fv.young[i] + (lc ? 0 : .3 * fv.north[i]) - (dRoad && dRoad[i] < 150 ? .6 : 0) - (c === 1 || c === 7 ? 2 : 0);
+      fd[j] = fv.food[i] + .5 * fv.edge[i] + .3 * fv.corner[i] - (c === 1 || c === 7 ? 2 : 0);
+    }
+    const pick = (a, n, sep, avoid) => { const idx = []; for (let j = 0; j < M; j++) if (a[j] > .45) idx.push(j); idx.sort((p, q) => a[q] - a[p]); const out = [];
+      for (const j of idx){ if (out.length >= n) break; const x = j % cw, y = (j / cw) | 0;
+        if (out.every(o => Math.hypot(o[0] - x, o[1] - y) > sep) && (!avoid || avoid.every(o => Math.hypot(o[0] - x, o[1] - y) > sep * .8))) out.push([x, y, j]); }
+      return out; };
+    const beds = pick(bed, 6, 350 / cm), feeds = pick(fd, 7, 300 / cm, beds);
+    if (beds.length && feeds.length){
+      const dist = new Float32Array(M).fill(Infinity), from = new Int32Array(M).fill(-1), hd = [], hj = [];
+      const push = (d, j) => { hd.push(d); hj.push(j); let n = hd.length - 1; while (n > 0){ const p = (n - 1) >> 1; if (hd[p] <= hd[n]) break; [hd[p], hd[n]] = [hd[n], hd[p]]; [hj[p], hj[n]] = [hj[n], hj[p]]; n = p; } };
+      const pop = () => { const d = hd[0], j = hj[0], ld = hd.pop(), lj = hj.pop(); if (hd.length){ hd[0] = ld; hj[0] = lj; let n = 0;
+        for (;;){ const l = 2 * n + 1, r2 = l + 1; let m = n; if (l < hd.length && hd[l] < hd[m]) m = l; if (r2 < hd.length && hd[r2] < hd[m]) m = r2; if (m === n) break;
+          [hd[m], hd[n]] = [hd[n], hd[m]]; [hj[m], hj[n]] = [hj[n], hj[m]]; n = m; } } return [d, j]; };
+      beds.forEach(b => { dist[b[2]] = 0; push(0, b[2]); });
+      const D8 = [[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],[1,1,1.414],[1,-1,1.414],[-1,1,1.414],[-1,-1,1.414]];
+      while (hd.length){ const [d, j] = pop(); if (d > dist[j]) continue; const x = j % cw, y = (j / cw) | 0;
+        for (const [dx, dy, m] of D8){ const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= cw || ny >= ch) continue; const nj = ny * cw + nx;
+          const nd = d + m * (cost[j] + cost[nj]) / 2; if (nd < dist[nj]){ dist[nj] = nd; from[nj] = j; push(nd, nj); } } }
+      const used = new Uint8Array(M);
+      feeds.sort((p, q) => dist[p[2]] - dist[q[2]]).forEach(f0 => { if (!isFinite(dist[f0[2]])) return;
+        const path = []; let j = f0[2], guard = 0; while (j >= 0 && guard++ < M){ path.push(j); j = from[j]; }
+        const len = path.length * cm; if (len < 150 || len > 3500) return;
+        const over = path.filter(q => used[q]).length / path.length; if (over > .65) return;
+        let onPub = 1; if (pub){ let n1 = 0; path.forEach(q => { const i = Math.min(h - 1, ((q / cw) | 0) * st) * w + Math.min(w - 1, (q % cw) * st); if (pub[i]) n1++; }); onPub = n1 / path.length; }
+        if (onPub < .3) return;
+        path.forEach(q => { const x = q % cw, y = (q / cw) | 0; for (let b = -1; b <= 1; b++) for (let a2 = -1; a2 <= 1; a2++){ const xx = x + a2, yy = y + b; if (xx >= 0 && yy >= 0 && xx < cw && yy < ch) used[yy * cw + xx] = 1; } });
+        const pts = []; path.reverse().forEach((q, k2) => { if (k2 % 2 === 0 || k2 === path.length - 1) pts.push((q % cw) * st, ((q / cw) | 0) * st); });
+        corr.push({ pts, len: Math.round(len), score: Math.round(fd[f0[2]] * 100) }); });
+      if (corr.length > 6) corr.length = 6;
+    }
+  }
   const fmaps = {}; keys.forEach(kk => { const m = new Uint8Array(N); const a2 = fv[kk]; let any = 0; for (let i = 0; i < N; i++){ const v = a2[i]; if (v > .15){ m[i] = Math.round(v * 255); any = 1; } } if (any) fmaps[kk] = m; });
   prog(1);
-  return { heat, picked, relief, flatMode, cells: (vx1 - vx0) * (vy1 - vy0), fmaps, hasLc: !!lc, hasWind: windTo != null };
+  return { heat, picked, relief, flatMode, cells: (vx1 - vx0) * (vy1 - vy0), fmaps, corr, hasLc: !!lc, hasWind: windTo != null };
 }
 let scoreWorkerURL = null;
 function runScore(d, onProg){
@@ -1890,7 +1972,7 @@ async function scan(){
       const c = document.createElement("canvas"); c.width = w; c.height = h; const g = c.getContext("2d", { willReadFrequently: true });
       g.fillStyle = "#000";
       const ring2 = r => { r.forEach((p, j) => { const q = proj(p[1], p[0], z), x = (q.x-gx0)/f, y = (q.y-gy0)/f; j ? g.lineTo(x, y) : g.moveTo(x, y); }); g.closePath(); };
-      for (const ft of pad.features){ const ac = ft.properties.Pub_Access; if (ac !== "OA" && ac !== "RA") continue; const gm = ft.geometry; if (!gm) continue;
+      for (const ft of pad.features){ const hc0 = huntClass(ft.properties); if (hc0 === "no") continue; const gm = ft.geometry; if (!gm) continue;
         const polys = gm.type === "Polygon" ? [gm.coordinates] : gm.type === "MultiPolygon" ? gm.coordinates : [];
         for (const poly of polys){ g.beginPath(); poly.forEach(ring2); g.fill("evenodd"); } }
       const d = g.getImageData(0,0,w,h).data; pub = new Uint8Array(N); let any = 0;
@@ -1932,7 +2014,9 @@ async function scan(){
     });
     lastSpots = cards;
     lastScan = { nw, se, w, h, fmaps: r.fmaps, keys }; renderFeatChips();
-    store.set("rrha_scan", { t: Date.now(), sp: spKey, spots: cards.map(c => ({ n: c.n, ll: c.ll, contrib: c.contrib, facts: c.facts, info: c.info, sc: c.sc, gr: c.gr, topKeys: c.topKeys })) });
+    const corrLL = (r.corr || []).map(c => ({ len: c.len, ll: c.pts.reduce((a, v, k) => (k % 2 ? a.push(unproj(gx0 + (c.pts[k - 1] + .5) * f, gy0 + (v + .5) * f, z)) : 0, a), []).map(q => [+q.lat.toFixed(6), +q.lng.toFixed(6)]) }));
+    drawCorr(corrLL);
+    store.set("rrha_scan", { corr: corrLL, t: Date.now(), sp: spKey, spots: cards.map(c => ({ n: c.n, ll: c.ll, contrib: c.contrib, facts: c.facts, info: c.info, sc: c.sc, gr: c.gr, topKeys: c.topKeys })) });
     paintCards(cards);
     prog(null, `Scanned ${r.cells.toLocaleString()} cells at ${Math.round(cell)} m${r.hasLc ? " with land cover" : ""}${r.hasWind ? " and today's wind" : ""}. Relief ${Math.round(r.relief*3.281)} ft${r.flatMode ? " (flat-country mode)" : ""}. Grades rank spots within this view: A = top 3, B = next 4, C = the rest. The number is the score out of 100 against the best spot.` + (notes.length ? "\n" + notes.join("\n") : "") + "\nSwitch to Satellite to check cover at each pin.");
     if (isPhone() && sheetState === 2) sheetTo(1);
@@ -1967,7 +2051,7 @@ function paintCards(cards, note){
 // Bring back the last scan's pins after a reload
 function restoreScan(){
   const s = store.get("rrha_scan", null); if (!s || !s.spots || !s.spots.length) return;
-  pins.clearMarkers(); lastSpots = s.spots.map(makeSpot);
+  pins.clearMarkers(); lastSpots = s.spots.map(makeSpot); drawCorr(s.corr || []);
   const age = Math.round((Date.now() - s.t) / 36e5);
   paintCards(lastSpots, `From your last scan (${SP_NAME[s.sp] || "deer"}, ${age < 1 ? "just now" : age < 48 ? age + " h ago" : Math.round(age / 24) + " days ago"}). Scan again to refresh.`);
 }
@@ -2026,7 +2110,7 @@ function finishMeasure(cancel){
   measuring = false; $("#btnMeasure").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; clearMeasure(); setTimeout(() => map.doubleClickZoom.enable(), 50);
 }
 function updateMeasure(){
-  if (!mLine) mLine = L.polyline(mPts, { color: "#e8601c", weight: 3, dashArray: "6 5" }).addTo(map); else mLine.setLatLngs(mPts);
+  if (!mLine) mLine = L.polyline(mPts, { color: "#f2542d", weight: 3, dashArray: "6 5" }).addTo(map); else mLine.setLatLngs(mPts);
   let d = 0; for (let i = 1; i < mPts.length; i++) d += map.distance(mPts[i-1], mPts[i]);
   if (mLabel) map.removeLayer(mLabel);
   if (mPts.length > 1) mLabel = L.tooltip({ permanent: true, direction: "right", className: "mlabel", offset: [8, 0] }).setLatLng(mPts.at(-1)).setContent(fmtDist(d)).addTo(map);
@@ -2111,13 +2195,13 @@ map.on("moveend", renderSun);
 renderSun();
 
 /* ---------- Waypoints and lines (saved in this browser) ---------- */
-const WTYPES = { stand: ["Stand / blind", "#e8601c", "S"], cam: ["Trail camera", "#2a7fff", "C"], rub: ["Rub", "#8b5a2b", "R"], scrape: ["Scrape", "#c0392b", "X"], bed: ["Bed / bedding", "#6b8e23", "B"],
+const WTYPES = { stand: ["Stand / blind", "#f2542d", "S"], cam: ["Trail camera", "#2a7fff", "C"], rub: ["Rub", "#8b5a2b", "R"], scrape: ["Scrape", "#c0392b", "X"], bed: ["Bed / bedding", "#6b8e23", "B"],
   track: ["Tracks", "#a0522d", "T"], trail: ["Game trail", "#8d6e63", "="], scat: ["Droppings", "#6d4c41", "D"], sight: ["Sighting", "#16a085", "E"], feed: ["Feeding sign", "#7cb342", "F"],
   shed: ["Shed antler", "#d4ac0d", "Y"], wallow: ["Wallow", "#5d6d7e", "~"], roost: ["Roost", "#34495e", "^"],
   water: ["Water", "#1e90c8", "W"], park: ["Parking", "#555", "P"], kill: ["Harvest", "#b3392f", "★"], other: ["Other", "#7a5ea8", "•"] };
 const SIGN = new Set(["rub", "scrape", "bed", "track", "trail", "scat", "sight", "feed", "shed", "wallow", "roost"]);
 let wpts = store.get("rrha_wpts", []), lines = store.get("rrha_lines", []), dropping = false;
-const wLayer = new Cluster({ off: 14, color: "#3f5a35" }).addTo(map), lLayer = L.layerGroup().addTo(map), coneLayer = L.layerGroup().addTo(map);
+const wLayer = new Cluster({ off: 14, color: "#1d5c4d" }).addTo(map), lLayer = L.layerGroup().addTo(map), coneLayer = L.layerGroup().addTo(map);
 const uid = () => Math.random().toString(36).slice(2, 9);
 const saveAll = () => { store.set("rrha_wpts", wpts); store.set("rrha_lines", lines); renderMine(); };
 $("#btnWpt").onclick = () => {
@@ -2137,7 +2221,7 @@ function wForm(w){
       <div><label>Size</label><input class="wsz" placeholder="tree 4 in, track 3 in" value="${esc(w.size || "")}"></div></div></div>
     <label>Notes</label><textarea class="wd" rows="2">${esc(w.notes || "")}</textarea>
     <div class="meta" style="margin-top:4px">${w.lat.toFixed(5)}, ${w.lng.toFixed(5)}</div>
-    <div class="acts"><button class="ws" style="background:#e8601c;color:#fff">Save</button><button class="wx" style="background:#e7e6da">Delete</button></div>
+    <div class="acts"><button class="ws" style="background:#f2542d;color:#fff">Save</button><button class="wx" style="background:#e7e6da">Delete</button></div>
     <div class="acts"><button class="wc" style="background:#e7e6da">Wind check</button><button class="wl" style="background:#e7e6da">Log a hunt</button></div>
     <div class="acts"><button class="wr" style="background:#e7e6da">Route here</button><button class="wsm" style="background:#e7e6da">Sun & moon</button></div></div>`;
 }
@@ -2173,7 +2257,7 @@ function saveLine(pts){
 }
 function drawLines(){
   lLayer.clearLayers();
-  for (const l of lines) L.polyline(l.pts, { color: "#e8601c", weight: 3, opacity: .85 }).addTo(lLayer).bindTooltip(esc(l.name) + " · " + fmtDist(l.dist));
+  for (const l of lines) L.polyline(l.pts, { color: "#f2542d", weight: 3, opacity: .85 }).addTo(lLayer).bindTooltip(esc(l.name) + " · " + fmtDist(l.dist));
 }
 function renderMine(){
   $("#wptList").innerHTML = wpts.map(w => { const t = WTYPES[w.type] || WTYPES.other;
@@ -2188,10 +2272,10 @@ function renderMine(){
 // GPX export / import
 $("#btnExport").onclick = () => {
   const x = s => String(s).replace(/[<&>"]/g, c => ({ "<": "&lt;", "&": "&amp;", ">": "&gt;", '"': "&quot;" }[c]));
-  const gpx = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Red River Hunt Atlas" xmlns="http://www.topografix.com/GPX/1/1">\n` +
+  const gpx = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="PublicScout" xmlns="http://www.topografix.com/GPX/1/1">\n` +
     wpts.map(w => `<wpt lat="${w.lat}" lon="${w.lng}"><name>${x(w.name)}</name><desc>${x(w.notes || "")}</desc><type>${x((WTYPES[w.type] || WTYPES.other)[0])}</type></wpt>`).join("\n") + "\n" +
     lines.map(l => `<trk><name>${x(l.name)}</name><trkseg>${l.pts.map(p => `<trkpt lat="${p[0]}" lon="${p[1]}"/>`).join("")}</trkseg></trk>`).join("\n") + "\n</gpx>";
-  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([gpx], { type: "application/gpx+xml" })); a.download = "hunt-atlas-waypoints.gpx"; a.click();
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([gpx], { type: "application/gpx+xml" })); a.download = "publicscout-waypoints.gpx"; a.click();
 };
 $("#importFile").onchange = async ev => {
   const f = ev.target.files[0]; if (!f) return; const txt = await f.text();
@@ -2382,8 +2466,8 @@ function pickSearch(it){
   sres.hidden = true; sIn.value = it.t; searchLayer.clearLayers();
   if (it.b && it.b.isValid() && !it.b.getNorthEast().equals(it.b.getSouthWest())) map.fitBounds(it.b.pad(.1), { maxZoom: 15 }); else map.setView(it.ll, it.z || 14);
   const at = it.ll || it.b.getCenter();
-  if (it.pin || !it.b) L.circleMarker(at, { radius: 8, color: "#fff", weight: 3, fillColor: "#e8601c", fillOpacity: 1 }).addTo(searchLayer).bindTooltip(esc(it.t));
-  if (it.b && it.s && /^Public land|unit|zone/i.test(it.s)) L.rectangle(it.b, { color: "#e8601c", weight: 2, fill: false, dashArray: "6 4", interactive: false }).addTo(searchLayer);
+  if (it.pin || !it.b) L.circleMarker(at, { radius: 8, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1 }).addTo(searchLayer).bindTooltip(esc(it.t));
+  if (it.b && it.s && /^Public land|unit|zone/i.test(it.s)) L.rectangle(it.b, { color: "#f2542d", weight: 2, fill: false, dashArray: "6 4", interactive: false }).addTo(searchLayer);
   setTimeout(() => searchLayer.clearLayers(), 20000);
   sIn.blur(); if (isPhone()) sheetTo(0);
 }
@@ -2535,12 +2619,12 @@ async function doRoute(){
     const hours = dist / 1609.34 / 2 + gain * 3.281 / 1000 * .5; // 2 mph off-trail + 30 min per 1,000 ft of climb
     const ft = v => Math.round(v * 3.281).toLocaleString();
     L.polyline(pts, { color: "#fff", weight: 7, opacity: .9 }).addTo(routeLayer);
-    const line = L.polyline(pts, { color: "#e8601c", weight: 4, dashArray: "8 6" }).addTo(routeLayer);
+    const line = L.polyline(pts, { color: "#f2542d", weight: 4, dashArray: "8 6" }).addTo(routeLayer);
     L.circleMarker(A, { radius: 7, color: "#fff", weight: 2, fillColor: "#2f8f4e", fillOpacity: 1 }).addTo(routeLayer).bindTooltip("Start");
-    L.circleMarker(B, { radius: 7, color: "#fff", weight: 2, fillColor: "#e8601c", fillOpacity: 1 }).addTo(routeLayer).bindTooltip(esc(routing.destName || "Destination"));
+    L.circleMarker(B, { radius: 7, color: "#fff", weight: 2, fillColor: "#f2542d", fillOpacity: 1 }).addTo(routeLayer).bindTooltip(esc(routing.destName || "Destination"));
     line.bindTooltip(`${fmtDist(dist)} · +${ft(gain)} ft`, { sticky: true });
     const zs = prof.map(p => p[1]), zmin = Math.min(...zs), zmax = Math.max(...zs), sx2 = 240 / (dist || 1), sy2 = 60 / Math.max(1, zmax - zmin);
-    const svg = `<svg class="prof" viewBox="0 0 240 64" preserveAspectRatio="none"><path d="M0 64 ${prof.map(p => `L${(p[0] * sx2).toFixed(1)} ${(62 - (p[1] - zmin) * sy2).toFixed(1)}`).join(" ")} L240 64Z" fill="#e8601c33" stroke="#e8601c" stroke-width="1.5"/></svg>`;
+    const svg = `<svg class="prof" viewBox="0 0 240 64" preserveAspectRatio="none"><path d="M0 64 ${prof.map(p => `L${(p[0] * sx2).toFixed(1)} ${(62 - (p[1] - zmin) * sy2).toFixed(1)}`).join(" ")} L240 64Z" fill="#f2542d33" stroke="#f2542d" stroke-width="1.5"/></svg>`;
     const mins = Math.max(5, Math.round(hours * 60 / 5) * 5);
     setInfo(`<b>Walking route</b><br>${fmtDist(dist)} · <span class="n">+${ft(gain)} / −${ft(loss)} ft</span><br>About <b>${mins >= 60 ? Math.floor(mins / 60) + " h " + (mins % 60) + " min" : mins + " min"}</b> at an easy hunting pace
       ${svg}<div class="meta">${ft(zmin)}–${ft(zmax)} ft. Follows the easiest terrain; it doesn't know trails, fences, water crossings or property lines. Stay on land you're allowed to cross.</div>
@@ -2561,7 +2645,7 @@ async function refreshLandlock(){
   let pad, roads;
   try { [pad, roads] = await tracked("landlock", Promise.all([fetchPad(b), overpass(b, ["road"])])); } catch { return; }
   if (s !== llSeq || !map.getBounds().equals(v)) return;
-  const feats = pad.features.filter(f => (f.properties.Pub_Access === "OA" || f.properties.Pub_Access === "RA") && f.geometry);
+  const feats = pad.features.filter(f => huntClass(f.properties) !== "no" && f.geometry);
   if (!feats.length) return;
   const sz = map.getSize(), ox = Math.round(sz.x * .5), oy = Math.round(sz.y * .5), W = sz.x + 2 * ox, H = sz.y + 2 * oy, mpp = map.distance(map.containerPointToLatLng([0, H / 2]), map.containerPointToLatLng([100, H / 2])) / 100;
   const mk = () => { const c = document.createElement("canvas"); c.width = W; c.height = H; return [c, c.getContext("2d", { willReadFrequently: true })]; };
@@ -2662,7 +2746,7 @@ const Plume = L.Layer.extend({
       g.beginPath(); g.arc(sx, sy, r, 0, 6.283);
       g.fillStyle = q < .5 ? `rgba(232,96,28,${.55 * (1 - q * .6)})` : `rgba(122,94,168,${.5 * (1 - q)})`; g.fill(); }
     this.parts = keep.slice(-900);
-    g.beginPath(); g.arc(this._p0.x, this._p0.y, 6, 0, 6.283); g.fillStyle = "#e8601c"; g.fill(); g.lineWidth = 2; g.strokeStyle = "#fff"; g.stroke();
+    g.beginPath(); g.arc(this._p0.x, this._p0.y, 6, 0, 6.283); g.fillStyle = "#f2542d"; g.fill(); g.lineWidth = 2; g.strokeStyle = "#fff"; g.stroke();
   }
 });
 let plume = null;
@@ -2690,7 +2774,7 @@ async function windCheck(w, hi, quiet){
   const ring = (len, half) => { if (model.swirl){ const pts = []; for (let a2 = 0; a2 < 360; a2 += 15) pts.push(dest(o, a2, len)); return pts; }
     const pts = [o]; for (let a2 = -half; a2 <= half; a2 += 5) pts.push(dest(o, drift + a2, len)); pts.push(o); return pts; };
   L.polygon(ring(model.m, model.half), { color: hits.length ? "#b3392f" : "#7a5ea8", weight: 1.5, dashArray: "5 5", fill: false, interactive: false }).addTo(coneLayer);
-  L.polygon(ring(model.m * .5, model.half), { color: "#e8601c", weight: 1, dashArray: "2 4", fill: false, interactive: false }).addTo(coneLayer);
+  L.polygon(ring(model.m * .5, model.half), { color: "#f2542d", weight: 1, dashArray: "2 4", fill: false, interactive: false }).addTo(coneLayer);
   targets.forEach(t => L.circleMarker(t.ll, { radius: 6, color: hits.includes(t) ? "#b3392f" : "#2f8f4e", weight: 3, fill: false }).addTo(coneLayer).bindTooltip(esc(t.name) + (hits.includes(t) ? ": in your scent" : ": clear")));
   plume = new Plume({ src: o, mph, toward, therm, model, drift }).addTo(map);
   const safe = DIRS.filter((d, k) => { const tw = (k * 22.5 + 180) % 360; return targets.every(t => !inPlume(t.ll, tw, model.m, model.half)); });
@@ -2752,7 +2836,7 @@ function renderLog(){
       return `<tr><td>${esc(k)}</td><td class="n">${arr.length}</td><td class="n">${(arr.reduce((a, e) => a + e.seen, 0) / arr.length).toFixed(1)}</td><td class="n">${b && b[1] > 0 ? b[0] : "—"}</td></tr>`; }).join("")}</tbody></table></div>`
     : `<p class="meta">Log each sit to see which stands, winds and times produce. Stored in this browser.</p>`;
   $("#logList").innerHTML = hlog.slice(0, 40).map(e => { const d = new Date(e.t);
-    return `<div class="item"><span class="dot" style="background:${e.res === "Harvest" ? "#b3392f" : "#3f5a35"}">${e.res === "Harvest" ? "★" : e.seen}</span><span class="t">${esc(e.wname)} · ${d.toLocaleDateString([], { month: "short", day: "numeric" })} ${esc(e.ses)}
+    return `<div class="item"><span class="dot" style="background:${e.res === "Harvest" ? "#b3392f" : "#1d5c4d"}">${e.res === "Harvest" ? "★" : e.seen}</span><span class="t">${esc(e.wname)} · ${d.toLocaleDateString([], { month: "short", day: "numeric" })} ${esc(e.ses)}
       <small>${e.seen} seen${e.males ? ", " + e.males + " bucks/males" : ""} · wind ${esc(e.wind)} ${e.mph} mph${e.temp != null ? " · " + e.temp + "°" : ""}${e.moon != null ? " · moon " + e.moon + "%" : ""} · ${esc(e.res)}${e.notes ? " · " + esc(e.notes) : ""}</small></span>
       <button class="x" data-dl="${e.id}" aria-label="Delete entry">×</button></div>`; }).join("");
   $("#logList").querySelectorAll("[data-dl]").forEach(b => b.onclick = () => { hlog = hlog.filter(e => e.id !== b.dataset.dl); saveLog(); });
@@ -2821,9 +2905,9 @@ function renderFeatChips(){
 
 /* ---------- Learn to e-scout: how hunters read maps, with a picture of each feature ---------- */
 const SV = (inner) => `<svg viewBox="0 0 54 40" aria-hidden="true" fill="none" stroke="#6b8e23" stroke-width="1.4">${inner}</svg>`;
-const DOT = (x, y) => `<circle cx="${x}" cy="${y}" r="3" fill="#e8601c" stroke="#fff" stroke-width="1"/>`;
+const DOT = (x, y) => `<circle cx="${x}" cy="${y}" r="3" fill="#f2542d" stroke="#fff" stroke-width="1"/>`;
 const LESSONS = [
-  { k: null, t: "How hunters e-scout, step by step", svg: SV(`<path d="M6 32h42M6 32V8" stroke="#888"/><path d="M10 28l8-8 8 4 8-10 10 6" stroke="#e8601c" stroke-width="2"/>`),
+  { k: null, t: "How hunters e-scout, step by step", svg: SV(`<path d="M6 32h42M6 32V8" stroke="#888"/><path d="M10 28l8-8 8 4 8-10 10 6" stroke="#f2542d" stroke-width="2"/>`),
     b: `<p><b>1. Start with access and pressure.</b> Find the parking areas, gates and trails first. In a Penn State GPS study, 73% of public-land hunters stayed within half a kilometer (about 550 yd) of a road, and hunter numbers roughly tripled for every kilometer closer to a road. Ground past that line, or across a creek or up a steep climb, sees far fewer people.</p>
     <p><b>2. Find bedding cover.</b> Thick cover, benches, ridge points and the downwind sides of points. Mississippi State tracked 60 bucks: the beds they returned to most all had dense screening cover.</p>
     <p><b>3. Find food.</b> Crop fields, food plots, clearcuts, oak flats, meadows. On satellite view, look for openings and color changes in the timber.</p>
@@ -2855,7 +2939,7 @@ const LESSONS = [
     b: `<p><b>On the map:</b> a creek with flat, low banks (contour lines far apart where they touch the water), or a narrow spot in a slough.</p><p><b>Why it works:</b> deer avoid steep, cut banks and cross where it's easy. Trails from both sides meet there.</p><p><b>Hunt it:</b> just downwind of the crossing. They also make great access: wading a creek puts you where other hunters won't go.</p>` },
   { k: "north", t: "North-facing slopes", svg: SV(`<path d="M27 4l6 14h-12z" fill="#5b7cfa"/><text x="24" y="30" font-size="10" fill="#5b7cfa" stroke="none">N</text>`),
     b: `<p><b>On the map:</b> slopes where the contours step down toward the north.</p><p><b>Why it works:</b> less sun, cooler, wetter, thicker cover. Elk and mule deer bed there in warm weather.</p><p><b>Hunt it:</b> early season and warm spells, especially benches on north faces.</p>` },
-  { k: null, t: "Thermals and wind", svg: SV(`<path d="M6 34L48 8" stroke="#888"/><path d="M18 22l6-10M24 12l-5 1M24 12l1 5" stroke="#e8601c"/><path d="M36 20l-6 10M30 30l5-1M30 30l-1-5" stroke="#7a5ea8"/>`),
+  { k: null, t: "Thermals and wind", svg: SV(`<path d="M6 34L48 8" stroke="#888"/><path d="M18 22l6-10M24 12l-5 1M24 12l1 5" stroke="#f2542d"/><path d="M36 20l-6 10M30 30l5-1M30 30l-1-5" stroke="#7a5ea8"/>`),
     b: `<p><b>How they work:</b> as the sun warms a slope, air rises uphill; as it cools in the evening, air sinks downhill and pours down draws. It takes only 50–100 ft of elevation change to matter. Steady wind over about 15 mph overrides thermals.</p><p><b>Use it:</b> in the morning, once air is rising, sit above where deer are so scent goes up and away. In the evening, sit below or to the side as air sinks. Try the Wind check on any waypoint to see it animated.</p>` },
 ];
 const LSRC = {
@@ -2962,7 +3046,7 @@ function costFor(d, drive){
   const vehicles = Math.ceil(H / 4), gas = drive.mi * 2 / Math.max(5, +trip.mpg) * +trip.gas * vehicles;
   const lodgeNight = trip.lodging === "custom" ? +trip.lodgeRate : LODGE[trip.lodging][1] * (trip.lodging === "motel" ? Math.ceil(H / 2) : trip.lodging === "campground" ? Math.ceil(H / 4) : 1);
   const travelDays = drive.h > 6 ? 2 : drive.h > 3 ? 1 : 0;
-  const parts = [["Licenses & permits", licEach * H, "#e8601c"], ["Fuel", gas, "#2a7fff"], ["Lodging", lodgeNight * nights, "#7a5ea8"],
+  const parts = [["Licenses & permits", licEach * H, "#f2542d"], ["Fuel", gas, "#2a7fff"], ["Lodging", lodgeNight * nights, "#7a5ea8"],
     ["Food", +trip.food * (+trip.days + travelDays) * H, "#2f8f4e"], ["Processing", PROC[trip.process][1] * +trip.animals, "#8b5a2b"], ["Ice, bait, misc.", +trip.misc, "#9a9a8a"]];
   const total = parts.reduce((s, p) => s + p[1], 0);
   return { d, drive, res, nights, lic, licEach, parts, total, each: total / H, vehicles };
@@ -3223,14 +3307,14 @@ $("#helpBtn").onclick = () => openHelp("start");
 
 /* ---------- Map legend: lists whatever is showing right now ---------- */
 const LEG = {
-  pad: [["fill", "#2f8f4e", "Public land, open access"], ["fill", "#d39a1c", "Public land, permit or seasonal"], ["fill", "#b3392f", "Public land, closed"]],
+  pad: [["fill", "#2f8f4e", "Huntable public land (state rules)"], ["fill", "#d39a1c", "Hunting by permit / special rules"], ["fill", "#4a8fb5", "Check first: hunting often limited"], ["dashfill", "#8d8d8d", "Public, but no hunting (parks, golf…)"]],
   landlock: [["dashfill", "#b3392f", "Possibly landlocked (no public road access)"]],
   txaph: [["fill", "#1f7a3a", "TX public hunting land (APH permit)"]],
   txdove: [["fill", "#c9a227", "TX dove & small game lease"]],
   arwma: [["fill", "#1f7a3a", "AR WMA boundary"]],
-  txwt: [["line", "#e8601c", "TX whitetail unit"]], txmd: [["line", "#8b5a2b", "TX mule deer unit"]], txph: [["line", "#c46a00", "TX pronghorn unit"]],
+  txwt: [["line", "#f2542d", "TX whitetail unit"]], txmd: [["line", "#8b5a2b", "TX mule deer unit"]], txph: [["line", "#c46a00", "TX pronghorn unit"]],
   txcwd: [["dash", "#b3392f", "TX CWD zone"]], nmgmu: [["line", "#7a5ea8", "NM Game Management Unit"]],
-  ardeer: [["line", "#e8601c", "AR deer zone"]], arturkey: [["line", "#2a7fff", "AR turkey zone"]], arbear: [["line", "#6b4f2a", "AR bear zone"]],
+  ardeer: [["line", "#f2542d", "AR deer zone"]], arturkey: [["line", "#2a7fff", "AR turkey zone"]], arbear: [["line", "#6b4f2a", "AR bear zone"]],
   arelk: [["line", "#7a5ea8", "AR elk zone"]], arcwd: [["dash", "#b3392f", "AR CWD zone"]],
   txparcel: [["line", "#555", "TX property lines (tap for owner)"]], arparcel: [["line", "#ffd23f", "AR property lines (tap for owner)"]],
   hill: [["grad", "linear-gradient(90deg,#3a3a3a,#e6e6e6)", "Shaded relief (light = facing sun)"]],
@@ -3260,14 +3344,15 @@ function renderLegend(){
     if (rows.length) groups.push(`<h6>${t}</h6>` + rows.join("")); });
   const mine = [];
   if (heat && map.hasLayer(heat)) mine.push(legRow("grad", "linear-gradient(90deg,#ffdc28,#ff3c0a)", "Spot finder heat (better →)"));
-  if (pins._ms.length) mine.push(legRow("pin", "#e8601c", "Spot pin, grade A", "1"), legRow("pin", "#d39a1c", "Spot pin, grade B", "2"), legRow("pin", "#7d8a6d", "Spot pin, grade C", "3"));
+  if (pins._ms.length) mine.push(legRow("pin", "#f2542d", "Spot pin, grade A", "1"), legRow("pin", "#d39a1c", "Spot pin, grade B", "2"), legRow("pin", "#7d8a6d", "Spot pin, grade C", "3"));
   const types = [...new Set(wpts.map(w => w.type))];
   types.forEach(t => { const v = WTYPES[t] || WTYPES.other; mine.push(legRow("pin", v[1], v[0], v[2])); });
-  if (lines.length) mine.push(legRow("line", "#e8601c", "Saved line or route"));
-  if (routeLayer.getLayers().length) mine.push(legRow("dash", "#e8601c", "Planned walking route"));
-  if (plume) mine.push(legRow("fill", "#e8601c", "Your scent: likely bust zone"), legRow("fill", "#7a5ea8", "Your scent: possible detection"));
+  if (lines.length) mine.push(legRow("line", "#f2542d", "Saved line or route"));
+  if (routeLayer.getLayers().length) mine.push(legRow("dash", "#f2542d", "Planned walking route"));
+  if (plume) mine.push(legRow("fill", "#f2542d", "Your scent: likely bust zone"), legRow("fill", "#7a5ea8", "Your scent: possible detection"));
+  if (corrLayer.getLayers().length) mine.push(legRow("dash", "#c2185b", "Predicted travel corridor (not a real trail)"), legRow("pt", "#6b8e23", "Corridor end: likely bedding cover"), legRow("pt", "#e0a019", "Corridor end: likely food"));
   if (featLayer && featOn) mine.push(legRow("fill", FCOL[featOn], "Scan feature: " + FEAT_LABEL[featOn]));
-  if (signLayer.getLayers().length) mine.push(legRow("dash", "#8b5a2b", "Rub line (arrow = travel direction)"), legRow("dashfill", "#6b8e23", "Probable bedding area"), legRow("fill", "#c0392b", "Scrape area"), legRow("pin", "#e8601c", "Suggested setup", "★"));
+  if (signLayer.getLayers().length) mine.push(legRow("dash", "#8b5a2b", "Rub line (arrow = travel direction)"), legRow("dashfill", "#6b8e23", "Probable bedding area"), legRow("fill", "#c0392b", "Scrape area"), legRow("pin", "#f2542d", "Suggested setup", "★"));
   if (locLayer.getLayers().length) mine.push(legRow("pt", "#2a7fff", "Your location"));
   if (mine.length) groups.push(`<h6>Your map</h6>` + mine.join(""));
   box.innerHTML = `<button class="leg-tog" aria-expanded="${open}">Legend <span>${open ? "▾" : "▸"}</span></button>` +
@@ -3280,6 +3365,21 @@ legCtl.addTo(map);
 let legT; map.on("layeradd layerremove", () => { clearTimeout(legT); legT = setTimeout(renderLegend, 150); });
 drawWpts(); drawLines(); renderMine();
 
+
+/* Predicted travel corridors from the last scan */
+const corrLayer = L.layerGroup().addTo(map);
+function drawCorr(list){
+  corrLayer.clearLayers(); if (!list || !list.length || !$("#showCorr").checked) return;
+  list.forEach((c, n) => { if (!c.ll || c.ll.length < 2) return;
+    L.polyline(c.ll, { color: "#fff", weight: 7, opacity: .55, lineCap: "round", interactive: false }).addTo(corrLayer);
+    L.polyline(c.ll, { color: "#c2185b", weight: 3.5, opacity: .95, dashArray: "2 7", lineCap: "round" }).addTo(corrLayer)
+      .bindPopup(`<h4>Predicted travel corridor</h4><p><b>This is a prediction, not a mapped trail.</b> It's the spot finder's best guess at the easiest, best-hidden route between likely bedding cover and food, about ${Math.round(c.len * 1.0936).toLocaleString()} yd long.</p>
+        <p>It favors benches, saddles, draws, inside corners and cover edges, and avoids steep ground, open fields, roads and water.</p>
+        <p class="meta">Walk it when you scout: look for trails, tracks, rubs and droppings along the line. Where it crosses a saddle, creek or fence gap is the best stand spot.</p>`);
+    L.circleMarker(c.ll[0], { radius: 5, color: "#fff", weight: 2, fillColor: "#6b8e23", fillOpacity: 1, interactive: false }).addTo(corrLayer);
+    L.circleMarker(c.ll.at(-1), { radius: 5, color: "#fff", weight: 2, fillColor: "#e0a019", fillOpacity: 1, interactive: false }).addTo(corrLayer); });
+}
+$("#showCorr").onchange = () => { const sv = store.get("rrha_scan", null); drawCorr(sv && sv.corr); };
 
 /* ===================== v9: States tab sections · scent trail on my location · tidy overlays ===================== */
 // The sun & wind box steps aside whenever the Layers panel is open
@@ -3370,7 +3470,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "9.0 (Oct 30, 2026)";
+const APP_VERSION = "10.0 (Oct 30, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
@@ -3484,6 +3584,7 @@ const DL_SRC = [
   { id: "sat", name: "Satellite with place labels", url: () => base.Satellite._url, max: 19, kb: 30, ret: true, extra: [() => labels._url, 19, 5] },
   { id: "esri", name: "Esri Topo map", url: () => base["Esri Topo"]._url, max: 19, kb: 22 },
   { id: "hill", name: "Hillshade", url: () => hillshade._url, max: 16, kb: 10 },
+  { id: "trails", name: "Paths & two-tracks (OpenStreetMap)", sub: "The unofficial trails layer", url: () => OFM.tpl, max: 14, kb: 30, zmin: 14 },
   { id: "elev", name: "Elevation data", sub: "Slope shading and spot finder terrain", url: () => "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png", max: 15, kb: 100 },
   { id: "pad", name: "Public land boundaries", sub: "Tap any tract for who manages it, even offline", url: () => padTiles._url, max: 10, kb: 8, vector: true }
 ];
@@ -3500,7 +3601,7 @@ function dlPlan(b, z1, ids, build){
   const add = (tpl, zmax, k, zmin, up) => { for (let z = zmin || 6; z <= Math.min(z1 + (up || 0), zmax); z++){ const r = tileRange(b, z); kb += r.n * k; n += r.n;
     if (!build || n > DL_MAX) continue;
     for (let x = r.x0; x <= r.x1; x++) for (let y = r.y0; y <= r.y1; y++) urls.push(L.Util.template(tpl, { x, y, z, s: "", r: "" })); } };
-  DL_SRC.filter(s => ids.includes(s.id)).forEach(s => { add(s.url(), s.max, s.kb, 6, s.ret && RET ? 1 : 0); if (s.extra) add(s.extra[0](), s.extra[1], s.extra[2], s.extra[3]); if (s.vector) kb += 400; });
+  DL_SRC.filter(s => ids.includes(s.id)).forEach(s => { add(s.url(), s.max, s.kb, s.zmin || 6, s.ret && RET ? 1 : 0); if (s.extra) add(s.extra[0](), s.extra[1], s.extra[2], s.extra[3]); if (s.vector) kb += 400; });
   return { urls, kb, n };
 }
 const dlList = () => store.get("rrha_dl", []);
@@ -3526,7 +3627,9 @@ async function runDownload(){
   if (netOff()) { ACCT.dlMsg = ["err", "You need signal to download. Turn off offline mode or wait for a connection."]; renderAcct(); return; }
   const ids = DL_SRC.filter(s => (PREF.dlLayers || ["topo", "hill", "elev", "pad"]).includes(s.id)).map(s => s.id);
   if (!ids.length){ ACCT.dlMsg = ["err", "Pick at least one map to save."]; renderAcct(); return; }
-  const b = visibleBounds(), z1 = PREF.dlZ || 15, plan = dlPlan(b, z1, ids, true);
+  if (ids.includes("trails")){ try { OFM.tpl = await (OFM.url || (OFM.url = fetch("https://tiles.openfreemap.org/planet").then(r => r.json()).then(j => j.tiles[0]))); } catch { ACCT.dlMsg = ["err", "The trail map server didn't answer. Uncheck Paths & two-tracks or try again."]; renderAcct(); return; } }
+  const b = visibleBounds(), z1 = Math.max(PREF.dlZ || 15, ids.includes("trails") ? 14 : 0), plan = dlPlan(b, PREF.dlZ || 15, ids, true);
+  if (ids.includes("trails")) plan.urls.push("https://tiles.openfreemap.org/planet");
   if (plan.n > DL_MAX){ ACCT.dlMsg = ["err", "That area is too big at this detail. Zoom in, or pick less detail."]; renderAcct(); return; }
   const name = ($("#dlName") && $("#dlName").value.trim()) || $("#where").textContent.split("·")[0].trim() || "Saved area";
   const id = "a" + Date.now().toString(36), cache = await caches.open("rrha-dl-" + id);
@@ -3573,9 +3676,9 @@ async function offlinePad(view){
 const dlLayer = L.layerGroup();
 function drawDlBoxes(){ dlLayer.clearLayers(); if (ACCT.pick && map.hasLayer(ACCT.pick)) map.removeLayer(ACCT.pick);
   if (!(ACCT.flash > Date.now())){ if (map.hasLayer(dlLayer)) map.removeLayer(dlLayer); return; }
-  (ACCT.flashIds ? dlList().filter(d => ACCT.flashIds.includes(d.id)) : []).forEach(d => L.rectangle([[d.b[0], d.b[1]], [d.b[2], d.b[3]]], { color: "#3f5a35", weight: 3, dashArray: "8 6", fillOpacity: .08, interactive: false }).addTo(dlLayer));
+  (ACCT.flashIds ? dlList().filter(d => ACCT.flashIds.includes(d.id)) : []).forEach(d => L.rectangle([[d.b[0], d.b[1]], [d.b[2], d.b[3]]], { color: "#1d5c4d", weight: 3, dashArray: "8 6", fillOpacity: .08, interactive: false }).addTo(dlLayer));
   if (!map.hasLayer(dlLayer)) dlLayer.addTo(map);
-  if (ACCT.flashPick){ const v = visibleBounds(); ACCT.pick = L.rectangle([[v[0], v[1]], [v[2], v[3]]], { color: "#e8601c", weight: 3, fillOpacity: .08, interactive: false }).addTo(map); } }
+  if (ACCT.flashPick){ const v = visibleBounds(); ACCT.pick = L.rectangle([[v[0], v[1]], [v[2], v[3]]], { color: "#f2542d", weight: 3, fillOpacity: .08, interactive: false }).addTo(map); } }
 function flashBoxes(pick, ids){ ACCT.flash = Date.now() + 3500; ACCT.flashPick = pick; ACCT.flashIds = ids || null; drawDlBoxes(); clearTimeout(ACCT.flashT); ACCT.flashT = setTimeout(drawDlBoxes, 3600); }
 map.on("moveend", () => { if (ACCT.sec === "offline" && !$("#pane-acct").hidden){ drawDlBoxes(); paintEst(); } });
 function paintEst(){ const el = $("#dlEst"); if (!el) return; const ids = PREF.dlLayers || ["topo", "hill", "elev", "pad"], b = visibleBounds(), z1 = PREF.dlZ || 15, p = dlPlan(b, z1, ids);
@@ -3812,14 +3915,14 @@ function settingsWire(p){
   p.querySelector("#sTap").onchange = e => savePref({ tapInfo: e.target.checked });
   p.querySelector("#sLive").onchange = e => { savePref({ liveScent: e.target.checked }); liveScent(e.target.checked); };
   p.querySelector("#sWake").onchange = e => { savePref({ wake: e.target.checked }); if (e.target.checked) wake(); else if (wakeL){ wakeL.release().catch(() => {}); wakeL = null; } };
-  p.querySelector("#sBack").onclick = () => { const d = Object.assign({ app: "Red River Hunt Atlas", v: 8, saved: new Date().toISOString() }, localData(), { prefs: PREF });
+  p.querySelector("#sBack").onclick = () => { const d = Object.assign({ app: "PublicScout", v: 10, saved: new Date().toISOString() }, localData(), { prefs: PREF });
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 1)], { type: "application/json" }));
-    a.download = "hunt-atlas-backup-" + new Date().toISOString().slice(0, 10) + ".json"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    a.download = "publicscout-backup-" + new Date().toISOString().slice(0, 10) + ".json"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     ACCT.setMsg = ["ok", "Backup saved to your downloads."]; renderAcct(); };
   p.querySelector("#sRestore").onchange = async e => { const f = e.target.files[0]; if (!f) return;
     try { const d = JSON.parse(await f.text()); if (!d || !(d.wpts || d.lines || d.log)) throw new Error("x");
       applyData(mergeData(localData(), { wpts: d.wpts || [], lines: d.lines || [], log: d.log || [] })); ACCT.setMsg = ["ok", `Restored. You now have ${countStr(localData())}.`]; }
-    catch { ACCT.setMsg = ["err", "That file isn't a Hunt Atlas backup."]; }
+    catch { ACCT.setMsg = ["err", "That file isn't a PublicScout backup."]; }
     renderAcct(); };
   const on = (id, f) => { const e = p.querySelector("#" + id); if (e) e.onclick = f; };
   on("sErase", () => { ACCT.eraseAsk = true; renderAcct(); }); on("sEraseNo", () => { ACCT.eraseAsk = false; renderAcct(); });
@@ -3835,7 +3938,7 @@ function helpHtml(){
       <p><b>Move the panel:</b> drag the bar at the top of this panel, or flick it. Drag down from the top of a list to shrink it.</p>
       <p><b>Map:</b> pinch to zoom (down to about 20 ft across the screen), long-press for the spot menu, tap once to close boxes.</p>
       <p><b>Add to your home screen:</b> in Safari tap Share → Add to Home Screen. In Chrome tap ⋮ → Add to Home screen. It then opens full-screen like an app.</p></div>
-    <div class="acard"><h3>About</h3><p>Red River Hunt Atlas ${esc(APP_VERSION)}. Public land, licenses and seasons for Texas, New Mexico, Oklahoma, Arkansas and Louisiana.</p>
+    <div class="acard"><h3>About</h3><p>PublicScout ${esc(APP_VERSION)}. Public land, licenses and seasons for Texas, New Mexico, Oklahoma, Arkansas and Louisiana.</p>
       <p class="meta">Rules change, and individual WMAs have their own regulations. Check the state agency before you hunt. Land status comes from PAD-US and state agencies and can lag behind real-world changes.</p></div>`;
 }
 function helpWire(p){ p.querySelector("#hSrc").onclick = () => openHelp("src"); p.querySelector("#hTour").onclick = () => openHelp("start"); }
