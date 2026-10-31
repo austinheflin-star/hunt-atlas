@@ -1,0 +1,1415 @@
+{
+ "version": 1,
+ "updated": "2026-10-30",
+ "parcelStatusKey": {
+  "statewide-owner": "Free statewide parcel service with owner names, confirmed",
+  "statewide-owner-verify": "Statewide parcels, owner names believed included: verify service and field",
+  "statewide-verify": "Statewide parcels publicly available: find the service and check for owner names",
+  "statewide-no-owner": "Statewide parcels but owner names are not published",
+  "partial": "Only some counties public: wire county services one by one",
+  "county": "No statewide program: county GIS services one by one",
+  "restricted": "Parcels exist but are not publicly downloadable or queryable"
+ },
+ "states": [
+  {
+   "code": "AL",
+   "name": "Alabama",
+   "agency": "Alabama DCNR Wildlife and Freshwater Fisheries",
+   "agencyUrl": "https://www.outdooralabama.com",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "AK",
+   "name": "Alaska",
+   "agency": "Alaska Department of Fish and Game",
+   "agencyUrl": "https://www.adfg.alaska.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "AZ",
+   "name": "Arizona",
+   "agency": "Arizona Game and Fish Department",
+   "agencyUrl": "https://www.azgfd.com",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "AR",
+   "name": "Arkansas",
+   "agency": "Arkansas Game and Fish Commission",
+   "agencyUrl": "https://www.agfc.com",
+   "inApp": true,
+   "parcels": {
+    "status": "statewide-owner",
+    "note": "In app (AR GIS Office)",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "CA",
+   "name": "California",
+   "agency": "California Department of Fish and Wildlife",
+   "agencyUrl": "https://wildlife.ca.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "CO",
+   "name": "Colorado",
+   "agency": "Colorado Parks and Wildlife",
+   "agencyUrl": "https://cpw.state.co.us",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "CT",
+   "name": "Connecticut",
+   "agency": "CT DEEP Wildlife Division",
+   "agencyUrl": "https://portal.ct.gov/deep",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "DE",
+   "name": "Delaware",
+   "agency": "DNREC Division of Fish and Wildlife",
+   "agencyUrl": "https://dnrec.delaware.gov/fish-wildlife/",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "FL",
+   "name": "Florida",
+   "agency": "Florida Fish and Wildlife Conservation Commission",
+   "agencyUrl": "https://myfwc.com",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-owner-verify",
+    "note": "FL Dept of Revenue parcels via FGIO",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "GA",
+   "name": "Georgia",
+   "agency": "Georgia DNR Wildlife Resources Division",
+   "agencyUrl": "https://georgiawildlife.com",
+   "inApp": false,
+   "parcels": {
+    "status": "restricted",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "HI",
+   "name": "Hawaii",
+   "agency": "DLNR Division of Forestry and Wildlife",
+   "agencyUrl": "https://dlnr.hawaii.gov/dofaw/",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "ID",
+   "name": "Idaho",
+   "agency": "Idaho Department of Fish and Game",
+   "agencyUrl": "https://idfg.idaho.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "partial",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "IL",
+   "name": "Illinois",
+   "agency": "Illinois DNR",
+   "agencyUrl": "https://dnr.illinois.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "IN",
+   "name": "Indiana",
+   "agency": "Indiana DNR Fish and Wildlife",
+   "agencyUrl": "https://www.in.gov/dnr/fish-and-wildlife/",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "IA",
+   "name": "Iowa",
+   "agency": "Iowa DNR",
+   "agencyUrl": "https://www.iowadnr.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "KS",
+   "name": "Kansas",
+   "agency": "Kansas Dept of Wildlife and Parks",
+   "agencyUrl": "https://ksoutdoors.com",
+   "inApp": false,
+   "parcels": {
+    "status": "restricted",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "KY",
+   "name": "Kentucky",
+   "agency": "Kentucky Dept of Fish and Wildlife Resources",
+   "agencyUrl": "https://fw.ky.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "LA",
+   "name": "Louisiana",
+   "agency": "Louisiana Dept of Wildlife and Fisheries",
+   "agencyUrl": "https://www.wlf.louisiana.gov",
+   "inApp": true,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "ME",
+   "name": "Maine",
+   "agency": "Maine Dept of Inland Fisheries and Wildlife",
+   "agencyUrl": "https://www.maine.gov/ifw/",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "MD",
+   "name": "Maryland",
+   "agency": "Maryland DNR Wildlife and Heritage",
+   "agencyUrl": "https://dnr.maryland.gov/wildlife/",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "MA",
+   "name": "Massachusetts",
+   "agency": "MassWildlife",
+   "agencyUrl": "https://www.mass.gov/orgs/division-of-fisheries-and-wildlife",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-owner-verify",
+    "note": "MassGIS L3 parcels + assessor table",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "MI",
+   "name": "Michigan",
+   "agency": "Michigan DNR",
+   "agencyUrl": "https://www.michigan.gov/dnr",
+   "inApp": false,
+   "parcels": {
+    "status": "partial",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "MN",
+   "name": "Minnesota",
+   "agency": "Minnesota DNR",
+   "agencyUrl": "https://www.dnr.state.mn.us",
+   "inApp": false,
+   "parcels": {
+    "status": "partial",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "MS",
+   "name": "Mississippi",
+   "agency": "Mississippi Dept of Wildlife, Fisheries and Parks",
+   "agencyUrl": "https://www.mdwfp.com",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "MO",
+   "name": "Missouri",
+   "agency": "Missouri Department of Conservation",
+   "agencyUrl": "https://mdc.mo.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "MT",
+   "name": "Montana",
+   "agency": "Montana Fish, Wildlife and Parks",
+   "agencyUrl": "https://fwp.mt.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-owner",
+    "note": "Montana State Library cadastral",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "NE",
+   "name": "Nebraska",
+   "agency": "Nebraska Game and Parks Commission",
+   "agencyUrl": "https://outdoornebraska.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "restricted",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "NV",
+   "name": "Nevada",
+   "agency": "Nevada Department of Wildlife",
+   "agencyUrl": "https://www.ndow.org",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "NH",
+   "name": "New Hampshire",
+   "agency": "New Hampshire Fish and Game",
+   "agencyUrl": "https://www.wildlife.nh.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "NJ",
+   "name": "New Jersey",
+   "agency": "NJ Division of Fish and Wildlife",
+   "agencyUrl": "https://dep.nj.gov/njfw/",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "Owner names may be withheld (privacy law)",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "NM",
+   "name": "New Mexico",
+   "agency": "New Mexico Department of Game and Fish",
+   "agencyUrl": "https://wildlife.dgf.nm.gov",
+   "inApp": true,
+   "parcels": {
+    "status": "restricted",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "NY",
+   "name": "New York",
+   "agency": "NYS DEC",
+   "agencyUrl": "https://dec.ny.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "partial",
+    "note": "NYS GIS parcels (38 counties)",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "NC",
+   "name": "North Carolina",
+   "agency": "NC Wildlife Resources Commission",
+   "agencyUrl": "https://www.ncwildlife.org",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-owner-verify",
+    "note": "NC OneMap parcels",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "ND",
+   "name": "North Dakota",
+   "agency": "North Dakota Game and Fish",
+   "agencyUrl": "https://gf.nd.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "OH",
+   "name": "Ohio",
+   "agency": "Ohio DNR Division of Wildlife",
+   "agencyUrl": "https://ohiodnr.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "OK",
+   "name": "Oklahoma",
+   "agency": "Oklahoma Dept of Wildlife Conservation",
+   "agencyUrl": "https://www.wildlifedepartment.com",
+   "inApp": true,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "OR",
+   "name": "Oregon",
+   "agency": "Oregon Dept of Fish and Wildlife",
+   "agencyUrl": "https://myodfw.com",
+   "inApp": false,
+   "parcels": {
+    "status": "restricted",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "PA",
+   "name": "Pennsylvania",
+   "agency": "Pennsylvania Game Commission",
+   "agencyUrl": "https://www.pgc.pa.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "RI",
+   "name": "Rhode Island",
+   "agency": "RI DEM Fish and Wildlife",
+   "agencyUrl": "https://dem.ri.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "SC",
+   "name": "South Carolina",
+   "agency": "SC Department of Natural Resources",
+   "agencyUrl": "https://www.dnr.sc.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "partial",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "SD",
+   "name": "South Dakota",
+   "agency": "South Dakota Game, Fish and Parks",
+   "agencyUrl": "https://gfp.sd.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "restricted",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "TN",
+   "name": "Tennessee",
+   "agency": "Tennessee Wildlife Resources Agency",
+   "agencyUrl": "https://www.tn.gov/twra",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "TN Comptroller parcels",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "TX",
+   "name": "Texas",
+   "agency": "Texas Parks and Wildlife Department",
+   "agencyUrl": "https://tpwd.texas.gov",
+   "inApp": true,
+   "parcels": {
+    "status": "statewide-owner",
+    "note": "In app (TxGIO StratMap)",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "UT",
+   "name": "Utah",
+   "agency": "Utah Division of Wildlife Resources",
+   "agencyUrl": "https://wildlife.utah.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-no-owner",
+    "note": "UGRC parcels (owner names not published)",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "VT",
+   "name": "Vermont",
+   "agency": "Vermont Fish and Wildlife",
+   "agencyUrl": "https://vtfishandwildlife.com",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "VA",
+   "name": "Virginia",
+   "agency": "Virginia Dept of Wildlife Resources",
+   "agencyUrl": "https://dwr.virginia.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "county",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "WA",
+   "name": "Washington",
+   "agency": "Washington Dept of Fish and Wildlife",
+   "agencyUrl": "https://wdfw.wa.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-no-owner",
+    "note": "WA Current Parcels (geo.wa.gov)",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "WV",
+   "name": "West Virginia",
+   "agency": "West Virginia DNR",
+   "agencyUrl": "https://wvdnr.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "WI",
+   "name": "Wisconsin",
+   "agency": "Wisconsin DNR",
+   "agencyUrl": "https://dnr.wisconsin.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-owner-verify",
+    "note": "SCO statewide parcels",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  },
+  {
+   "code": "WY",
+   "name": "Wyoming",
+   "agency": "Wyoming Game and Fish Department",
+   "agencyUrl": "https://wgfd.wyo.gov",
+   "inApp": false,
+   "parcels": {
+    "status": "statewide-verify",
+    "note": "",
+    "service": null,
+    "ownerField": null
+   },
+   "huntUnits": {
+    "service": null,
+    "layers": []
+   },
+   "publicLand": "PAD-US (national, already in app)",
+   "todo": [
+    "seasons 2026-27",
+    "license fees res/nonres",
+    "key rules",
+    "public areas list",
+    "hunt-unit GIS layers",
+    "parcel service + owner field",
+    "rut timing",
+    "nonresident cost"
+   ]
+  }
+ ]
+}

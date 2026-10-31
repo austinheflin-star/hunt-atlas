@@ -385,6 +385,27 @@ aside > nav, aside > header, .sheet-handle{flex:none}
   .leaflet-control-attribution{font-size:9px;max-width:58vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .offbar{top:calc(56px + env(safe-area-inset-top,0px))}
 }
+/* ---------- v9 ---------- */
+body.lyr-open .sunbox{display:none!important}
+.mile{background:none;border:0}
+.zlt13 .mile{display:none}
+.mile span{display:inline-block;transform:translate(-50%,-50%);background:#fffdf6;color:#7a3b12;border:1.5px solid #a0522d;border-radius:3px;font:700 10px/1.2 var(--mono);padding:0 3px;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.stseg{overflow-x:auto;scrollbar-width:none;position:sticky;top:-14px;z-index:2;background:var(--panel);box-shadow:0 2px 0 var(--panel)}
+.stseg::-webkit-scrollbar{display:none}
+.stseg button{flex:0 0 auto;padding:8px 11px}
+.stbody{min-height:200px}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.facts button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border:1px solid var(--rule);border-radius:8px;background:var(--chip);color:var(--ink);padding:10px 12px;text-align:left;cursor:pointer;font:inherit}
+.facts button:hover{border-color:var(--blaze)}
+.facts b{font:600 22px/1 var(--mono);color:var(--blaze);font-variant-numeric:tabular-nums}
+.facts span{font-size:13px;color:var(--muted)}
+.spchips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.spchips .chip{font:600 13px var(--body);border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer}
+.spchips .chip[aria-pressed=true]{background:var(--olive);color:var(--panel);border-color:var(--olive)}
+.rulelist li{margin:8px 0}
+.plq{width:100%;font:15px var(--body);padding:8px 10px;border:1px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);margin:6px 0 10px}
+.plgo{border:0;background:none;color:var(--olive);font:600 13px var(--body);padding:0;cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:2px}
+
 </style>
 </head>
 <body>
@@ -847,7 +868,7 @@ function askClaude(q){
   const a = document.createElement("a"); a.href = QA_URL + "#" + slug; a.target = "_blank"; a.rel = "noopener"; document.body.appendChild(a); a.click(); a.remove();
 }
 let current = "TX";
-function renderState(code, fly){
+function renderStateV1(code, fly){
   current = code; savePref({ state: code });
   const s = D[code];
   const btns = Object.keys(D).map(k => `<button aria-pressed="${k===code}" data-s="${k}">${k}</button>`).join("");
@@ -909,9 +930,13 @@ L.TileLayer.prototype.options.keepBuffer = 4; L.TileLayer.prototype.options.upda
 L.Polyline.prototype.options.smoothFactor = 1.5;
 const map = L.map("map", { zoomControl: true, preferCanvas: true, maxZoom: 20, renderer: L.canvas({ padding: .6, tolerance: isPhone() ? 6 : 0 }),
   inertiaDeceleration: 2600, wheelPxPerZoomLevel: 90, bounceAtZoomLimits: false, tapTolerance: 18 }).setView(PREF.c || [32.5, -98], PREF.z || 5);
+// Phones have 2-3x sharper screens: satellite asks for the next zoom's imagery so it stays crisp (Esri imagery goes to zoom 19)
+const RET = (window.devicePixelRatio || 1) > 1.4;
+const usgsTopo = L.tileLayer("https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}", { maxZoom: 16, maxNativeZoom: 16, attribution: "USGS The National Map" });
+const topoHi = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", { minZoom: 17, maxZoom: 20, maxNativeZoom: 19, attribution: "© Esri" });
 const base = {
-  "Satellite": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 19, attribution: "Imagery © Esri" }),
-  "USGS Topo": L.tileLayer("https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 16, attribution: "USGS The National Map" }),
+  "Satellite": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", RET ? { tileSize: 128, zoomOffset: 1, maxNativeZoom: 18, maxZoom: 20, attribution: "Imagery © Esri, Maxar, Earthstar" } : { maxZoom: 20, maxNativeZoom: 19, attribution: "Imagery © Esri, Maxar, Earthstar" }),
+  "USGS Topo": L.featureGroup([topoHi, usgsTopo]),
   "Esri Topo": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 19, attribution: "© Esri" })
 };
 const labels = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", { maxZoom: 20, maxNativeZoom: 19, opacity: .9 });
@@ -971,7 +996,7 @@ const ExportLayer = L.Layer.extend({
     img.once("load", () => fin(true)); img.once("error", () => fin(false));
   }
 });
-const mvum = new ExportLayer("https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_MVUM_01/MapServer", { layers: "show:1,2", minZoom: 11 });
+// Forest Service roads (MVUM): see v9 vector layers below
 // Arkansas parcels with owner names (Arkansas GIS Office statewide cadastre)
 const AR_PARCELS = "https://gis.arkansas.gov/arcgis/rest/services/FEATURESERVICES/Planning_Cadastre/MapServer/6";
 const AR_BOX = L.latLngBounds([33.0, -94.62], [36.5, -89.64]);
@@ -1055,7 +1080,7 @@ const arDeerZones = zoneLayer(1, "#e8601c", "deer"), arTurkeyZones = zoneLayer(3
 function agsLayer(o){
   const isPt = o.kind === "point";
   const lyr = L.geoJSON(null, {
-    style: () => ({ color: o.color, weight: o.weight || 2, fillColor: o.color, fillOpacity: o.fill ?? .06, dashArray: o.dash || null }),
+    style: f => o.style ? o.style(f.properties || {}, map.getZoom()) : ({ color: o.color, weight: o.weight || 2, fillColor: o.color, fillOpacity: o.fill ?? .06, dashArray: o.dash || null }),
     pointToLayer: (f, ll) => L.circleMarker(ll, { radius: 6, color: "#fff", weight: 2, fillColor: o.color, fillOpacity: 1 }),
     onEachFeature: (f, l) => {
       const lab = o.label && o.label(f.properties);
@@ -1063,6 +1088,7 @@ function agsLayer(o){
       if (o.popup) l.bindPopup(() => o.popup(f.properties));
     }
   });
+  if (o.style) map.on("zoomend", () => { if (map.hasLayer(lyr)) lyr.setStyle(f => o.style(f.properties || {}, map.getZoom())); });
   let ctl = null;
   const q = async env => {
     const p = new URLSearchParams({ where: o.where || "1=1", outFields: o.fields || "*", returnGeometry: "true", outSR: "4326", f: "geojson", geometryPrecision: "5" });
@@ -1084,7 +1110,7 @@ function agsLayer(o){
       if (map.getZoom() < (o.minZoom || 0)){ lyr.clearLayers(); have = null; return; }
       const v = map.getBounds(); if (have && have.contains(v)) return;
       const b = v.pad(.35), s = ++seq;
-      try { const j = await q(envStr(b)); if (s !== seq) return; lyr.clearLayers(); lyr.addData(j); have = b; } catch {}
+      try { const j = await q(envStr(b)); if (s !== seq) return; lyr.clearLayers(); lyr.addData(j); if (o.onData) o.onData(lyr, j); have = b; } catch {}
     };
     map.on("moveend", () => { clearTimeout(tm); tm = setTimeout(upd, 300); });
     lyr.on("add", upd);
@@ -1176,11 +1202,195 @@ const harvestLayer = agsLayer({ name: "Forest Service timber harvests", url: HAR
     return `<h4>${esc(pick(p, /ACTIVITY_NAME|ACTIVITY|TREATMENT/i) || "Timber harvest")}</h4><div>${y ? "Completed " + y : "Date not listed"}</div>
     <p>${age == null ? "Cutovers grow back into thick cover and browse." : age <= 2 ? "Fresh cut: open now, browse coming in." : age <= 15 ? `About ${age} years old: thick young forest, prime bedding cover and browse for deer.` : "Older cut, closing back in."}</p><p class="meta">USDA Forest Service FACTS activities.</p>`; } });
 const wetlands = new ExportLayer("https://fwspublicservices.wim.usgs.gov/wetlandsmapservice/rest/services/Wetlands/MapServer", { minZoom: 12, opacity: .75 });
-const fsTrails = new ExportLayer("https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_TrailNFSPublish_01/MapServer", { minZoom: 11 });
+// Forest Service trails: see v9 vector layers below
 const fsRec = new ExportLayer("https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RecreationSites_01/MapServer", { minZoom: 10 });
 const counties = new ExportLayer("https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer", { minZoom: 6, opacity: .8 });
 /* ---------- Layers panel: grouped, with toggles, legends and loading spinners ---------- */
 const SLOPE_LEG = [["#fad728","15–25°"],["#f06e14","25–35°"],["#cd1e28","35–45°"],["#7828a0","45°+"]];
+
+/* ===================== v9: sharper maps, crisp contours, trails from four sources ===================== */
+const lineW = (z, base) => +(base * (z <= 11 ? .7 : z <= 12 ? .85 : z <= 14 ? 1 : z <= 16 ? 1.3 : 1.7)).toFixed(2);
+const imgLoad = src => new Promise((ok, no) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => ok(i); i.onerror = () => no(new Error("tile " + src)); i.src = src; });
+
+// Crisp contour lines drawn from the USGS elevation model at any zoom (40 ft, 20 ft, then 10 ft as you zoom in)
+const ELEV = new Map();
+async function elevTile(z, x, y){
+  const k = z + "/" + x + "/" + y; if (ELEV.has(k)) return ELEV.get(k);
+  const p = imgLoad(`https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${z}/${x}/${y}.png`).then(im => {
+    const c = document.createElement("canvas"); c.width = c.height = 256; const g = c.getContext("2d", { willReadFrequently: true }); g.drawImage(im, 0, 0);
+    const d = g.getImageData(0, 0, 256, 256).data, e = new Float32Array(65536);
+    for (let i = 0; i < 65536; i++) e[i] = (d[i*4] * 256 + d[i*4+1] + d[i*4+2] / 256 - 32768) * 3.28084;
+    return e; });
+  ELEV.set(k, p); if (ELEV.size > 80) ELEV.delete(ELEV.keys().next().value);
+  p.catch(() => ELEV.delete(k)); return p;
+}
+const ContourLayer = L.GridLayer.extend({
+  options: { minZoom: 12, maxZoom: 20, pane: "overlayPane", zIndex: 5, updateWhenZooming: false, color: "#7a4a22" },
+  createTile(c, done){
+    const dpr = Math.min(3, window.devicePixelRatio || 1), cv = document.createElement("canvas"); cv.width = cv.height = 256 * dpr;
+    const sz = this.getTileSize(); cv.style.width = sz.x + "px"; cv.style.height = sz.y + "px";
+    const ez = Math.min(c.z, 15), sc = 2 ** (c.z - ez), px = c.x / sc, py = c.y / sc, tx = Math.floor(px), ty = Math.floor(py);
+    const ox = (px - tx) * 256, oy = (py - ty) * 256, span = 256 / sc;           // the part of the elevation tile this map tile covers
+    elevTile(ez, tx, ty).then(e => {
+      const N = c.z <= 13 ? 96 : 128, G = new Float32Array((N + 1) * (N + 1));
+      const at = (u, v) => { u = Math.max(0, Math.min(255, u)); v = Math.max(0, Math.min(255, v)); const u0 = Math.floor(u), v0 = Math.floor(v), u1 = Math.min(255, u0 + 1), v1 = Math.min(255, v0 + 1), fu = u - u0, fv = v - v0;
+        return (e[v0*256+u0] * (1-fu) + e[v0*256+u1] * fu) * (1-fv) + (e[v1*256+u0] * (1-fu) + e[v1*256+u1] * fu) * fv; };
+      for (let j = 0; j <= N; j++) for (let i = 0; i <= N; i++) G[j*(N+1)+i] = at(ox + i / N * span - .5, oy + j / N * span - .5);
+      // light smoothing removes the stair-steps the elevation tiles have on flat ground
+      const S = new Float32Array(G.length);
+      for (let j = 0; j <= N; j++) for (let i = 0; i <= N; i++){ let s = 0, n = 0; for (let b = -1; b <= 1; b++) for (let a = -1; a <= 1; a++){ const ii = i + a, jj = j + b; if (ii < 0 || jj < 0 || ii > N || jj > N) continue; s += G[jj*(N+1)+ii]; n++; } S[j*(N+1)+i] = s / n; }
+      const step = c.z <= 14 ? 40 : c.z === 15 ? 20 : 10, idx = step * 5;
+      let lo = Infinity, hi = -Infinity; for (const v of S){ if (v < lo) lo = v; if (v > hi) hi = v; }
+      const g = cv.getContext("2d"), k = 256 * dpr / N; g.lineCap = "round"; const lab = [];
+      for (let lev = Math.ceil(lo / step) * step; lev <= hi; lev += step){
+        const isIdx = lev % idx === 0; g.beginPath();
+        for (let j = 0; j < N; j++) for (let i = 0; i < N; i++){
+          const a = S[j*(N+1)+i], b = S[j*(N+1)+i+1], d2 = S[(j+1)*(N+1)+i], cc = S[(j+1)*(N+1)+i+1];
+          const m = (a > lev ? 8 : 0) | (b > lev ? 4 : 0) | (cc > lev ? 2 : 0) | (d2 > lev ? 1 : 0); if (m === 0 || m === 15) continue;
+          const t = (p, q) => (lev - p) / (q - p);
+          const T = [i + t(a, b), j], R = [i + 1, j + t(b, cc)], B = [i + t(d2, cc), j + 1], Lf = [i, j + t(a, d2)];
+          const segs = { 1:[[Lf,B]], 2:[[B,R]], 3:[[Lf,R]], 4:[[T,R]], 5:[[Lf,T],[B,R]], 6:[[T,B]], 7:[[Lf,T]], 8:[[Lf,T]], 9:[[T,B]], 10:[[T,R],[Lf,B]], 11:[[T,R]], 12:[[Lf,R]], 13:[[B,R]], 14:[[Lf,B]] }[m];
+          for (const [p, q] of segs){ g.moveTo(p[0]*k, p[1]*k); g.lineTo(q[0]*k, q[1]*k);
+            if (isIdx && c.z >= 14 && i % 40 === 20 && lab.length < 6) lab.push([(p[0]+q[0])/2*k, (p[1]+q[1])/2*k, Math.atan2(q[1]-p[1], q[0]-p[0]), lev]); }
+        }
+        g.strokeStyle = this.options.color; g.globalAlpha = isIdx ? .85 : .55; g.lineWidth = (isIdx ? 1.3 : .7) * dpr * (c.z >= 17 ? 1.2 : 1); g.stroke();
+      }
+      g.globalAlpha = 1; g.font = `600 ${10 * dpr}px "IBM Plex Mono",monospace`; g.textAlign = "center"; g.textBaseline = "middle";
+      lab.forEach(([x, y, ang, lev]) => { g.save(); g.translate(x, y); let r = ang; if (r > Math.PI / 2) r -= Math.PI; if (r < -Math.PI / 2) r += Math.PI; g.rotate(r);
+        g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(255,255,255,.9)"; g.strokeText(Math.round(lev), 0, 0); g.fillStyle = this.options.color; g.fillText(Math.round(lev), 0, 0); g.restore(); });
+      done(null, cv);
+    }).catch(() => done(null, cv));
+    return cv;
+  }
+});
+const contours = new ContourLayer();
+const contoursHi = new ContourLayer({ minZoom: 17 });
+
+// Paths, two-tracks and informal trails from OpenStreetMap (the same community data onX-style apps add on top of official trails)
+const OFM = { url: null, tiles: new Map() };
+async function ofmTile(x, y){
+  if (!OFM.url){ OFM.url = fetch("https://tiles.openfreemap.org/planet").then(r => r.json()).then(j => j.tiles[0]).catch(e => { OFM.url = null; throw e; }); }
+  const tpl = await OFM.url, k = x + "/" + y;
+  if (OFM.tiles.has(k)) return OFM.tiles.get(k);
+  const p = fetch(tpl.replace("{z}", 14).replace("{x}", x).replace("{y}", y)).then(r => { if (!r.ok) throw new Error("OSM " + r.status); return r.arrayBuffer(); }).then(mvtLines);
+  OFM.tiles.set(k, p); if (OFM.tiles.size > 120) OFM.tiles.delete(OFM.tiles.keys().next().value); p.catch(() => OFM.tiles.delete(k)); return p;
+}
+// Minimal Mapbox Vector Tile reader: just the trail-type lines and their names
+function mvtLines(buf){
+  const b = new Uint8Array(buf), out = { lines: [], names: [] };
+  const rd = (s, e, f) => { let p = s; const vi = () => { let r = 0, m = 1, x; do { x = b[p++]; r += (x & 127) * m; m *= 128; } while (x & 128); return r; };
+    while (p < e){ const t = vi(), fn = Math.floor(t / 8), w = t & 7;
+      if (w === 0) f(fn, 0, vi()); else if (w === 2){ const l = vi(); f(fn, 2, p, p + l); p += l; } else if (w === 1){ f(fn, 1, p); p += 8; } else if (w === 5){ f(fn, 5, p); p += 4; } else break; } };
+  const str = (s, e) => new TextDecoder().decode(b.subarray(s, e));
+  const packed = (s, e) => { const a = []; let p = s; while (p < e){ let r = 0, m = 1, x; do { x = b[p++]; r += (x & 127) * m; m *= 128; } while (x & 128); a.push(r); } return a; };
+  rd(0, b.length, (fn, w, s, e) => { if (fn !== 3 || w !== 2) return;
+    let name = "", keys = [], vals = [], feats = [], ext = 4096;
+    rd(s, e, (f2, w2, s2, e2) => { if (f2 === 1) name = str(s2, e2); else if (f2 === 3) keys.push(str(s2, e2)); else if (f2 === 5 && w2 === 0) ext = s2;
+      else if (f2 === 4){ let v = null; rd(s2, e2, (f3, w3, s3, e3) => { if (f3 === 1) v = str(s3, e3); else if (w3 === 0) v = s3; }); vals.push(v); }
+      else if (f2 === 2) feats.push([s2, e2]); });
+    if (name !== "transportation" && name !== "transportation_name") return;
+    for (const [fs, fe] of feats){ let tags = [], geom = [], type = 0;
+      rd(fs, fe, (f3, w3, s3, e3) => { if (f3 === 2) tags = packed(s3, e3); else if (f3 === 3) type = s3; else if (f3 === 4) geom = packed(s3, e3); });
+      if (type !== 2) continue; const P = {}; for (let i = 0; i < tags.length; i += 2) P[keys[tags[i]]] = vals[tags[i+1]];
+      if (!/^(path|track)$/.test(P.class)) continue;
+      const parts = []; let x = 0, y = 0, i = 0, cur = null;
+      while (i < geom.length){ const cmd = geom[i] & 7, cnt = geom[i] >> 3; i++;
+        for (let n = 0; n < cnt && cmd !== 7; n++){ const dx = geom[i++], dy = geom[i++]; x += (dx >> 1) ^ -(dx & 1); y += (dy >> 1) ^ -(dy & 1);
+          if (cmd === 1){ cur = [[x / ext * 256, y / ext * 256]]; parts.push(cur); } else cur.push([x / ext * 256, y / ext * 256]); } }
+      (name === "transportation" ? out.lines : out.names).push({ c: P.class, s: P.subclass || "", n: P.name || P["name:latin"] || "", parts });
+    } });
+  return out;
+}
+const OsmTrailLayer = L.GridLayer.extend({
+  options: { minZoom: 13, maxZoom: 20, pane: "overlayPane", zIndex: 6, updateWhenZooming: false },
+  createTile(c, done){
+    const dpr = Math.min(3, window.devicePixelRatio || 1), cv = document.createElement("canvas"); cv.width = cv.height = 256 * dpr; cv.style.width = cv.style.height = "256px";
+    const sc = 2 ** (c.z - 14), tx = Math.floor(c.x / sc), ty = Math.floor(c.y / sc), ox = (c.x / sc - tx) * 256, oy = (c.y / sc - ty) * 256;
+    ofmTile(tx, ty).then(t => {
+      const g = cv.getContext("2d"), k = sc * dpr, tr = ([x, y]) => [(x - ox) * k, (y - oy) * k];
+      g.lineCap = "round"; g.lineJoin = "round";
+      const draw = (f, col, w, dash) => { g.beginPath(); f.parts.forEach(pt => pt.forEach((p, i) => { const [X, Y] = tr(p); i ? g.lineTo(X, Y) : g.moveTo(X, Y); }));
+        g.setLineDash(dash.map(d => d * dpr)); g.lineWidth = w * dpr; g.strokeStyle = col; g.stroke(); };
+      const W = lineW(c.z, 1.6);
+      t.lines.filter(f => f.c === "track").forEach(f => { draw(f, "rgba(255,255,255,.75)", W + 1.4, []); draw(f, "#7b4b1d", W, [6, 3]); });
+      t.lines.filter(f => f.c === "path").forEach(f => { draw(f, "rgba(255,255,255,.7)", W + 1, []); draw(f, f.s === "bridleway" ? "#6a3fa0" : "#c0392b", W * .85, [3, 3]); });
+      if (c.z >= 15){ g.setLineDash([]); g.font = `600 ${10.5 * dpr}px "Source Sans 3",sans-serif`; g.textAlign = "center"; const seen = new Set();
+        t.names.forEach(f => { if (!f.n || seen.has(f.n)) return; const pt = f.parts[0]; if (!pt || pt.length < 2) return; const m = pt[Math.floor(pt.length / 2)], [X, Y] = tr(m);
+          if (X < 10 || Y < 10 || X > 246 * dpr || Y > 246 * dpr) return; seen.add(f.n);
+          g.lineWidth = 3 * dpr; g.strokeStyle = "rgba(255,255,255,.9)"; g.strokeText(f.n, X, Y - 6 * dpr); g.fillStyle = "#5a2d0c"; g.fillText(f.n, X, Y - 6 * dpr); }); }
+      done(null, cv);
+    }).catch(e => { layerErr("osmtrails", true); done(null, cv); });
+    return cv;
+  }
+});
+const osmTrails = new OsmTrailLayer();
+
+// Marked long-distance hiking routes (Waymarked Trails, from OpenStreetMap route relations)
+const hikeRoutes = L.tileLayer("https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png", { maxNativeZoom: 18, maxZoom: 20, opacity: .85, zIndex: 7, attribution: "Hiking routes © Waymarked Trails, OpenStreetMap contributors" });
+
+// Forest Service roads open to vehicles (MVUM), drawn as lines that scale with zoom instead of a fixed server picture
+const MVUM_SYM = { 1:"Road open to all vehicles, all year", 2:"Road open to all vehicles, part of the year", 3:"Road open to highway-legal vehicles only, all year", 4:"Road open to highway-legal vehicles only, part of the year",
+  5:"Trail open to all vehicles, all year", 6:"Trail open to all vehicles, part of the year", 7:'Trail for vehicles 50" wide or less, all year', 8:'Trail for vehicles 50" wide or less, part of the year',
+  9:"Trail open to motorcycles, all year", 10:"Trail open to motorcycles, part of the year", 11:"Special designation, all year", 12:"Special designation, part of the year",
+  16:'Wheeled vehicles under 50" only, all year', 17:'Wheeled vehicles under 50" only, part of the year' };
+const SEASONAL = new Set([2, 4, 6, 8, 10, 12, 17]);
+function mvumStyle(p, z, trail){ const s = +p.symbol;
+  const col = trail ? (s === 9 || s === 10 ? "#7a5ea8" : "#b5651d") : (s === 3 || s === 4 ? "#3b3b3b" : "#6b3e14");
+  return { color: col, weight: lineW(z, trail ? 1.8 : 2.4), opacity: .95, dashArray: trail ? "4 4" : SEASONAL.has(s) ? "9 5" : null, fill: false }; }
+function mvumPopup(p, trail){
+  const open = [["Passenger cars", p.passengervehicle_datesopen], ["High-clearance", p.highclearancevehicle_datesopen], ["ATV", p.atv_datesopen], ["Motorcycle", p.motorcycle_datesopen]].filter(r => r[1]);
+  return `<h4>${esc(p.name || (trail ? "Forest Service trail" : "Forest Service road"))}${p.id ? " · " + esc(p.id) : ""}</h4><div>${esc(MVUM_SYM[+p.symbol] || "")}</div>
+    ${open.length ? `<table>${open.map(r => `<tr><td>${esc(r[0])}</td><td class="n">${esc(r[1])}</td></tr>`).join("")}</table>` : ""}
+    ${p.surfacetype ? `<div class="meta">Surface: ${esc(p.surfacetype)}</div>` : ""}<p class="meta">From the Motor Vehicle Use Map. Anything not shown is closed to motor vehicles.</p>`; }
+const mvumFields = "name,id,symbol,surfacetype,passengervehicle_datesopen,highclearancevehicle_datesopen,atv_datesopen,motorcycle_datesopen";
+const mvumRoads = agsLayer({ url: "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_MVUM_01/MapServer/1", fields: mvumFields, inView: true, minZoom: 11, simplify: "0.00004",
+  style: (p, z) => mvumStyle(p, z, false), popup: p => mvumPopup(p, false), label: p => p.name || p.id, hoverLabel: true });
+const mvumTrails = agsLayer({ url: "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_MVUM_01/MapServer/2", fields: mvumFields, inView: true, minZoom: 11, simplify: "0.00004",
+  style: (p, z) => mvumStyle(p, z, true), popup: p => mvumPopup(p, true), label: p => p.name || p.id, hoverLabel: true });
+const mvum = L.layerGroup([mvumRoads, mvumTrails]);
+
+// Forest Service trails, with the official mile markers each trail segment carries (begin and end mileposts)
+function lineParts(g){ return !g ? [] : g.type === "LineString" ? [g.coordinates] : g.type === "MultiLineString" ? g.coordinates : []; }
+function milePoints(f){
+  const p = f.properties, b0 = +p.bmp, b1 = +p.emp; if (!isFinite(b0) || !isFinite(b1) || b1 - b0 < .6) return [];
+  const pts = lineParts(f.geometry).flat().map(c => L.latLng(c[1], c[0])); if (pts.length < 2) return [];
+  const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i-1] + pts[i-1].distanceTo(pts[i]));
+  const tot = cum.at(-1), out = [];
+  for (let m = Math.ceil(b0 + .05); m <= b1 - .05; m++){
+    const d = (m - b0) / (b1 - b0) * tot; let i = 1; while (i < cum.length && cum[i] < d) i++;
+    if (i >= cum.length) break; const t = (d - cum[i-1]) / ((cum[i] - cum[i-1]) || 1), a = pts[i-1], c = pts[i];
+    out.push([L.latLng(a.lat + (c.lat - a.lat) * t, a.lng + (c.lng - a.lng) * t), m]); }
+  return out;
+}
+const USES = [["hiker_pedestrian_managed", "Hiking"], ["pack_saddle_managed", "Horses"], ["bicycle_managed", "Bikes"], ["motorcycle_managed", "Motorcycles"], ["atv_managed", "ATVs"]];
+const fsTrails = agsLayer({ url: "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_TrailNFSPublish_01/MapServer/0", inView: true, minZoom: 11, simplify: "0.00004",
+  fields: "trail_name,trail_no,bmp,emp,gis_miles,trail_class,trail_surface," + USES.map(u => u[0]).join(","),
+  style: (p, z) => ({ color: "#a0522d", weight: lineW(z, 2), opacity: .95, dashArray: "6 4", fill: false }),
+  label: p => p.trail_name ? cap(p.trail_name) + (p.trail_no ? " (" + p.trail_no + ")" : "") : null, hoverLabel: true,
+  popup: p => { const uses = USES.filter(u => p[u[0]]).map(u => u[1]);
+    return `<h4>${esc(cap(p.trail_name || "Forest Service trail"))}${p.trail_no ? " · #" + esc(p.trail_no) : ""}</h4>
+      <div>${p.gis_miles ? (+p.gis_miles).toFixed(1) + " mi in this section" : ""}${isFinite(+p.bmp) && isFinite(+p.emp) ? ` · mile ${(+p.bmp).toFixed(1)} to ${(+p.emp).toFixed(1)}` : ""}</div>
+      ${uses.length ? `<div>Managed for: ${esc(uses.join(", "))}</div>` : ""}${p.trail_class ? `<div class="meta">Trail class ${esc(p.trail_class)}${p.trail_surface ? " · " + esc(p.trail_surface) : ""}</div>` : ""}`; },
+  onData: (lyr, j) => {
+    (j.features || []).forEach(f => milePoints(f).forEach(([ll, m]) => lyr.addLayer(L.marker(ll, { interactive: false, keyboard: false,
+      icon: L.divIcon({ className: "mile", html: `<span>${m}</span>`, iconSize: null }) })))); } });
+function cap(s){ return String(s || "").toLowerCase().replace(/\b[a-z]/g, c => c.toUpperCase()).replace(/\bNf\b/g, "NF"); }
+
+// Named hiking trails from the USGS National Digital Trails (federal, state and local trail data in one set)
+const tnmTrails = agsLayer({ url: "https://carto.nationalmap.gov/arcgis/rest/services/transportation/MapServer/37", inView: true, minZoom: 12, simplify: "0.00004",
+  fields: "name,maplabel,trailnumber,trailtype,hikerpedestrian,packsaddle,bicycle,motorcycle,ohvover50inches,lengthmiles,primarytrailmaintainer,nationaltraildesignation",
+  style: (p, z) => ({ color: "#1b7f5a", weight: lineW(z, 1.9), opacity: .95, dashArray: "1 4", lineCap: "round", fill: false }),
+  label: p => p.maplabel || p.name, hoverLabel: true,
+  popup: p => { const u = [["hikerpedestrian", "Hiking"], ["packsaddle", "Horses"], ["bicycle", "Bikes"], ["motorcycle", "Motorcycles"], ["ohvover50inches", "OHVs"]].filter(r => /^y/i.test(p[r[0]] || "")).map(r => r[1]);
+    return `<h4>${esc(p.maplabel || p.name || "Trail")}</h4>${p.lengthmiles ? `<div>${(+p.lengthmiles).toFixed(1)} mi segment</div>` : ""}${u.length ? `<div>Open to: ${esc(u.join(", "))}</div>` : ""}
+      ${p.primarytrailmaintainer ? `<div class="meta">Managed by ${esc(p.primarytrailmaintainer)}</div>` : ""}${p.nationaltraildesignation ? `<div class="meta">${esc(p.nationaltraildesignation)}</div>` : ""}`; } });
+
+map.createPane("contourPane").style.zIndex = 330; map.getPane("contourPane").style.pointerEvents = "none";
+map.createPane("trailPane").style.zIndex = 360; map.getPane("trailPane").style.pointerEvents = "none";
+contours.options.pane = contoursHi.options.pane = osmTrails.options.pane = hikeRoutes.options.pane = "trailPane";
+contours.options.pane = contoursHi.options.pane = "contourPane";
+base["USGS Topo"].addLayer(contoursHi);
+map.on("zoomend", () => map.getContainer().classList.toggle("zlt13", map.getZoom() < 13)); map.getContainer().classList.toggle("zlt13", map.getZoom() < 13);
 const LAYERS = [
   { id:"pad", g:"public", st:"ALL", name:"Public land, all agencies", layer:publicGroup, color:"#2f8f4e", legend:[["#2f8f4e","Open"],["#d39a1c","Permit / seasonal"],["#b3392f","Closed"]] },
   { id:"landlock", g:"public", st:"ALL", name:"Flag possibly landlocked tracts", layer:landlockLayer, color:"#b3392f", minZoom:12, note:"No public road reaches the tract or land connected to it" },
@@ -1200,17 +1410,21 @@ const LAYERS = [
   { id:"txparcel", g:"prop", st:"TX", name:"Property lines & owners", layer:txParcels, color:"#ffd23f", minZoom:14, note:"Tap a parcel to see the owner" },
   { id:"arparcel", g:"prop", st:"AR", name:"Property lines & owners", layer:parcelLayer, color:"#ffd23f", minZoom:14, note:"Tap a parcel to see the owner" },
   { id:"hill", g:"terrain", st:"ALL", name:"Hillshade (terrain relief)", layer:hillshade, color:"#8a8a8a" },
+  { id:"contours", g:"terrain", st:"ALL", name:"Contour lines (40, 20, then 10 ft)", layer:contours, color:"#7a4a22", minZoom:12, note:"Sharp at every zoom; great on satellite" },
   { id:"slope", g:"terrain", st:"ALL", name:"Slope steepness", layer:slope, color:"#f06e14", minZoom:11, legend:SLOPE_LEG },
   { id:"mvum", g:"access", st:"ALL", name:"Forest Service roads open to vehicles", layer:mvum, color:"#6b4f2a", minZoom:11, note:"National forests only" },
   { id:"arpark", g:"access", st:"AR", name:"WMA parking", layer:arParking, color:"#2a7fff", minZoom:11 },
-  { id:"fstrails", g:"access", st:"ALL", name:"Forest Service trails", layer:fsTrails, color:"#a0522d", minZoom:11, note:"National forests; trails mean foot traffic" },
+  { id:"fstrails", g:"access", st:"ALL", name:"Forest Service trails + mile markers", layer:fsTrails, color:"#a0522d", minZoom:11, note:"National forests. Official mile markers show at zoom 13+" },
+  { id:"tnmtrails", g:"access", st:"ALL", name:"Hiking trails (USGS National Digital Trails)", layer:tnmTrails, color:"#1b7f5a", minZoom:12, note:"Named trails from federal, state and local agencies" },
+  { id:"osmtrails", g:"access", st:"ALL", name:"Paths, two-tracks & unofficial trails", layer:osmTrails, color:"#c0392b", minZoom:13, note:"OpenStreetMap: footpaths, jeep trails and user-mapped paths beyond the official network" },
+  { id:"hikeroutes", g:"access", st:"ALL", name:"Marked hiking routes", layer:hikeRoutes, color:"#d32f2f", note:"Long-distance and signed routes (Waymarked Trails)" },
   { id:"fsrec", g:"access", st:"ALL", name:"Trailheads, campgrounds & boat ramps (USFS)", layer:fsRec, color:"#2a7fff", minZoom:10, note:"National forests only" },
   { id:"burns", g:"habitat", st:"ALL", name:"Wildfire burns", layer:burnLayer, color:"#d84315", minZoom:9, note:"3–15-year-old burns regrow into prime browse" },
   { id:"harvest", g:"habitat", st:"ALL", name:"Timber harvests (national forests)", layer:harvestLayer, color:"#8bc34a", minZoom:11, note:"Young cutovers: thick cover and browse" },
   { id:"wetlands", g:"habitat", st:"ALL", name:"Wetlands (NWI)", layer:wetlands, color:"#3f8fbf", minZoom:12, note:"Swamps, sloughs and marsh: ducks, hogs, thick bedding" },
   { id:"counties", g:"prop", st:"ALL", name:"County lines", layer:counties, color:"#888", minZoom:6 },
 ];
-const GROUPS = [["public","Public land"],["units","Hunt units & zones"],["habitat","Habitat"],["prop","Property & boundaries"],["terrain","Terrain"],["access","Roads & access"]];
+const GROUPS = [["public","Public land"],["units","Hunt units & zones"],["habitat","Habitat"],["prop","Property & boundaries"],["terrain","Terrain"],["access","Roads, trails & access"]];
 const BASES = [["USGS Topo","Topo"],["Satellite","Satellite"],["Esri Topo","Terrain"]];
 LAYERS.forEach(o => { o.layer._key = o.id;
   if (o.layer instanceof L.TileLayer || o.layer instanceof L.GridLayer){ o.layer.on("loading", () => netStart(o.id)); o.layer.on("load", () => netReset(o.id)); o.layer.on("remove", () => netReset(o.id)); } });
@@ -1296,8 +1510,9 @@ function padPopup(p){
 // Run heavy redraws after a pan or pinch finishes, so the map never stutters mid-gesture
 let mapBusy = false; const idleQ = [];
 map.on("movestart zoomstart", () => { mapBusy = true; });
-map.on("moveend zoomend", () => { mapBusy = false; requestAnimationFrame(() => { while (idleQ.length && !mapBusy) idleQ.shift()(); }); });
-function whenIdle(fn){ if (mapBusy) idleQ.push(fn); else requestAnimationFrame(fn); }
+const nextFrame = fn => { let done = false; const go = () => { if (!done){ done = true; fn(); } }; requestAnimationFrame(go); setTimeout(go, 150); };
+map.on("moveend zoomend", () => { mapBusy = false; nextFrame(() => { while (idleQ.length && !mapBusy) idleQ.shift()(); }); });
+function whenIdle(fn){ if (mapBusy) idleQ.push(fn); else nextFrame(fn); }
 const padCache = new Map();
 async function fetchPad(b){
   const env = [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map(v => v.toFixed(4)).join(",");
@@ -2453,7 +2668,8 @@ const Plume = L.Layer.extend({
 });
 let plume = null;
 function stopPlume(){ if (plume){ map.removeLayer(plume); plume = null; } coneLayer.clearLayers(); }
-async function windCheck(w, hi){
+async function windCheck(w, hi, quiet){
+  const setInfo = quiet ? () => {} : window.setInfo;
   const o = L.latLng(w.lat, w.lng); stopPlume();
   try { if (!wx || map.distance(o, wxAt) > 5000) await tracked("wx", loadWx(o)); } catch { setInfo("<b>No wind data</b><br>Weather is unavailable right now."); return; }
   const H = wx.hourly, now = Date.now(), hours = [];
@@ -2494,6 +2710,7 @@ async function windCheck(w, hi){
     ${targets.length ? `<br>Good winds here: <b>${safe.join(", ") || "none, every wind crosses something"}</b>${nextGood ? `<br>Next good hunting wind: <b>${nextGood}</b>` : ""}` : ""}
     <div class="plume-note">Animation runs ~30× real speed. No study has measured how far deer smell people; the distance is an estimate from hunter reports, scaled for wind and humidity.</div>
     <div class="row" style="margin:6px 0 0"><button class="btn sm ghost" id="wcStop">Stop</button></div></div>`);
+  if (quiet) return;
   $("#wcHour").onchange = ev => windCheck(w, ev.target.value === "" ? null : +ev.target.value);
   $("#wcStop").onclick = () => { stopPlume(); $("#infobox").hidden = true; };
 }
@@ -3019,10 +3236,13 @@ const LEG = {
   txparcel: [["line", "#555", "TX property lines (tap for owner)"]], arparcel: [["line", "#ffd23f", "AR property lines (tap for owner)"]],
   hill: [["grad", "linear-gradient(90deg,#3a3a3a,#e6e6e6)", "Shaded relief (light = facing sun)"]],
   slope: SLOPE_LEG.map(([c, l]) => ["fill", c, "Slope " + l]),
-  mvum: [["line", "#000", "Road open to all vehicles"], ["line", "#fff", "Road, highway-legal vehicles only"], ["thick", "#ccc", "Seasonal (open part of the year)"], ["dash", "#000", "Trail open to vehicles (ATV, motorcycle)"]],
+  mvum: [["line", "#6b3e14", "FS road open to all vehicles"], ["line", "#3b3b3b", "FS road, highway-legal vehicles only"], ["dash", "#6b3e14", "Long dashes: open part of the year"], ["dash", "#b5651d", "FS trail open to ATVs / vehicles"], ["dash", "#7a5ea8", "FS trail open to motorcycles"]],
+  tnmtrails: [["dash", "#1b7f5a", "Named trail (tap for uses)"]], hikeroutes: [["line", "#d32f2f", "Marked hiking route"]],
+  osmtrails: [["dash", "#7b4b1d", "Two-track / jeep trail"], ["dash", "#c0392b", "Footpath or unofficial trail"], ["dash", "#6a3fa0", "Horse trail"]],
+  contours: [["line", "#7a4a22", "Contour line (darker lines labeled in feet)"]],
   arpark: [["pt", "#2a7fff", "WMA parking area"]],
   burns: [["fill", "#d84315", "Wildfire burn (tap for year)"]], harvest: [["fill", "#8bc34a", "Forest Service timber cut (tap for year)"]],
-  wetlands: [["fill", "#3f8fbf", "Wetland (NWI map colors by type)"]], fstrails: [["dash", "#a0522d", "Forest Service trail"]],
+  wetlands: [["fill", "#3f8fbf", "Wetland (NWI map colors by type)"]], fstrails: [["dash", "#a0522d", "Forest Service trail"], ["pt", "#a0522d", "Official trail mile marker"]],
   fsrec: [["pt", "#2a7fff", "Trailhead, campground or ramp"]], counties: [["line", "#888", "County line"]],
 };
 function legSw(sym, c, txt){
@@ -3061,8 +3281,97 @@ legCtl.addTo(map);
 let legT; map.on("layeradd layerremove", () => { clearTimeout(legT); legT = setTimeout(renderLegend, 150); });
 drawWpts(); drawLines(); renderMine();
 
+
+/* ===================== v9: States tab sections · scent trail on my location · tidy overlays ===================== */
+// The sun & wind box steps aside whenever the Layers panel is open
+new MutationObserver(() => document.body.classList.toggle("lyr-open", layersOpen())).observe($("#lyrPanel"), { attributes: true, attributeFilter: ["hidden"] });
+
+// States tab: one short section at a time instead of three pages of scrolling
+const ST_SECS = [["over", "Overview"], ["seasons", "Seasons"], ["lic", "Licenses"], ["rules", "Rules"], ["places", "Places"], ["ask", "Ask"], ["terms", "Terms"]];
+const spOf = r => String(r[0]).split(/\s[(–-]|,|:/)[0].trim();
+function renderState(code, fly){
+  current = code; savePref({ state: code });
+  const s = D[code], sec = ST_SECS.some(x => x[0] === PREF.stSec) ? PREF.stSec : "over";
+  const btns = Object.keys(D).map(k => `<button aria-pressed="${k === code}" data-s="${k}">${k}</button>`).join("");
+  let body = "";
+  if (sec === "over"){
+    const nr = NR && NR[code], nrT = nr ? nr.parts.reduce((a, p) => a + p[1], 0) : null;
+    body = `<p>${esc(s.summary)}</p>${seasonClock(code)}
+      <div class="callout"><b>Hunting public land here:</b> ${esc(s.publicNote)}</div>
+      <div class="facts">
+        <button data-go="seasons"><b>${s.seasons.length}</b><span>season dates</span></button>
+        <button data-go="lic"><b>${nrT != null ? "$" + nrT : s.fees.length}</b><span>${nrT != null ? "nonresident deer" : "license items"}</span></button>
+        <button data-go="places"><b>${s.areas.length}</b><span>${esc(s.areasLabel.replace(/^Major\s+/i, "").toLowerCase())}</span></button>
+        <button data-go="rules"><b>${s.rules.length}</b><span>key rules</span></button></div>
+      <h3>Official sources</h3><ul>${s.links.map(([t, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join("")}</ul>`;
+  } else if (sec === "seasons"){
+    const sps = [...new Set(s.seasons.map(spOf))], pick = sps.includes(PREF.stSp) ? PREF.stSp : "";
+    const rows = s.seasons.filter(r => !pick || spOf(r) === pick);
+    body = `<div class="chips spchips"><button class="chip" aria-pressed="${!pick}" data-sp="">All</button>${sps.map(x => `<button class="chip" aria-pressed="${x === pick}" data-sp="${esc(x)}">${esc(x)}</button>`).join("")}</div>
+      <div class="tw"><table><thead><tr><th>Species</th><th>Zone</th><th>Dates</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r[0])}<small>${esc(r[1])}</small></td><td>${esc(r[2])}</td><td class="n" style="white-space:normal">${esc(r[3])}</td></tr>`).join("")}</tbody></table></div>
+      ${s.seasonsNote ? `<p class="meta">${esc(s.seasonsNote)}</p>` : ""}`;
+  } else if (sec === "lic"){
+    const nr = NR && NR[code];
+    body = `<div class="tw"><table><thead><tr><th>Item</th><th>Resident</th><th>Nonres</th></tr></thead><tbody>${s.fees.map(f => `<tr><td>${esc(f.item)}${f.note && f.note !== "verify" ? `<small>${esc(f.note)}</small>` : ""}${/verify/.test(f.note || "") ? ' <span class="verify">verify</span>' : ""}</td><td class="n">${esc(f.res)}</td><td class="n">${esc(f.nonres)}</td></tr>`).join("")}</tbody></table></div>
+      ${nr ? `<h3>Cheapest nonresident deer hunt</h3><p><b class="n">$${nr.parts.reduce((a, p) => a + p[1], 0)}</b>: ${esc(nr.parts.map(p => p[0] + " $" + p[1]).join(" + "))}</p><p class="meta">${esc(nr.note)}</p>` : ""}
+      <p class="meta">For the full cost of a trip (fuel, food, lodging, processing) use the Trip tab.</p>`;
+  } else if (sec === "rules"){
+    body = `<ul class="rulelist">${s.rules.map(r => `<li>${esc(r)}</li>`).join("")}</ul>`;
+  } else if (sec === "places"){
+    body = `${s.areasNote ? `<p class="meta">${esc(s.areasNote)}</p>` : ""}<input id="plq" class="plq" placeholder="Filter ${esc(s.areasLabel.toLowerCase())}" aria-label="Filter places" autocomplete="off">
+      <ul class="areas" id="plist">${s.areas.map(a => `<li data-n="${esc((a.name + " " + (a.where || "")).toLowerCase())}"><button class="plgo" data-q="${esc(a.name)}">${esc(a.name)}</button>${a.where ? ` <span class="ac">${esc(a.where)}</span>` : ""}${a.acres ? ` <span class="ac">· ${fmtAc(a.acres)}</span>` : ""}</li>`).join("")}</ul>
+      <p class="meta">Tap a name to find it on the map.</p>`;
+  } else if (sec === "ask"){
+    body = `<div class="askbox"><b>Ask a question about ${esc(s.name)} licenses, tags or seasons</b>
+      <textarea id="askq" rows="2" placeholder="e.g. What do I need to bowhunt deer here as a nonresident?"></textarea>
+      <div class="row" style="margin:6px 0 0"><button class="btn sm" id="askgo">Ask Claude</button></div>
+      <div class="chips">${["What licenses do I need as a nonresident?", "How much does a nonresident deer hunt cost?", "What permits do I need for public land?", "When is the next draw or application deadline?"].map(q => `<button class="chip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+      <div class="meta" style="margin-top:6px">Opens the Q&A page on your Claude account in a new tab. Free with your plan.</div></div>`;
+  } else {
+    body = `<div class="gloss"><input id="glossq" placeholder="Search terms, e.g. saddle, OTC, APH" aria-label="Search hunting terms"><dl id="glosslist"></dl></div>`;
+  }
+  $("#pane-rules").innerHTML = `<div class="states">${btns}</div><h2>${esc(s.name)}</h2><div class="meta">${esc(s.agency)} · ${esc(s.year)}</div>
+    <div class="seg stseg" role="tablist">${ST_SECS.map(([k, t]) => `<button data-st="${k}" aria-pressed="${k === sec}">${t}</button>`).join("")}</div>
+    <div class="stbody">${body}</div>
+    <p class="disclaim">Compiled Oct 29, 2026 from agency pages and published summaries. Rules change and individual WMAs have their own regulations. Check the official source before you hunt.</p>`;
+  const P = $("#pane-rules"), go = k => { savePref({ stSec: k }); renderState(code, false); P.scrollTop = 0; };
+  P.querySelectorAll(".states button").forEach(b => b.onclick = () => renderState(b.dataset.s, true));
+  P.querySelectorAll("[data-st]").forEach(b => b.onclick = () => go(b.dataset.st));
+  P.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+  P.querySelectorAll("[data-sp]").forEach(b => b.onclick = () => { savePref({ stSp: b.dataset.sp }); renderState(code, false); });
+  const pq = $("#plq"); if (pq) pq.oninput = () => { const f = pq.value.trim().toLowerCase(); $("#plist").querySelectorAll("li").forEach(li => li.hidden = !!f && !li.dataset.n.includes(f)); };
+  P.querySelectorAll(".plgo").forEach(b => b.onclick = () => { const i = $("#search"); i.value = b.dataset.q; i.dispatchEvent(new Event("input", { bubbles: true })); i.focus(); if (isPhone()) sheetSnap(0); });
+  const ag = $("#askgo"); if (ag){ ag.onclick = () => { const q = $("#askq").value.trim(); if (q) askClaude(q + (/(texas|new mexico|oklahoma|arkansas|louisiana)/i.test(q) ? "" : " in " + s.name)); };
+    $("#askq").onkeydown = e => { if (e.key === "Enter" && !e.shiftKey){ e.preventDefault(); ag.click(); } };
+    P.querySelectorAll(".askbox .chip").forEach(c => c.onclick = () => askClaude(c.dataset.q.replace(/\?$/, "") + " in " + s.name + "?")); }
+  const gq = $("#glossq"); if (gq){ const draw = () => { const f = gq.value.trim().toLowerCase();
+    $("#glosslist").innerHTML = (window.GLOSSARY || []).filter(g => !f || (g[0] + " " + g[2]).toLowerCase().includes(f)).map(g => `<dt>${esc(g[0])}<small>${esc(g[1])}</small></dt><dd>${esc(g[2])}</dd>`).join("") || "<dd>No matching terms.</dd>"; };
+    gq.oninput = draw; draw(); }
+  if (fly) map.flyTo(s.center, s.zoom, { duration: .8 });
+  if (window.__lyrReady) renderLayerPanel();
+}
+
+// Scent trail that follows you: GPS position + live wind, redrawn as you move or the wind changes
+let liveWatch = null, liveAt = null, liveT = 0;
+function liveScent(on){
+  if (liveWatch != null){ navigator.geolocation.clearWatch(liveWatch); liveWatch = null; }
+  if (!on){ stopPlume(); liveAt = null; return; }
+  if (!navigator.geolocation){ setInfo("<b>Location unavailable</b><br>This browser can't share your location."); return; }
+  liveWatch = navigator.geolocation.watchPosition(p => {
+    const ll = L.latLng(p.coords.latitude, p.coords.longitude); lastLoc = ll;
+    locLayer.clearLayers();
+    L.circle(ll, { radius: p.coords.accuracy, color: "#2a7fff", weight: 1, fillOpacity: .1, interactive: false }).addTo(locLayer);
+    L.circleMarker(ll, { radius: 7, color: "#fff", weight: 2, fillColor: "#2a7fff", fillOpacity: 1, interactive: false }).addTo(locLayer);
+    if (liveAt && map.distance(liveAt, ll) < 25 && Date.now() - liveT < 6e5 && plume) return;
+    liveAt = ll; liveT = Date.now(); windCheck({ id: null, lat: ll.lat, lng: ll.lng, name: "You" }, null, true);
+  }, e => setInfo("<b>Location unavailable</b><br>" + esc(e.message) + ". Allow location for this site to see your scent trail."), { enableHighAccuracy: true, maximumAge: 15000, timeout: 30000 });
+}
+setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5){ liveT = Date.now(); windCheck({ id: null, lat: liveAt.lat, lng: liveAt.lng, name: "You" }, null, true); } }, 60000);
+
+function v9Start(){ if (PREF.liveScent) liveScent(true); }
+
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "8.0 (Oct 30, 2026)";
+const APP_VERSION = "9.0 (Oct 30, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
@@ -3172,10 +3481,11 @@ $("#offbar").onclick = () => { showTab("acct"); acctSec("offline"); if (isPhone(
 
 const DL_MAX = 20000;
 const DL_SRC = [
-  { id: "topo", name: "USGS Topo map", url: () => base["USGS Topo"]._url, max: 16, kb: 22 },
-  { id: "sat", name: "Satellite with place labels", url: () => base.Satellite._url, max: 19, kb: 30, extra: [() => labels._url, 19, 5] },
+  { id: "topo", name: "USGS Topo map", url: () => usgsTopo._url, max: 16, kb: 22, extra: [() => topoHi._url, 19, 4, 17] },
+  { id: "sat", name: "Satellite with place labels", url: () => base.Satellite._url, max: 19, kb: 30, ret: true, extra: [() => labels._url, 19, 5] },
   { id: "esri", name: "Esri Topo map", url: () => base["Esri Topo"]._url, max: 19, kb: 22 },
   { id: "hill", name: "Hillshade", url: () => hillshade._url, max: 16, kb: 10 },
+  { id: "trails", name: "Paths & two-tracks (OpenStreetMap)", sub: "The unofficial trails layer", url: () => OFM.tpl, max: 14, kb: 30, zmin: 14 },
   { id: "elev", name: "Elevation data", sub: "Slope shading and spot finder terrain", url: () => "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png", max: 15, kb: 100 },
   { id: "pad", name: "Public land boundaries", sub: "Tap any tract for who manages it, even offline", url: () => padTiles._url, max: 10, kb: 8, vector: true }
 ];
@@ -3189,10 +3499,10 @@ function visibleBounds(){ const sz = map.getSize(), top = isPhone() ? 64 : 10, b
   return [Math.min(a.lat, c.lat), Math.min(a.lng, c.lng), Math.max(a.lat, c.lat), Math.max(a.lng, c.lng)].map(v => +v.toFixed(5)); }
 function dlPlan(b, z1, ids, build){
   const urls = []; let kb = 0, n = 0;
-  const add = (tpl, zmax, k) => { for (let z = 6; z <= Math.min(z1, zmax); z++){ const r = tileRange(b, z); kb += r.n * k; n += r.n;
+  const add = (tpl, zmax, k, zmin, up) => { for (let z = zmin || 6; z <= Math.min(z1 + (up || 0), zmax); z++){ const r = tileRange(b, z); kb += r.n * k; n += r.n;
     if (!build || n > DL_MAX) continue;
     for (let x = r.x0; x <= r.x1; x++) for (let y = r.y0; y <= r.y1; y++) urls.push(L.Util.template(tpl, { x, y, z, s: "", r: "" })); } };
-  DL_SRC.filter(s => ids.includes(s.id)).forEach(s => { add(s.url(), s.max, s.kb); if (s.extra) add(s.extra[0](), s.extra[1], s.extra[2]); if (s.vector) kb += 400; });
+  DL_SRC.filter(s => ids.includes(s.id)).forEach(s => { add(s.url(), s.max, s.kb, s.zmin || 6, s.ret && RET ? 1 : 0); if (s.extra) add(s.extra[0](), s.extra[1], s.extra[2], s.extra[3]); if (s.vector) kb += 400; });
   return { urls, kb, n };
 }
 const dlList = () => store.get("rrha_dl", []);
@@ -3218,7 +3528,9 @@ async function runDownload(){
   if (netOff()) { ACCT.dlMsg = ["err", "You need signal to download. Turn off offline mode or wait for a connection."]; renderAcct(); return; }
   const ids = DL_SRC.filter(s => (PREF.dlLayers || ["topo", "hill", "elev", "pad"]).includes(s.id)).map(s => s.id);
   if (!ids.length){ ACCT.dlMsg = ["err", "Pick at least one map to save."]; renderAcct(); return; }
-  const b = visibleBounds(), z1 = PREF.dlZ || 15, plan = dlPlan(b, z1, ids, true);
+  if (ids.includes("trails")){ try { OFM.tpl = await (OFM.url || (OFM.url = fetch("https://tiles.openfreemap.org/planet").then(r => r.json()).then(j => j.tiles[0]))); } catch { ACCT.dlMsg = ["err", "The trail map server didn't answer. Uncheck Paths & two-tracks or try again."]; renderAcct(); return; } }
+  const b = visibleBounds(), z1 = Math.max(PREF.dlZ || 15, ids.includes("trails") ? 14 : 0), plan = dlPlan(b, PREF.dlZ || 15, ids, true);
+  if (ids.includes("trails")) plan.urls.push("https://tiles.openfreemap.org/planet");
   if (plan.n > DL_MAX){ ACCT.dlMsg = ["err", "That area is too big at this detail. Zoom in, or pick less detail."]; renderAcct(); return; }
   const name = ($("#dlName") && $("#dlName").value.trim()) || $("#where").textContent.split("·")[0].trim() || "Saved area";
   const id = "a" + Date.now().toString(36), cache = await caches.open("rrha-dl-" + id);
@@ -3263,13 +3575,12 @@ async function offlinePad(view){
   return out.length ? { type: "FeatureCollection", features: out } : null;
 }
 const dlLayer = L.layerGroup();
-function drawDlBoxes(){ dlLayer.clearLayers();
-  dlList().forEach(d => L.rectangle([[d.b[0], d.b[1]], [d.b[2], d.b[3]]], { color: "#3f5a35", weight: 2, dashArray: "6 5", fill: false, interactive: false }).addTo(dlLayer));
-  const on = ACCT.sec === "offline" && !$("#pane-acct").hidden;
-  if (on && !map.hasLayer(dlLayer)) dlLayer.addTo(map); if (!on && map.hasLayer(dlLayer)) map.removeLayer(dlLayer);
-  if (on){ const b = visibleBounds(); if (!ACCT.pick) ACCT.pick = L.rectangle([[b[0], b[1]], [b[2], b[3]]], { color: "#e8601c", weight: 2, fillOpacity: .06, interactive: false });
-    ACCT.pick.setBounds([[b[0], b[1]], [b[2], b[3]]]); if (!map.hasLayer(ACCT.pick)) ACCT.pick.addTo(map); }
-  else if (ACCT.pick && map.hasLayer(ACCT.pick)) map.removeLayer(ACCT.pick); }
+function drawDlBoxes(){ dlLayer.clearLayers(); if (ACCT.pick && map.hasLayer(ACCT.pick)) map.removeLayer(ACCT.pick);
+  if (!(ACCT.flash > Date.now())){ if (map.hasLayer(dlLayer)) map.removeLayer(dlLayer); return; }
+  (ACCT.flashIds ? dlList().filter(d => ACCT.flashIds.includes(d.id)) : []).forEach(d => L.rectangle([[d.b[0], d.b[1]], [d.b[2], d.b[3]]], { color: "#3f5a35", weight: 3, dashArray: "8 6", fillOpacity: .08, interactive: false }).addTo(dlLayer));
+  if (!map.hasLayer(dlLayer)) dlLayer.addTo(map);
+  if (ACCT.flashPick){ const v = visibleBounds(); ACCT.pick = L.rectangle([[v[0], v[1]], [v[2], v[3]]], { color: "#e8601c", weight: 3, fillOpacity: .08, interactive: false }).addTo(map); } }
+function flashBoxes(pick, ids){ ACCT.flash = Date.now() + 3500; ACCT.flashPick = pick; ACCT.flashIds = ids || null; drawDlBoxes(); clearTimeout(ACCT.flashT); ACCT.flashT = setTimeout(drawDlBoxes, 3600); }
 map.on("moveend", () => { if (ACCT.sec === "offline" && !$("#pane-acct").hidden){ drawDlBoxes(); paintEst(); } });
 function paintEst(){ const el = $("#dlEst"); if (!el) return; const ids = PREF.dlLayers || ["topo", "hill", "elev", "pad"], b = visibleBounds(), z1 = PREF.dlZ || 15, p = dlPlan(b, z1, ids);
   const mi = (map.distance([b[0], b[1]], [b[0], b[3]]) / 1609.34), mj = map.distance([b[0], b[1]], [b[2], b[1]]) / 1609.34, over = p.n > DL_MAX;
@@ -3451,14 +3762,14 @@ function offlineHtml(){
       ${toggleRow("oMode", "Use saved maps only", "Stops the app from trying the internet, so it's fast with no signal. Turns on by itself when your phone loses signal.", !!PREF.offline)}
       ${location.protocol === "file:" ? msgBox(["err", "Offline maps need the app's web link (https). They don't work from a downloaded file."]) : ""}</div>
     <div class="acard"><h3>Download an area</h3>
-      <p>Move the map so the area you'll hunt fills the space above this panel. The orange box shows what gets saved.</p>
+      <p>Move the map so the area you'll hunt fills the space above this panel. Everything you can see gets saved.</p>
       ${fld("dlName", "Name", "text", "off", `placeholder="e.g. Sam Houston NF, north unit" maxlength="60"`)}
       <div class="fld"><label for="dlZ">Detail</label><select id="dlZ">${DETAIL.map(([z, t]) => `<option value="${z}" ${z === (PREF.dlZ || 15) ? "selected" : ""}>${t}</option>`).join("")}</select></div>
       <div style="margin:10px 0 4px;font:600 13px var(--body)">Save these maps</div>
       ${DL_SRC.map(s => `<label class="chk"><input type="checkbox" data-dls="${s.id}" ${sel.includes(s.id) ? "checked" : ""}><span>${esc(s.name)}${s.sub ? `<small>${esc(s.sub)}</small>` : ""}</span></label>`).join("")}
       <div id="dlEst" class="est"></div>
       ${DLJOB ? `<div class="dlprog" id="dlProg"><span></span></div><div class="est" id="dlProgT"></div><button class="btn sm ghost" id="dlStop">Cancel download</button>`
-        : `<button class="btn" id="dlGo" ${location.protocol === "file:" ? "disabled" : ""}>Download this area</button>`}
+        : `<button class="btn" id="dlGo" ${location.protocol === "file:" ? "disabled" : ""}>Download this area</button><button class="linkbtn" id="dlPrev">Flash the area on the map</button>`}
       ${msgBox(ACCT.dlMsg)}
       <p class="meta">Works offline: saved base maps, hillshade, slope, public land boundaries, your waypoints and lines, compass and GPS location, sun and moon times. Needs signal: weather, search, property lines, hunt units and the other live layers.</p></div>
     <div class="acard"><h3>Saved areas</h3>
@@ -3472,9 +3783,10 @@ function offlineWire(p){
   const z = p.querySelector("#dlZ"); if (z) z.onchange = () => { savePref({ dlZ: +z.value }); paintEst(); };
   p.querySelectorAll("[data-dls]").forEach(c => c.onchange = () => { savePref({ dlLayers: [...p.querySelectorAll("[data-dls]:checked")].map(x => x.dataset.dls) }); paintEst(); });
   const go = p.querySelector("#dlGo"); if (go) go.onclick = () => runDownload();
+  const pv = p.querySelector("#dlPrev"); if (pv) pv.onclick = () => { if (isPhone()) sheetSnap(0); setTimeout(() => flashBoxes(true), 380); };
   const st = p.querySelector("#dlStop"); if (st) st.onclick = () => { if (DLJOB) DLJOB.stop = true; };
   p.querySelectorAll("[data-dlv]").forEach(b => b.onclick = () => { const d = dlList().find(x => x.id === b.dataset.dlv); if (!d) return;
-    map.fitBounds([[d.b[0], d.b[1]], [d.b[2], d.b[3]]]); if (isPhone()) sheetSnap(0); });
+    if (isPhone()) sheetSnap(0); map.fitBounds([[d.b[0], d.b[1]], [d.b[2], d.b[3]]]); map.once("moveend", () => flashBoxes(false, [d.id])); });
   p.querySelectorAll("[data-dlx]").forEach(b => b.onclick = () => { if (ACCT.dlDel === b.dataset.dlx){ ACCT.dlDel = null; dlDelete(b.dataset.dlx); } else { ACCT.dlDel = b.dataset.dlx; renderAcct(); } });
   paintEst(); paintJob();
   if (navigator.storage && navigator.storage.estimate) navigator.storage.estimate().then(e => { const s = p.querySelector("#stor"); if (!s || !e.quota) return;
@@ -3487,6 +3799,7 @@ function settingsHtml(){
         <select id="sTheme">${THEMES.map(([k, t]) => `<option value="${k}" ${k === th ? "selected" : ""}>${t}</option>`).join("")}</select></label>
       ${toggleRow("sSun", "Sun and moon box on the map", "Sunrise, sunset, legal light and moon phase for the map center", !PREF.sunHide)}
       ${toggleRow("sTap", "Tap the map for elevation", "Off: a tap just closes open boxes. Long-press any spot for elevation and more.", PREF.tapInfo ?? !isPhone())}
+      ${toggleRow("sLive", "Scent trail on my location", "Shows your scent drifting from wherever you are, using your GPS and the live wind. Redraws as you move.", !!PREF.liveScent)}
       ${toggleRow("sWake", "Keep the screen on", "Stops your phone from locking while the app is open. Uses more battery.", !!PREF.wake)}</div>
     <div class="acard"><h3>Your data</h3><p class="meta">${countStr(localData())} on this device</p>
       <div class="row"><button class="btn sm" id="sBack">Back up my data</button><label class="btn sm ghost" for="sRestore">Restore a backup</label><input type="file" id="sRestore" accept=".json,application/json" hidden></div>
@@ -3501,6 +3814,7 @@ function settingsWire(p){
   p.querySelector("#sTheme").onchange = e => applyTheme(e.target.value);
   p.querySelector("#sSun").onchange = e => { savePref({ sunHide: !e.target.checked }); renderSun(); if (wx) renderWx(); };
   p.querySelector("#sTap").onchange = e => savePref({ tapInfo: e.target.checked });
+  p.querySelector("#sLive").onchange = e => { savePref({ liveScent: e.target.checked }); liveScent(e.target.checked); };
   p.querySelector("#sWake").onchange = e => { savePref({ wake: e.target.checked }); if (e.target.checked) wake(); else if (wakeL){ wakeL.release().catch(() => {}); wakeL = null; } };
   p.querySelector("#sBack").onclick = () => { const d = Object.assign({ app: "Red River Hunt Atlas", v: 8, saved: new Date().toISOString() }, localData(), { prefs: PREF });
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 1)], { type: "application/json" }));
@@ -3545,7 +3859,7 @@ function v8Start(){
 
 renderState(PREF.state && D[PREF.state] ? PREF.state : "TX", false);
 refreshPad(); renderLayerPanel(); updateWhere(); refreshLandlock();
-showTab(PREF.tab || "rules"); if (isPhone()) sheetTo(0); renderLegend(); restoreScan(); window.__v8 = true; v8Start(); if (PREF.tab === "acct") renderAcct();
+showTab(PREF.tab || "rules"); if (isPhone()) sheetTo(0); renderLegend(); restoreScan(); window.__v8 = true; v8Start(); v9Start(); if (PREF.tab === "acct") renderAcct();
 if (!PREF.seenHelp) setTimeout(() => openHelp("start"), 600);
 </script>
 </body>

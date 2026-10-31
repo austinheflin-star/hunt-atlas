@@ -1,7 +1,7 @@
 /* Red River Hunt Atlas: offline support.
    - The app itself opens with no signal (cached on first visit, refreshed whenever you're online).
    - Map pieces come from saved areas first, then the network; recently viewed pieces are kept too. */
-const SHELL = "rrha-shell-v8", RECENT = "rrha-recent", RECENT_MAX = 3000;
+const SHELL = "rrha-shell-v9", RECENT = "rrha-recent", RECENT_MAX = 3000;
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"];
 let OFF = false, puts = 0;
@@ -18,7 +18,7 @@ self.addEventListener("activate", e => {
 });
 self.addEventListener("message", e => { if (e.data && "offline" in e.data) OFF = !!e.data.offline; });
 
-const isTile = u => /\/tile\/\d+\/\d+\/\d+|elevation-tiles-prod\/terrarium\//.test(u);
+const isTile = u => /\/tile\/\d+\/\d+\/\d+|elevation-tiles-prod\/terrarium\/|tiles\.openfreemap\.org\/planet\/.+\.pbf|tile\.waymarkedtrails\.org\//.test(u);
 const isLib = u => /^https:\/\/(unpkg\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|www\.gstatic\.com\/firebasejs)\//.test(u);
 const timeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error("timeout")), ms))]);
 async function trim(){
@@ -58,6 +58,12 @@ self.addEventListener("fetch", e => {
         try { return await fetch(r); } catch { return new Response("", { status: 504 }); }
       }
     })());
+    return;
+  }
+
+  // Trail tile index: fresh when online, saved copy when not
+  if (u === "https://tiles.openfreemap.org/planet"){
+    e.respondWith(timeout(fetch(r), 6000).then(n => { if (n.ok){ const cp = n.clone(); caches.open(RECENT).then(c => c.put(u, cp)); } return n; }).catch(async () => (await caches.match(u)) || Response.error()));
     return;
   }
 
