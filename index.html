@@ -3551,6 +3551,15 @@ async function refugeRules(name, st){
   sections.forEach(sx => { sx[1] = sx[1].flatMap(s => /set forth at paragraph/.test(s) ? (expand(s).length ? expand(s) : [s]) : [s]); });
   return { sections, sec: c.sec, date: c.date };
 }
+const WMA_FILES = { OK: "OK-wma.json" };
+const wmaNorm = t => (" " + String(t || "").toLowerCase().replace(/&/g, " and ").replace(/\s+/g, " ").replace(/wildlife management area/g, "wma").replace(/public fishing (and|&) hunting area/g, "pfha")
+  .replace(/public hunting area/g, "pha").replace(/conservation education area/g, "cea").replace(/game management area/g, "gma").replace(/[^a-z0-9]+/g, " ") + " ").replace(/\s+/g, " ");
+function wmaMatch(db, recs){
+  for (const r of recs){ const n = wmaNorm(r.Unit_Nm); let best = null, bl = 0;
+    for (const a of Object.values(db.areas)) for (const k of [a.k].concat(a.aliases || [])) if (k && n.includes(" " + k + " ") && k.length > bl){ best = a; bl = k.length; }
+    if (best) return best; }
+  return null;
+}
 async function areaFor(main, others, tp){
   const m = (main.Mang_Name || "").toUpperCase(), st = STATE_ABBR[main.State_Nm] || main.State_Nm;
   // Texas public hunting units: the TPWD map booklet page
@@ -3561,6 +3570,14 @@ async function areaFor(main, others, tp){
       note: "This unit's rules haven't been added to PublicScout yet. Its official map page has the legal game, dates and weapons." };
     return { title: u.name, src: [[u.source + ", unit " + tp.unit, u.pdf]], compiled: db.compiled,
       sections: [["Permits and check-in", u.permits], ["Legal game", u.game], ["Weapons", u.weapons], ["Access, camping and vehicles", u.access], ["Special rules and closures", u.special], ["Contacts", u.contact]].filter(s => s[1] && s[1].length) };
+  }
+  // State wildlife areas (OK, AR, LA, NM, ...): each area's own page from the state agency, one file per state
+  const isPark = /\b(park|recreation area|campground|golf)\b/i.test(main.Unit_Nm || "") && !/wildlife|wma|hunting/i.test(main.Unit_Nm || "");
+  if (WMA_FILES[st] && !isPark){
+    const db = await areaJSON(WMA_FILES[st]);
+    if (db){ const hit = wmaMatch(db, [main].concat(others || []));
+      if (hit) return { title: hit.name, verdict: hit.verdict, sections: hit.sections.filter(s => s[1] && s[1].length), note: hit.note || db.note,
+        src: [[(db.source || db.agency) + ": " + hit.name, hit.url]], compiled: db.compiled }; }
   }
   // National wildlife refuges: refuge-specific federal regulations, read live from 50 CFR part 32
   if ((main.Des_Tp === "NWR" || m === "FWS") && /wildlife refuge/i.test(main.Unit_Nm || "") && CFR32[st]){
@@ -3794,7 +3811,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "13.3 (Oct 31, 2026)";
+const APP_VERSION = "13.4 (Oct 31, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 

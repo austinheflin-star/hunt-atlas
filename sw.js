@@ -1,7 +1,7 @@
 /* PublicScout: offline support.
    - The app itself opens with no signal (cached on first visit, refreshed whenever you're online).
    - Map pieces come from saved areas first, then the network; recently viewed pieces are kept too. */
-const SHELL = "rrha-shell-v12", RECENT = "rrha-recent", RECENT_MAX = 3000;
+const SHELL = "rrha-shell-v13", RECENT = "rrha-recent", RECENT_MAX = 3000;
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js", "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"];
 let OFF = false, puts = 0;
