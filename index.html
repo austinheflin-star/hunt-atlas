@@ -3555,7 +3555,7 @@ async function areaFor(main, others, tp){
   const m = (main.Mang_Name || "").toUpperCase(), st = STATE_ABBR[main.State_Nm] || main.State_Nm;
   // Texas public hunting units: the TPWD map booklet page
   if (tp && tp.kind === "aph"){
-    const db = await areaJSON("TX-tpwd.json"), u = db && db.units[String(tp.unit)];
+    const db = await areaJSON("TX-tpwd.json"), u = db && (db.units[String(tp.unit)] || (tp.pdf && Object.values(db.units).find(x => x.pdf && x.pdf.endsWith("/" + tp.pdf))));
     const pdf = u ? u.pdf : tp.pdf ? "https://tpwd.texas.gov/huntwild/hunt/public/annual_public_hunting/resources/" + tp.pdf : null;
     if (!u) return { title: tp.name, sections: [], src: [pdf ? ["TPWD map booklet page for unit " + tp.unit + " (PDF)", pdf] : null].filter(Boolean),
       note: "This unit's rules haven't been added to PublicScout yet. Its official map page has the legal game, dates and weapons." };
@@ -3792,7 +3792,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "13.0 (Oct 31, 2026)";
+const APP_VERSION = "13.1 (Oct 31, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
