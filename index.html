@@ -3512,7 +3512,7 @@ function padPopup(p, ctx){
 
 /* ===================== Area rules: each place's own regulations, from the source documents ===================== */
 const AREA_DB = {};
-const areaJSON = f => AREA_DB[f] || (AREA_DB[f] = fetch("data/areas/" + f).then(r => r.ok ? r.json() : null).catch(() => { delete AREA_DB[f]; return null; }));
+const areaJSON = f => AREA_DB[f] || (AREA_DB[f] = fetch("data/areas/" + f + "?v=" + encodeURIComponent(APP_VERSION)).then(r => r.ok ? r.json() : null).catch(() => { delete AREA_DB[f]; return null; }));
 // 50 CFR part 32: each state's refuge-specific hunting regulations (§32.20 Alabama … §32.69 Wyoming)
 const CFR32 = { AL:20, AK:21, AZ:22, AR:23, CA:24, CO:25, CT:26, DE:27, FL:28, GA:29, HI:30, ID:31, IL:32, IN:33, IA:34, KS:35, KY:36, LA:37, ME:38, MD:39, MA:40, MI:41, MN:42, MS:43, MO:44, MT:45,
   NE:46, NV:47, NH:48, NJ:49, NM:50, NY:51, NC:52, ND:53, OH:54, OK:55, OR:56, PA:57, RI:58, SC:59, SD:60, TN:61, TX:62, UT:63, VT:64, VA:65, WA:66, WV:67, WI:68, WY:69 };
@@ -3794,7 +3794,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "13.2 (Oct 31, 2026)";
+const APP_VERSION = "13.3 (Oct 31, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
