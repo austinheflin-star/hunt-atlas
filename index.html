@@ -969,20 +969,25 @@ const DES = { NP:"National Park", NM:"National Monument", NCA:"National Conserva
   FORE:"Forest Easement (private land)", OTHE:"Easement (private land)", UNKE:"Easement (private land)", FACY:"Facility", UNK:"Unknown" };
 const NOHUNT_NAME = /golf|country club|athletic|sports|softball|baseball|soccer|tennis|aquatic|pool|playground|stadium|school|campus|cemetery|airport|museum|library|zoo|courthouse|city hall|plaza|greenway|arboretum|botanic|memorial park|dog park|skate|theat|visitors? center|marina/i;
 function huntClass(p){
-  const d = p.Des_Tp || "", m = (p.Mang_Name || "").toUpperCase(), t = p.Mang_Type || "", n = p.Unit_Nm || "";
+  const d = p.Des_Tp || "", m = (p.Mang_Name || "").toUpperCase(), t = p.Mang_Type || "", n = p.Unit_Nm || "", o = p.Own_Type || "";
+  const gov = ["FED", "STAT", "LOC", "DIST", "JNT", "TRIB"].includes(o);
+  // Military land is usually marked closed, but most posts sell hunting access through their own program
+  if (d === "MIL" || /DOD|ARMY|USAF|NAVY|USMC/.test(m)) return "permit";
+  if (m === "DOE") return "no";
   if (p.Pub_Access === "XA") return "no";
-  const priv = ["PVT", "NGO"].includes(p.Own_Type) || ["PVT", "NGO"].includes(m);
-  if (/E$/.test(d) && priv) return "no";                                                            // easement on private land
+  if (/^P[A-Z]+$/.test(d) && d !== "PUB" && d !== "PROC") return "no";                              // private conservation, ranch, farm, park
+  if (/E$/.test(d)) return gov && !["PVT", "NGO"].includes(m) ? "check" : "no";                     // easements usually sit on private land
   if (["LP", "LREC", "LHCA", "SHCA", "HCA", "FACY", "REA", "RNA"].includes(d)) return "no";
   if (NOHUNT_NAME.test(n) && (t === "LOC" || t === "DIST" || d === "SP" || d === "SREC")) return "no";
   if (d === "NP" || ((d === "NM" || d === "NLS" || d === "NRA") && m === "NPS")) return /preserve/i.test(n) ? "check" : (d === "NP" ? "no" : "check");
   if (m === "NPS") return "no";
-  if (d === "SP" || d === "SREC") return "check";                                                    // a few state parks hold special draw hunts
-  if (d === "MIL" || /DOD|ARMY|USAF|NAVY|DOE/.test(m) || d === "TRIBL") return "permit";
+  if (d === "TRIBL" || m === "TRIB" || m === "BIA") return "permit";
   if (d === "NWR" || m === "FWS") return "permit";
-  if (m === "USACE") return p.Pub_Access === "XA" ? "no" : "yes";
+  if (m === "USACE") return "yes";                                                                   // 36 CFR 327.8: permitted unless the District closes it
+  if (m === "USFS" || m === "BLM" || ["NF", "NG", "PUB"].includes(d)) return "yes";
+  if (m === "SPR" || d === "SP" || d === "SREC") return "check";                                     // state parks: drawn or special hunts only
   if (m === "TVA" || m === "USBR" || m === "SLB" || m === "SDNR" || m === "SDOL") return "check";
-  if (["NF", "NG", "PUB", "WA", "WSA", "IRA", "ACEC", "NCA", "REC", "RMA", "NSBV"].includes(d) || m === "USFS" || m === "BLM") return p.Pub_Access === "RA" ? "permit" : "yes";
+  if (["WA", "WSA", "IRA", "ACEC", "NCA", "REC", "RMA", "NSBV"].includes(d) && t === "FED") return "yes";
   if (m === "SFW" || d === "SRMA" || d === "SW" || d === "SCA" || /\bWMA\b|wildlife management|game management|hunting/i.test(n)) return "permit";
   if (t === "LOC" || t === "DIST") return "no";
   return "check";
@@ -3410,7 +3415,8 @@ function landRules(p, hc, st){
   const d = p.Des_Tp || "", m = (p.Mang_Name || "").toUpperCase(), S = D[st], need = [], rules = [];
   const lic = S ? `${S.name} hunting license, plus any tags, stamps or endorsements for your species` : "State hunting license, plus any tags or stamps for your species";
   if (hc === "no"){
-    if (/E$/.test(d) && (["PVT", "NGO"].includes(p.Own_Type) || ["PVT", "NGO"].includes(m))) rules.push("Private land under a conservation easement. You need the landowner's permission to hunt.");
+    if (/^P[A-Z]+$/.test(d) && d !== "PUB" && d !== "PROC") rules.push("This land is privately owned (a private reserve, ranch or farm listed in the public lands database). You need the owner's permission to hunt.");
+    else if (/E$/.test(d)) rules.push("Private land under a conservation easement. You need the landowner's permission to hunt.");
     else if (m === "NPS") rules.push("National parks don't allow hunting. Carrying a firearm is legal, but firing one is not.");
     else rules.push("Hunting and firing guns aren't allowed on city or county parks, golf courses, sports fields, historic sites and similar land.", "Many cities also ban discharging firearms anywhere inside city limits.");
     return { need, rules };
@@ -3438,7 +3444,7 @@ function landRules(p, hc, st){
       "Most refuges allow only portable stands and blinds, often removed at the end of each day.");
   }
   if (d === "MIL" || /DOD|ARMY|USAF|NAVY/.test(m)){
-    need.push("Installation hunting permit and base access (register with the post's hunting program)");
+    need.push("Installation hunting permit and base access (most posts sell these through iSportsman or the post's hunting office)");
     rules.push("Usually requires hunter education card, registration and daily check-in and check-out.", "Training can close areas on short notice. Check the area status every day you hunt.");
   }
   if (d === "TRIBL" || m === "TRIB" || m === "BIA"){ need.splice(0, need.length, "Tribal hunting permit (tribal rules apply, not state rules)"); rules.push("Contact the tribe's natural resources or game office for seasons and access."); }
@@ -3453,6 +3459,7 @@ function landRules(p, hc, st){
     if (S && S.publicNote) need.push(S.publicNote);
     rules.push("Each wildlife area has its own rules for dates, weapons, sign-in and stands. Read the area's page before hunting.");
   } else if (S && S.publicNote && (m === "USFS" || m === "BLM") && st === "NM") need.push(S.publicNote);
+  if (/E$/.test(d) && hc === "check") rules.push("This record is an easement held by a public agency. The land under it is often privately owned, so public hunting is usually allowed only where the agency owns the land outright or posts it as open.");
   if (hc === "check" && !rules.length) rules.push(`Hunting depends on the manager (${MGR[m] || p.Mang_Name}). Contact them before you hunt.`);
   return { need, rules };
 }
@@ -3684,7 +3691,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "12.1 (Oct 30, 2026)";
+const APP_VERSION = "12.2 (Oct 30, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
