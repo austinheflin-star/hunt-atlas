@@ -3529,15 +3529,16 @@ function cfrSection(st){
 const ROM = ["i","ii","iii","iv","v","vi","vii","viii","ix","x","xi","xii","xiii","xiv","xv","xvi","xvii","xviii","xix","xx","xxi","xxii","xxiii","xxiv","xxv"];
 async function refugeRules(name, st){
   const c = await cfrSection(st); if (!c) return null;
-  const key = s => s.toLowerCase().replace(/national wildlife refuge|nwr|complex|unit/g, "").replace(/[^a-z]/g, "");
+  const key = s => s.toLowerCase().replace(/national wildlife refuge|wildlife refuge|nwr|complex|unit/g, "").replace(/[^a-z]/g, "");
   const want = key(name);
   let start = -1, letter = "";
-  c.ps.forEach((t, i) => { const m = t.match(/^\(([a-z]+)\)\s+(.+?National Wildlife Refuge)/); if (m && start < 0 && key(m[2]) === want){ start = i; letter = m[1]; } });
+  const same = k => k === want || (k.length > 4 && want.length > 4 && (k.startsWith(want) || want.startsWith(k)));
+  c.ps.forEach((t, i) => { const m = t.match(/^\(([a-z]+)\)\s+(.+?(?:National )?Wildlife Refuge)/); if (m && start < 0 && same(key(m[2]))){ start = i; letter = m[1]; } });
   if (start < 0) return { closed: true, sec: c.sec, date: c.date };
-  let end = c.ps.length; for (let i = start + 1; i < c.ps.length; i++) if (/^\([a-z]+\)\s+.+?National Wildlife Refuge/.test(c.ps[i])){ end = i; break; }
+  let end = c.ps.length; for (let i = start + 1; i < c.ps.length; i++) if (/^\([a-z]+\)\s+.+?(?:National )?Wildlife Refuge/.test(c.ps[i])){ end = i; break; }
   const lines = c.ps.slice(start, end), byId = {}, sections = []; let num = 0, cur = null;
   lines.forEach((t, k) => {
-    let body = k === 0 ? t.replace(/^\([a-z]+\)\s+.+?National Wildlife Refuge—/, "") : t;
+    let body = k === 0 ? t.replace(/^\([a-z]+\)\s+.+?(?:National )?Wildlife Refuge—/, "") : t;
     const n = body.match(/^\((\d+)\)\s+([^.]+)\.\s*(.*)$/);
     if (n){ num = +n[1]; cur = [n[2], []]; sections.push(cur); if (n[3]) cur[1].push(n[3]); return; }
     const r = body.match(/^\(([ivxl]+)\)\s+(.*)$/);
@@ -3583,7 +3584,7 @@ async function areaFor(main, others, tp){
   if ((main.Des_Tp === "NWR" || m === "FWS") && /wildlife refuge/i.test(main.Unit_Nm || "") && CFR32[st]){
     try { const r = await refugeRules(main.Unit_Nm, st); if (!r) return null;
       const src = [[`50 CFR ${r.sec} (${(ALLST[st] || [st])[0]} refuges), eCFR as of ${r.date}`, `https://www.ecfr.gov/current/title-50/part-32/section-${r.sec}`]];
-      if (r.closed) return { title: main.Unit_Nm, verdict: ["no", "Closed to hunting", "This refuge isn't opened to hunting in 50 CFR part 32, so hunting isn't allowed here."], sections: [], src };
+      if (r.closed) return { title: main.Unit_Nm, verdict: ["check", "Not listed as open to hunting", "Refuges are closed to hunting unless 50 CFR part 32 opens them, and this name isn't listed there. Confirm with the refuge before you go."], sections: [], src };
       return { title: main.Unit_Nm, sections: r.sections, src, note: "Refuge-specific federal rules. State seasons and licenses also apply. Read the refuge's hunt brochure for unit maps and dates." };
     } catch { return { title: main.Unit_Nm, sections: [], src: [], note: "Couldn't load this refuge's federal hunting rules right now (no connection?)." }; }
   }
@@ -3811,7 +3812,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "13.4 (Oct 31, 2026)";
+const APP_VERSION = "13.5 (Oct 31, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
