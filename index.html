@@ -972,7 +972,8 @@ function huntClass(p){
   const d = p.Des_Tp || "", m = (p.Mang_Name || "").toUpperCase(), t = p.Mang_Type || "", n = p.Unit_Nm || "", o = p.Own_Type || "";
   const gov = ["FED", "STAT", "LOC", "DIST", "JNT", "TRIB"].includes(o) || ((t === "FED" || t === "STAT") && !["PVT", "NGO"].includes(o));
   if (/clos(ing|ure) order|closed area|sanctuary|no hunting|refuge headquarters/i.test(n)) return "no";
-  if (/criminal justice|corrections|prison|penitentiar/i.test((p.Own_Name || "") + " " + n)) return "no";
+  if (/criminal justice|corrections|prison|penitentiar|airport|airfield|air terminal/i.test((p.Own_Name || "") + " " + n)) return "no";
+  if (/fishing area|fish hatchery/i.test(n)) return "check";
   // Military land is usually marked closed, but most posts sell hunting access through their own program
   if (d === "MIL" || /DOD|ARMY|USAF|NAVY|USMC/.test(m)) return "permit";
   if (m === "DOE") return "no";
@@ -980,7 +981,7 @@ function huntClass(p){
   if (/^P[A-Z]+$/.test(d) && d !== "PUB" && d !== "PROC") return "no";                              // private conservation, ranch, farm, park
   const wma = m === "SFW" || /\bWMA\b|wildlife management|game management|wildlife area|hunting area|public hunting/i.test(n);
   if (wma && !["LP", "LREC", "LHCA", "HCA", "FACY"].includes(d)) return "permit";
-  if (/E$/.test(d)) return gov ? "check" : "no";                                                   // easements usually sit on private land
+  if (/E$/.test(d)) return gov && t !== "LOC" && t !== "DIST" ? "check" : "no";                                                   // easements usually sit on private land
   if (["LP", "LREC", "LHCA", "SHCA", "HCA", "FACY", "REA", "RNA"].includes(d)) return "no";
   if (NOHUNT_NAME.test(n) && (t === "LOC" || t === "DIST" || d === "SP" || d === "SREC")) return "no";
   if (m === "NPS") return d === "NP" ? (/preserve/i.test(n) ? "check" : "no") : d === "NM" ? "no" : "check";   // rivers, seashores, preserves, NRAs: designated areas only
@@ -990,6 +991,7 @@ function huntClass(p){
   if (m === "USACE") return "yes";                                                                   // 36 CFR 327.8: permitted unless the District closes it
   if (m === "USFS" || m === "BLM" || ["NF", "NG", "PUB"].includes(d)) return "yes";
   if (m === "SPR" || d === "SP" || d === "SREC") return "check";                                     // state parks: drawn or special hunts only
+  if (m === "SLB" && (p.State_Nm === "NM" || p.State_Nm === "New Mexico") && p.Pub_Access !== "XA") return "yes";   // NM trust land: Game Commission easement
   if (m === "TVA" || m === "USBR" || m === "SLB" || m === "SDNR" || m === "SDOL") return "check";
   if (["WA", "WSA", "IRA", "ACEC", "NCA", "REC", "RMA", "NSBV", "WSR", "SDA"].includes(d) && t === "FED") return "yes";
   if (d === "SRMA" || d === "SW" || d === "SCA") return "permit";
@@ -3514,6 +3516,8 @@ function featsAt(ll){ const out = [];
 // Most specific record wins (smallest tract). Near-duplicates (within 5% in size) resolve to the more permissive answer.
 function pickLand(fs){
   const rank = { yes: 0, permit: 1, check: 2, no: 3 };
+  const park = fs.find(x => x.Des_Tp === "NP" && (x.Mang_Name || "").toUpperCase() === "NPS" && !/preserve/i.test(x.Unit_Nm || ""));
+  if (park) return { main: park, others: fs.filter(x => x !== park) };                              // national park land governs anything layered on it
   const a = fs.slice().sort((x, y) => (x.GIS_Acres || 1e12) - (y.GIS_Acres || 1e12));
   const small = a[0].GIS_Acres || 0, twins = a.filter(x => Math.abs((x.GIS_Acres || 0) - small) <= Math.max(5, small * .05));
   twins.sort((x, y) => rank[huntClass(x)] - rank[huntClass(y)]);
@@ -3695,7 +3699,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "12.3 (Oct 30, 2026)";
+const APP_VERSION = "12.4 (Oct 30, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
