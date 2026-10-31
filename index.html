@@ -969,26 +969,39 @@ const DES = { NP:"National Park", NM:"National Monument", NCA:"National Conserva
   FORE:"Forest Easement (private land)", OTHE:"Easement (private land)", UNKE:"Easement (private land)", FACY:"Facility", UNK:"Unknown" };
 const NOHUNT_NAME = /golf|country club|athletic|sports|softball|baseball|soccer|tennis|aquatic|pool|playground|stadium|school|campus|cemetery|airport|museum|library|zoo|courthouse|city hall|plaza|greenway|arboretum|botanic|memorial park|dog park|skate|theat|visitors? center|marina/i;
 function huntClass(p){
-  const d = p.Des_Tp || "", m = (p.Mang_Name || "").toUpperCase(), t = p.Mang_Type || "", n = p.Unit_Nm || "";
+  const d = p.Des_Tp || "", m = (p.Mang_Name || "").toUpperCase(), t = p.Mang_Type || "", n = p.Unit_Nm || "", o = p.Own_Type || "";
+  const gov = ["FED", "STAT", "LOC", "DIST", "JNT", "TRIB"].includes(o) || ((t === "FED" || t === "STAT") && !["PVT", "NGO"].includes(o));
+  if (/clos(ing|ure) order|closed area|sanctuary|no hunting|refuge headquarters/i.test(n)) return "no";
+  if (/criminal justice|corrections|prison|penitentiar|airport|airfield|air terminal/i.test((p.Own_Name || "") + " " + n)) return "no";
+  if (/fishing area|fish hatchery/i.test(n)) return "check";
+  // Military land is usually marked closed, but most posts sell hunting access through their own program
+  if (d === "MIL" || /DOD|ARMY|USAF|NAVY|USMC/.test(m)) return "permit";
+  if (m === "DOE") return "no";
   if (p.Pub_Access === "XA") return "no";
-  if (/E$/.test(d) && d !== "UNKE" || d === "UNKE") return "no";                                  // easements are private land
+  if (/^P[A-Z]+$/.test(d) && d !== "PUB" && d !== "PROC") return "no";                              // private conservation, ranch, farm, park
+  const wma = m === "SFW" || /\bWMA\b|wildlife management|game management|wildlife area|hunting area|public hunting/i.test(n);
+  if (wma && !["LP", "LREC", "LHCA", "HCA", "FACY"].includes(d)) return "permit";
+  if (/E$/.test(d)) return gov && t !== "LOC" && t !== "DIST" ? "check" : "no";                                                   // easements usually sit on private land
   if (["LP", "LREC", "LHCA", "SHCA", "HCA", "FACY", "REA", "RNA"].includes(d)) return "no";
   if (NOHUNT_NAME.test(n) && (t === "LOC" || t === "DIST" || d === "SP" || d === "SREC")) return "no";
-  if (d === "NP" || ((d === "NM" || d === "NLS" || d === "NRA") && m === "NPS")) return /preserve/i.test(n) ? "check" : (d === "NP" ? "no" : "check");
-  if (m === "NPS") return "no";
-  if (d === "SP" || d === "SREC") return "check";                                                    // a few state parks hold special draw hunts
-  if (d === "MIL" || /DOD|ARMY|USAF|NAVY|DOE/.test(m) || d === "TRIBL") return "permit";
+  if (m === "NPS") return d === "NP" ? (/preserve/i.test(n) ? "check" : "no") : d === "NM" ? "no" : "check";   // rivers, seashores, preserves, NRAs: designated areas only
+  if (d === "NP") return "no";
+  if (d === "TRIBL" || m === "TRIB" || m === "BIA") return "permit";
   if (d === "NWR" || m === "FWS") return "permit";
-  if (m === "USACE" || m === "TVA" || m === "USBR" || m === "SLB" || m === "SDNR" || m === "SDOL") return "check";
-  if (["NF", "NG", "PUB", "WA", "WSA", "IRA", "ACEC", "NCA", "REC", "RMA", "NSBV"].includes(d) || m === "USFS" || m === "BLM") return p.Pub_Access === "RA" ? "permit" : "yes";
-  if (m === "SFW" || d === "SRMA" || d === "SW" || d === "SCA" || /\bWMA\b|wildlife management|game management|hunting/i.test(n)) return "permit";
+  if (m === "USACE") return "yes";                                                                   // 36 CFR 327.8: permitted unless the District closes it
+  if (m === "USFS" || m === "BLM" || ["NF", "NG", "PUB"].includes(d)) return "yes";
+  if (m === "SPR" || d === "SP" || d === "SREC") return "check";                                     // state parks: drawn or special hunts only
+  if (m === "SLB" && (p.State_Nm === "NM" || p.State_Nm === "New Mexico") && p.Pub_Access !== "XA") return "yes";   // NM trust land: Game Commission easement
+  if (m === "TVA" || m === "USBR" || m === "SLB" || m === "SDNR" || m === "SDOL") return "check";
+  if (["WA", "WSA", "IRA", "ACEC", "NCA", "REC", "RMA", "NSBV", "WSR", "SDA"].includes(d) && t === "FED") return "yes";
+  if (d === "SRMA" || d === "SW" || d === "SCA") return "permit";
   if (t === "LOC" || t === "DIST") return "no";
   return "check";
 }
 const HUNT = { yes: ["Open to hunting under state rules", "#2f8f4e"], permit: ["Hunting with a permit or special rules", "#d39a1c"], check: ["Check before you hunt: hunting is often limited", "#4a8fb5"], no: ["Public land, but no hunting", "#8d8d8d"] };
 const padLayer = L.geoJSON(null, {
   style: f => { const h = huntClass(f.properties); return h === "no" ? { color: "#8d8d8d", weight: 1, dashArray: "3 4", fillOpacity: .05, fillColor: "#8d8d8d" } : { color: HUNT[h][1], weight: 1.5, fillOpacity: h === "check" ? .1 : .18 }; },
-  onEachFeature: (f, l) => l.bindPopup(() => padPopup(f.properties))
+  onEachFeature: (f, l) => l.on("click", e => { L.DomEvent.stop(e); openLandPopup(e.latlng, featsAt(e.latlng)); })
 });
 const publicGroup = L.layerGroup([padTiles, padLayer]);
 // Slope shading computed in the browser from the elevation tiles
@@ -1566,7 +1579,7 @@ async function fetchPad(b){
   if (padCache.has(env)) return padCache.get(env);
   const q = new URLSearchParams({
     where: "Mang_Type IN ('FED','STAT','LOC','DIST','JNT')", geometry: env, geometryType: "esriGeometryEnvelope", inSR: "4326",
-    spatialRel: "esriSpatialRelIntersects", outFields: "Unit_Nm,Mang_Name,Mang_Type,Pub_Access,Des_Tp,GIS_Acres,State_Nm",
+    spatialRel: "esriSpatialRelIntersects", outFields: "Unit_Nm,Mang_Name,Mang_Type,Own_Type,Own_Name,Pub_Access,Des_Tp,GIS_Acres,State_Nm",
     outSR: "4326", f: "geojson", resultRecordCount: "2000", geometryPrecision: "5",
     maxAllowableOffset: String(((b.getEast()-b.getWest())/Math.max(700, map.getSize().x * 1.6)).toFixed(6))
   });
@@ -3408,7 +3421,8 @@ function landRules(p, hc, st){
   const d = p.Des_Tp || "", m = (p.Mang_Name || "").toUpperCase(), S = D[st], need = [], rules = [];
   const lic = S ? `${S.name} hunting license, plus any tags, stamps or endorsements for your species` : "State hunting license, plus any tags or stamps for your species";
   if (hc === "no"){
-    if (/E$/.test(d) && p.Mang_Type !== "LOC") rules.push("Private land under a conservation easement. You need the landowner's permission to hunt.");
+    if (/^P[A-Z]+$/.test(d) && d !== "PUB" && d !== "PROC") rules.push("This land is privately owned (a private reserve, ranch or farm listed in the public lands database). You need the owner's permission to hunt.");
+    else if (/E$/.test(d)) rules.push("Private land under a conservation easement. You need the landowner's permission to hunt.");
     else if (m === "NPS") rules.push("National parks don't allow hunting. Carrying a firearm is legal, but firing one is not.");
     else rules.push("Hunting and firing guns aren't allowed on city or county parks, golf courses, sports fields, historic sites and similar land.", "Many cities also ban discharging firearms anywhere inside city limits.");
     return { need, rules };
@@ -3436,19 +3450,22 @@ function landRules(p, hc, st){
       "Most refuges allow only portable stands and blinds, often removed at the end of each day.");
   }
   if (d === "MIL" || /DOD|ARMY|USAF|NAVY/.test(m)){
-    need.push("Installation hunting permit and base access (register with the post's hunting program)");
+    need.push("Installation hunting permit and base access (most posts sell these through iSportsman or the post's hunting office)");
     rules.push("Usually requires hunter education card, registration and daily check-in and check-out.", "Training can close areas on short notice. Check the area status every day you hunt.");
   }
   if (d === "TRIBL" || m === "TRIB" || m === "BIA"){ need.splice(0, need.length, "Tribal hunting permit (tribal rules apply, not state rules)"); rules.push("Contact the tribe's natural resources or game office for seasons and access."); }
-  if (m === "USACE") rules.push("Hunting is allowed only in areas the lake or project office opens to it. Parks, campgrounds and dam areas are closed.", "Check the project's hunting map; some lakes need a free or paid permit.");
+  if (m === "USACE") rules.push("Corps of Engineers rule: hunting is permitted except in areas and during periods the District Commander prohibits (36 CFR 327.8). State seasons, licenses and bag limits apply.",
+      "Closed: developed parks, campgrounds, swim beaches, boat ramps, dam and project-office areas, and anywhere posted.",
+      "Check the lake's hunting map from the project office; some lakes add their own permit or weapon limits.");
   if (m === "USBR" || m === "TVA") rules.push(`${MGR[m]} land is often open to hunting under state rules, but some areas are closed. Check with the project office.`);
   if (d === "SP" || d === "SREC") rules.push(STATE_PARK[st] || "State parks usually don't allow hunting except special drawn or permit hunts.");
-  if (m === "NPS") rules.push("National preserves and some recreation areas allow hunting under state rules in designated areas only. Confirm with the park.");
+  if (m === "NPS") rules.push("National Park Service rivers, seashores, preserves and recreation areas (for example the Buffalo National River and Big Thicket National Preserve) allow hunting under state rules in designated areas, sometimes with a free park permit. National parks and monuments don't allow hunting.", "Read this unit's hunting page on nps.gov before you go.");
   if (m === "SLB") rules.push(st === "NM" ? "New Mexico State Trust Land is open to licensed hunters under the Game Commission easement unless it's posted as closed." : "State trust lands vary: some allow hunting with a permit, others don't allow it at all. Check with the state land office.");
   if (["SFW", "SDNR", "SDOL", "OTHS"].includes(m) || ["SRMA", "SW", "SCA", "SOTH"].includes(d)){
     if (S && S.publicNote) need.push(S.publicNote);
     rules.push("Each wildlife area has its own rules for dates, weapons, sign-in and stands. Read the area's page before hunting.");
   } else if (S && S.publicNote && (m === "USFS" || m === "BLM") && st === "NM") need.push(S.publicNote);
+  if (/E$/.test(d) && hc === "check") rules.push("This record is an easement held by a public agency. The land under it is often privately owned, so public hunting is usually allowed only where the agency owns the land outright or posts it as open.");
   if (hc === "check" && !rules.length) rules.push(`Hunting depends on the manager (${MGR[m] || p.Mang_Name}). Contact them before you hunt.`);
   return { need, rules };
 }
@@ -3459,21 +3476,76 @@ function seasonsNow(st){
     if (cur) open.push(r); else { const up = rs.filter(([a]) => a > now).sort((x, y) => x[0] - y[0])[0]; if (up) next.push([r, up[0]]); } }
   next.sort((a, b) => a[1] - b[1]); return { open, next: next[0] };
 }
-function padPopup(p){
-  const hc = huntClass(p), st = D[p.State_Nm] || ALLST[p.State_Nm] ? p.State_Nm : STATE_ABBR[p.State_Nm], m = (p.Mang_Name || "").toUpperCase();
+function padPopup(p, ctx){
+  ctx = ctx || {};
+  let hc = huntClass(p); const st = D[p.State_Nm] || ALLST[p.State_Nm] ? p.State_Nm : STATE_ABBR[p.State_Nm], m = (p.Mang_Name || "").toUpperCase();
   if (st && !D[st]) loadStateData(st);
   const cat = p.Mang_Type === "LOC" ? ({ CITY: "City land", CNTY: "County land" }[m] || "Local government land") : (DES[p.Des_Tp] || "Public land");
-  const { need, rules } = landRules(p, hc, st), sn = hc === "no" ? null : seasonsNow(st), V = VERDICT[hc];
+  let { need, rules } = landRules(p, hc, st), V = VERDICT[hc];
+  const tp = ctx.tp;
+  if (tp && tp.kind === "nohunt"){ hc = "no"; V = ["✕ No hunting", `Marked no-hunt zone inside ${tp.name} (TPWD).`]; need = []; rules = ["TPWD marks this spot as a no-hunt zone on the public hunting land map. Hunting is allowed elsewhere on the unit."]; }
+  else if (tp && tp.kind === "aph"){ hc = "permit"; V = ["! Huntable with the APH permit", `Texas Public Hunting Land: ${tp.name}${tp.unit ? " (map booklet unit " + tp.unit + ")" : ""}.`];
+    need = ["Texas hunting license", "Annual Public Hunting (APH) permit, $48"];
+    ctx.others = [p].concat(ctx.others || []);
+    rules = [`Legal game, seasons and methods for this unit are listed under unit ${tp.unit || "?"} in TPWD's Public Hunting Lands map booklet.`, "Register on site at the unit's info station (or electronically where the unit allows) before you hunt.", "Stay out of marked no-hunt zones, and follow the unit's rules for stands, vehicles and camping."].concat(rules.filter(r => !/^Each wildlife area/.test(r))); }
+  const sn = hc === "no" ? null : seasonsNow(st);
   const li = a => a.map(x => `<li>${esc(x)}</li>`).join("");
   return `<div class="lp"><div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
-    <h4>${esc(p.Unit_Nm || "Unnamed area")}</h4>
-    <div class="lpcat"><b>${esc(cat)}</b> · ${esc(MGR[m] || p.Mang_Name || "")}${p.GIS_Acres ? ` · <span class="n">${Math.round(p.GIS_Acres).toLocaleString()} ac</span>` : ""}${st && D[st] ? " · " + esc(D[st].name) : ""}</div>
+    <h4>${esc(tp && tp.kind === "aph" ? tp.name : p.Unit_Nm || "Unnamed area")}</h4>
+    <div class="lpcat">${tp && tp.kind === "aph" ? `<b>TPWD Public Hunting Land</b> · Texas Parks and Wildlife${tp.unit ? " · unit " + esc(tp.unit) : ""}` : `<b>${esc(cat)}</b> · ${esc(MGR[m] || p.Mang_Name || "")}${p.GIS_Acres ? ` · <span class="n">${Math.round(p.GIS_Acres).toLocaleString()} ac</span>` : ""}`}${st && D[st] ? " · " + esc(D[st].name) : ""}</div>
     ${need.length ? `<div class="lph">What you need</div><ul>${li(need)}</ul>` : ""}
     ${rules.length ? `<div class="lph">Rules on this land</div><ul>${li(rules)}</ul>` : ""}
     ${sn ? `<div class="lph">In season now in ${esc(D[st].name)}</div>${sn.open.length ? `<ul>${li(sn.open.slice(0, 5).map(r => `${r[0]} (${r[1]}${r[2] && r[2] !== "Statewide" ? ", " + r[2] : ""})`))}</ul>` : `<p class="meta">Nothing open today.</p>`}
       ${sn.next ? `<p class="meta">Next to open: ${esc(sn.next[0][0])} (${esc(sn.next[0][1])}) ${esc(fmtDay(sn.next[1]))}</p>` : ""}` : ""}
     ${hc !== "no" ? `<div class="row" style="margin:6px 0 0"><button class="btn sm ghost askland">Ask Claude about this land</button>${st && D[st] ? `<a class="btn sm ghost" href="${esc(D[st].regsUrl || D[st].agencyUrl)}" target="_blank" rel="noopener">${esc(st)} regulations</a>` : ""}</div>` : ""}
-    <p class="meta" style="margin-top:6px">Land type from PAD-US (USGS). Always check the area's own regulations and any posted signs.</p></div>`;
+    ${ctx.others && ctx.others.length ? `<div class="lph">Also mapped here as</div><ul>${ctx.others.map(o => `<li>${esc(o.Unit_Nm || "Unnamed")} (${esc(DES[o.Des_Tp] || o.Des_Tp || "")}, ${esc(MGR[(o.Mang_Name || "").toUpperCase()] || o.Mang_Name)})</li>`).join("")}</ul>` : ""}
+    ${ctx.tpPending ? `<p class="meta"><span class="spin"></span> Checking Texas public hunting lands…</p>` : ""}
+    <p class="meta" style="margin-top:6px">Land type from PAD-US (USGS)${tp ? " and TPWD's public hunting lands map" : ""}. Always check the area's own regulations and any posted signs.</p></div>`;
+}
+
+// Every public-land record under a tap point (PAD-US often has overlapping or duplicate records)
+function ptInRings(ll, rings){ let inside = false; const x = ll.lng, y = ll.lat;
+  for (const r of rings) for (let i = 0, j = r.length - 1; i < r.length; j = i++){ const xi = r[i][0], yi = r[i][1], xj = r[j][0], yj = r[j][1];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / ((yj - yi) || 1e-12) + xi) inside = !inside; }
+  return inside; }
+function featsAt(ll){ const out = [];
+  padLayer.eachLayer(l => { const g = l.feature && l.feature.geometry; if (!g || !l.getBounds || !l.getBounds().contains(ll)) return;
+    const polys = g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : [];
+    if (polys.some(rs => ptInRings(ll, rs))) out.push(l.feature.properties); });
+  return out; }
+// Most specific record wins (smallest tract). Near-duplicates (within 5% in size) resolve to the more permissive answer.
+function pickLand(fs){
+  const rank = { yes: 0, permit: 1, check: 2, no: 3 };
+  const park = fs.find(x => x.Des_Tp === "NP" && (x.Mang_Name || "").toUpperCase() === "NPS" && !/preserve/i.test(x.Unit_Nm || ""));
+  if (park) return { main: park, others: fs.filter(x => x !== park) };                              // national park land governs anything layered on it
+  const a = fs.slice().sort((x, y) => (x.GIS_Acres || 1e12) - (y.GIS_Acres || 1e12));
+  const small = a[0].GIS_Acres || 0, twins = a.filter(x => Math.abs((x.GIS_Acres || 0) - small) <= Math.max(5, small * .05));
+  twins.sort((x, y) => rank[huntClass(x)] - rank[huntClass(y)]);
+  const main = twins[0], seen = new Set([main.Unit_Nm + main.Des_Tp]);
+  const others = a.filter(x => x !== main && !seen.has(x.Unit_Nm + x.Des_Tp) && seen.add(x.Unit_Nm + x.Des_Tp));
+  return { main, others };
+}
+// Texas: TPWD's own public hunting lands (APH units, WMAs, state park hunt areas) and their marked no-hunt zones
+async function tpwdAt(ll){
+  const q = new URLSearchParams({ geometry: `${ll.lng},${ll.lat}`, geometryType: "esriGeometryPoint", inSR: "4326", spatialRel: "esriSpatialRelIntersects", returnGeometry: "false", f: "json", where: "1=1" });
+  const B = TPWD + "TPWD_PublicHuntLocatorMap/MapServer/";
+  const [zones, areas] = await Promise.all([
+    fetch(B + "9/query?" + q + "&outFields=LocName,Class,PH_UnitNum,Name_Acres").then(r => r.json()).catch(() => ({})),
+    fetch(B + "1/query?" + q + "&outFields=LoName,Unit_Num,DeedAcres").then(r => r.json()).catch(() => ({})) ]);
+  const z = (zones.features || []).map(f => f.attributes), ar = (areas.features || []).map(f => f.attributes);
+  const nh = z.find(x => /no hunt/i.test(x.Class || ""));
+  if (nh) return { kind: "nohunt", name: nh.LocName || "a TPWD hunt area", unit: nh.PH_UnitNum };
+  const pa = ar[0] || z.find(x => /boundary|hunt area/i.test(x.Class || ""));
+  if (pa) return { kind: "aph", name: pa.LoName || pa.LocName, unit: pa.Unit_Num || pa.PH_UnitNum };
+  return null;
+}
+async function openLandPopup(ll, fs){
+  if (!fs || !fs.length) return;
+  const { main, others } = pickLand(fs), st = main.State_Nm, isTX = st === "TX" || st === "Texas";
+  const pop = L.popup({ minWidth: 260 }).setLatLng(ll).setContent(padPopup(main, { others, tpPending: isTX })).openOn(map);
+  if (!isTX) return;
+  let tp = null; try { tp = await tpwdAt(ll); } catch {}
+  if (map.hasLayer(pop)) pop.setContent(padPopup(main, { others, tp }));
 }
 map.on("popupopen", ev => { const el = ev.popup.getElement(), b = el && el.querySelector(".askland"); if (!b) return;
   const h4 = el.querySelector("h4"), cat = el.querySelector(".lpcat");
@@ -3483,11 +3555,10 @@ map.on("click", async e => {
   if (map.getZoom() >= 11 || !map.hasLayer(publicGroup) || measuring || dropping || routing.on) return;
   if (isPhone() && Date.now() - lastPopupClose < 400) return;
   const q = new URLSearchParams({ where: "Mang_Type IN ('FED','STAT','LOC','DIST','JNT')", geometry: `${e.latlng.lng},${e.latlng.lat}`, geometryType: "esriGeometryPoint", inSR: "4326",
-    spatialRel: "esriSpatialRelIntersects", outFields: "Unit_Nm,Mang_Name,Mang_Type,Pub_Access,Des_Tp,GIS_Acres,State_Nm", returnGeometry: "false", f: "json" });
+    spatialRel: "esriSpatialRelIntersects", outFields: "Unit_Nm,Mang_Name,Mang_Type,Own_Type,Own_Name,Pub_Access,Des_Tp,GIS_Acres,State_Nm", returnGeometry: "false", f: "json" });
   try { const j = await tracked("pad", fetch("https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?" + q).then(r => r.json()));
     const fs = (j.features || []).map(f => f.attributes); if (!fs.length) return;
-    const rank = { yes: 0, permit: 1, check: 2, no: 3 }; fs.sort((a, b) => rank[huntClass(a)] - rank[huntClass(b)] || (b.GIS_Acres || 0) - (a.GIS_Acres || 0));
-    L.popup({ minWidth: 260 }).setLatLng(e.latlng).setContent(padPopup(fs[0])).openOn(map);
+    openLandPopup(e.latlng, fs);
   } catch {}
 });
 
@@ -3628,7 +3699,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "12.0 (Oct 30, 2026)";
+const APP_VERSION = "12.4 (Oct 30, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
@@ -3770,7 +3841,7 @@ async function dlPadData(b){
   const feats = [], url = "https://services.arcgis.com/v01gqwM5QqNysAAi/ArcGIS/rest/services/Manager_Name_PADUS/FeatureServer/0/query?";
   for (let page = 0; page < 10; page++){
     const q = new URLSearchParams({ where: "Mang_Type IN ('FED','STAT','LOC','DIST','JNT')", geometry: [b[1], b[0], b[3], b[2]].join(","), geometryType: "esriGeometryEnvelope", inSR: "4326",
-      spatialRel: "esriSpatialRelIntersects", outFields: "Unit_Nm,Mang_Name,Mang_Type,Pub_Access,Des_Tp,GIS_Acres,State_Nm", outSR: "4326", f: "geojson",
+      spatialRel: "esriSpatialRelIntersects", outFields: "Unit_Nm,Mang_Name,Mang_Type,Own_Type,Own_Name,Pub_Access,Des_Tp,GIS_Acres,State_Nm", outSR: "4326", f: "geojson",
       resultRecordCount: "1500", resultOffset: String(page * 1500), geometryPrecision: "5", maxAllowableOffset: String(((b[3] - b[1]) / 3000).toFixed(6)) });
     const r = await rawFetch(url + q); if (!r.ok) throw new Error("Public land " + r.status);
     const j = await r.json(); (j.features || []).forEach(f => feats.push(f));
