@@ -107,6 +107,9 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
+.wcard .lchd{align-items:center}.wct{flex:1;display:flex;align-items:center;gap:8px;font:700 15px var(--body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.wct .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:12px;flex:none}
+.wcard .wform input,.wcard .wform select,.wcard .wform textarea{font-size:16px;padding:8px;border-radius:8px}.wcard .wform label{font-size:13px;font-weight:600;margin-top:8px}
+.leaflet-container.placing .sunbox{display:none}
 .ownr{margin-top:8px;padding:8px 10px;border-radius:8px;background:#f1efe3;font-size:13px;line-height:1.45}.ownr a{color:#c2410c;font-weight:700}
 .leaflet-popup-content h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .pin{background:var(--blaze);color:#fff;border:2px solid #fff;border-radius:50%;width:26px!important;height:26px!important;display:grid;place-items:center;font:700 13px var(--mono);box-shadow:0 1px 4px rgba(0,0,0,.5)}
@@ -1672,7 +1675,7 @@ const Cluster = L.LayerGroup.extend({
         .on("click", () => m.fitBounds(b.pad(.6), { maxZoom: Math.max(z + 2, this.opts.off || 14) })).addTo(this); } }
 });
 // open a marker's popup even if it is currently grouped into a bubble
-function openMarker(mk, ll, zoom){ map.setView(ll, Math.max(map.getZoom(), zoom || 15)); const go = () => { if (mk._map) mk.openPopup(); }; map.once("moveend", () => setTimeout(go, 60)); setTimeout(go, 400); }
+function openMarker(mk, ll, zoom){ if (mk && mk._wpt && isPhone()){ map.setView(ll, Math.max(map.getZoom(), zoom || 15)); setTimeout(() => wptCard(mk._wpt), 250); return; } map.setView(ll, Math.max(map.getZoom(), zoom || 15)); const go = () => { if (mk._map) mk.openPopup(); }; map.once("moveend", () => setTimeout(go, 60)); setTimeout(go, 400); }
 let heat = null, pins = new Cluster({ off: 13, color: "#f2542d" }).addTo(map), lastSpots = [];
 const proj = (lat, lng, z) => { const n = 256 * 2 ** z, s = Math.sin(lat * Math.PI / 180);
   return { x: (lng + 180) / 360 * n, y: (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n }; };
@@ -2255,10 +2258,12 @@ async function privateCard(ll){
   const card = landCard(ll);
   const head = `<div class="lpv lp-no"><b>✕ Not mapped as public land</b><span>Treat it as private: you need the landowner's permission to hunt or cross it.</span></div>`;
   card.setContent(head + `<p class="meta"><span class="spin"></span> Looking up the county…</p>`);
-  const [c, ft] = await Promise.all([countyAt(ll), fetch(`https://epqs.nationalmap.gov/v1/json?x=${ll.lng}&y=${ll.lat}&units=Feet&wkid=4326`).then(r => r.json()).then(j => Math.round(+j.value)).catch(() => NaN)]);
-  card.setContent(head + `<h4>${c ? esc(c.county + ", " + c.state) : "Private or unmapped land"}</h4>
+  let c = null, ft = NaN;
+  const draw = () => card.setContent(head + `<h4>${c ? esc(c.county + ", " + c.state) : "Private or unmapped land"}</h4>
     <div class="lpcat"><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span>${isFinite(ft) ? ` · ${ft.toLocaleString()} ft` : ""}</div>${ownerHtml(c)}
     <p class="meta" style="margin-top:6px">PAD-US doesn't show public land here. Small public tracts and recent purchases can be missing; check posted signs.</p>`);
+  fetch(`https://epqs.nationalmap.gov/v1/json?x=${ll.lng}&y=${ll.lat}&units=Feet&wkid=4326`).then(r => r.json()).then(j => { ft = Math.round(+j.value); if (isFinite(ft) && c !== undefined) draw(); }).catch(() => {});
+  c = await countyAt(ll); draw();
 }
 async function pointInfo(ll){
   {
@@ -2351,22 +2356,41 @@ function wForm(w){
 function drawWpts(){
   wLayer.clearMarkers();
   for (const w of wpts){
-    const m = L.marker([w.lat, w.lng], { icon: wIcon(w), draggable: true, title: w.name }).bindPopup(() => wForm(w), { minWidth: 220 });
-    wLayer.addMarker(m);
+    const m = L.marker([w.lat, w.lng], { icon: wIcon(w), draggable: true, title: w.name });
+    if (isPhone()) m.on("click", ev => { L.DomEvent.stop(ev); if (toolActive()) return; wptCard(w); }); else m.bindPopup(() => wForm(w), { minWidth: 220 });
+    m._wpt = w; wLayer.addMarker(m);
     m.on("dragend", () => { const p = m.getLatLng(); w.lat = p.lat; w.lng = p.lng; saveAll(); });
-    m.on("popupopen", ev => {
-      const el = ev.popup.getElement();
+    m.on("popupopen", ev => wireWForm(ev.popup.getElement(), w, () => m.closePopup()));
+    Object.defineProperty(w, "_m", { value: m, writable: true, configurable: true, enumerable: false });
+  }
+}
+/* Phone: the waypoint editor docks at the bottom (like the land card) instead of a tall popup over the marker */
+function wptCard(w){
+  closeLandCard();
+  const el = document.createElement("div"); el.className = "landcard wcard"; map.getContainer().appendChild(el); landCardEl = el;
+  L.DomEvent.disableClickPropagation(el); L.DomEvent.disableScrollPropagation(el);
+  const t = WTYPES[w.type] || WTYPES.other;
+  el.innerHTML = `<div class="lchd"><span class="wct"><span class="dot" style="background:${t[1]}">${t[2]}</span>${esc(w.name)}</span><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${wForm(w)}</div>`;
+  el.querySelector(".lcx").onclick = closeLandCard;
+  wireWForm(el, w, closeLandCard);
+  el.querySelectorAll("input,textarea,select").forEach(i => i.addEventListener("focus", () => setTimeout(() => i.scrollIntoView({ block: "center" }), 300)));
+  if (typeof sheetTo === "function") sheetTo(0); setPeek();
+  const pt = map.latLngToContainerPoint([w.lat, w.lng]), sz = map.getSize();
+  if (pt.y > sz.y * .38 || pt.x < 60 || pt.x > sz.x - 20) map.panBy([pt.x - sz.x / 2, pt.y - sz.y * .28], { animate: true });
+}
+function wireWForm(el, w, close){
+  const m = w._m;
+  {
       el.querySelector(".wt").onchange = ev => { el.querySelector(".sgf").hidden = !SIGN.has(ev.target.value); };
       el.querySelector(".ws").onclick = () => { w.name = el.querySelector(".wn").value.trim() || "Waypoint"; w.type = el.querySelector(".wt").value; w.notes = el.querySelector(".wd").value;
         if (SIGN.has(w.type)){ w.date = el.querySelector(".wdate").value; w.fresh = el.querySelector(".wfr").value; w.dir = el.querySelector(".wdir").value; w.size = el.querySelector(".wsz").value.trim(); }
-        saveAll(); drawWpts(); };
-      el.querySelector(".wx").onclick = () => { wpts = wpts.filter(x => x !== w); saveAll(); drawWpts(); stopPlume(); };
-      el.querySelector(".wc").onclick = () => { m.closePopup(); windCheck(w); };
-      el.querySelector(".wl").onclick = () => { m.closePopup(); showTab("mine"); logForm({ wid: w.id }); };
-      el.querySelector(".wr").onclick = () => { m.closePopup(); routeTo(L.latLng(w.lat, w.lng), w.name); };
-      el.querySelector(".wsm").onclick = () => { m.closePopup(); sunMoonPopup(L.latLng(w.lat, w.lng), w.name); };
-    });
-    Object.defineProperty(w, "_m", { value: m, writable: true, configurable: true, enumerable: false });
+        close(); saveAll(); drawWpts(); if (isPhone() && typeof toast === "function") toast("Saved " + w.name); };
+      el.querySelector(".wx").onclick = ev => { const b = ev.currentTarget; if (!b.dataset.sure){ b.dataset.sure = 1; b.textContent = "Tap again to delete"; b.style.background = "#fbd5cc"; setTimeout(() => { if (b.isConnected){ delete b.dataset.sure; b.textContent = "Delete"; b.style.background = "#e7e6da"; } }, 3000); return; }
+        close(); wpts = wpts.filter(x => x !== w); saveAll(); drawWpts(); stopPlume(); };
+      el.querySelector(".wc").onclick = () => { close(); windCheck(w); };
+      el.querySelector(".wl").onclick = () => { close(); showTab("mine"); logForm({ wid: w.id }); };
+      el.querySelector(".wr").onclick = () => { close(); routeTo(L.latLng(w.lat, w.lng), w.name); };
+      el.querySelector(".wsm").onclick = () => { close(); sunMoonPopup(L.latLng(w.lat, w.lng), w.name); };
   }
 }
 function addWaypoint(ll, o){
@@ -3985,7 +4009,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.2 (Nov 2, 2026)";
+const APP_VERSION = "15.3 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
