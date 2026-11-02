@@ -98,6 +98,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .placebar{position:absolute;left:10px;right:10px;bottom:calc(var(--sheetpeek,130px) + 10px);pointer-events:auto;background:#fffdf6;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.35);padding:10px;font:14px var(--body);color:#1f2a1f}
 .pbt{font-size:13px;color:#5b6656;margin:0 2px 8px}.pbr{display:flex;gap:8px}.pbr+.pbr{margin-top:8px}
 .pbgo{flex:1;min-height:48px;border:0;border-radius:10px;background:#f2542d;color:#fff;font:700 16px var(--body)}
+.pbu,.pbf{min-height:44px;border:1px solid #b9b9ad;border-radius:10px;background:#fff;color:#1f2a1f;font:600 14px var(--body);padding:0 12px}.pbf{flex:1;background:#2f6b3f;color:#fff;border-color:#2f6b3f}.pbu:disabled,.pbf:disabled{opacity:.45}
 .pbx,.pbo{min-height:48px;border:1px solid #b9b9ad;border-radius:10px;background:#fff;color:#1f2a1f;font:600 14px var(--body);padding:0 14px}.pbo{flex:1}
 .landcard{position:absolute;left:8px;right:8px;bottom:calc(var(--sheetpeek,130px) + 8px);max-height:58%;z-index:1100;background:#fffdf6;color:#1f2a1f;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden}
 .lchd{display:flex;gap:6px;padding:8px;border-bottom:1px solid #e3e1d3;background:#f6f3e7}
@@ -2192,14 +2193,18 @@ function clearMeasure(){ mPts = []; if (mLine) map.removeLayer(mLine); if (mLabe
 $("#btnMeasure").onclick = () => {
   measuring = !measuring; $("#btnMeasure").setAttribute("aria-pressed", measuring);
   map.getContainer().style.cursor = measuring ? "crosshair" : ""; map.doubleClickZoom[measuring ? "disable" : "enable"]();
-  if (measuring){ clearMeasure(); measureInfo(); if (isPhone()){ placeStart("+ Add point here", ll => { mPts.push(ll); updateMeasure(); measureInfo(); rubber(); }); map.on("move", rubber); } } else finishMeasure(true);
+  if (measuring){ clearMeasure(); measureInfo(); if (isPhone()){ const w = placeStart("+ Add point here", ll => { mPts.push(ll); updateMeasure(); measureInfo(); rubber(); }, `<button class="pbu" disabled>↶ Undo</button><button class="pbf" disabled>✓ Finish &amp; save</button>`);
+      w.querySelector(".pbu").onclick = () => { mPts.pop(); if (mPts.length) updateMeasure(); else clearMeasure(); measureInfo(); rubber(); };
+      w.querySelector(".pbf").onclick = () => finishMeasure(false); map.on("move", rubber); } } else finishMeasure(true);
 };
 function measureInfo(){
   let d = 0; for (let i = 1; i < mPts.length; i++) d += map.distance(mPts[i-1], mPts[i]);
+  const bar = isPhone() && PLACE.el && PLACE.el.querySelector(".pbf");
   setInfo(`<b>Draw a trail or measure</b><br>${mPts.length < 2 ? (isPhone() ? "Add points along the trail, then Finish & save to keep it in My map." : "Tap points along the trail. Finish & save keeps it in My map.") : "Total <b>" + fmtDist(d) + "</b> · " + mPts.length + " points"}
-    <div class="row" style="margin:6px 0 0"><button class="btn sm" id="mDone" ${mPts.length < 2 ? "disabled" : ""}>Finish & save</button><button class="btn sm ghost" id="mUndo" ${mPts.length ? "" : "disabled"}>Undo</button><button class="btn sm ghost" id="mStop">Cancel</button></div>`);
+    <div class="row" style="margin:6px 0 0"${bar ? " hidden" : ""}><button class="btn sm" id="mDone" ${mPts.length < 2 ? "disabled" : ""}>Finish & save</button><button class="btn sm ghost" id="mUndo" ${mPts.length ? "" : "disabled"}>Undo</button><button class="btn sm ghost" id="mStop">Cancel</button></div>`);
   $("#mDone").onclick = () => finishMeasure(false); $("#mStop").onclick = () => finishMeasure(true);
   $("#mUndo").onclick = () => { mPts.pop(); if (mPts.length) updateMeasure(); else clearMeasure(); measureInfo(); };
+  if (PLACE.el){ const u = PLACE.el.querySelector(".pbu"), f = PLACE.el.querySelector(".pbf"); if (u) u.disabled = !mPts.length; if (f) f.disabled = mPts.length < 2; }
 }
 function finishMeasure(cancel){
   if (!cancel && mPts.length > 1){ saveLine(mPts.slice()); setInfo(`<b>Saved</b><br>Line added to My map.`); } else if (cancel) $("#infobox").hidden = true;
@@ -4062,7 +4067,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "16.1 (Nov 2, 2026)";
+const APP_VERSION = "16.2 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
