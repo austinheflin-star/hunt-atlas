@@ -2307,6 +2307,8 @@ function ownerHtml(c, ll){ if (!c) return "";
   const cty = /county|parish|borough/i.test(c.county) ? c.county : c.county + (c.st === "LA" ? " Parish" : " County");
   const q = encodeURIComponent(`${cty} ${c.state} ${c.st === "TX" ? "appraisal district" : "assessor"} property search owner`);
   return `<div class="ownr"><b>Who owns it?</b> ${OWNER_LAYER_STATES[c.st] && ll ? `<button class="ownbtn" data-lyr="${OWNER_LAYER_STATES[c.st]}" data-lat="${ll.lat}" data-lng="${ll.lng}">Show property lines &amp; owners</button> or ` : OWNER_LAYER_STATES[c.st] ? `Turn on <i>Property lines</i> in Layers and tap the parcel, or ` : ""}<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">search the ${esc(cty)} ${c.st === "TX" ? "appraisal district" : "assessor"} ↗</a> by parcel or map.</div>`; }
+// What's here? Public land -> land card/popup with rules; otherwise the private-land card (phone) or point info (desktop)
+function inspectAt(ll){ const fs = featsAt(ll); if (fs.length) return openLandPopup(ll, fs); if (isPhone()) return privateCard(ll); return pointInfo(ll); }
 async function privateCard(ll){
   if (featsAt(ll).length){ openLandPopup(ll, featsAt(ll)); return; }
   if (!padHave || !padHave.contains(ll)){ pointInfo(ll); return; } // public-land outlines not loaded here yet; don't claim it's private
@@ -2672,9 +2674,11 @@ function pickSearch(it){
   sres.hidden = true; sIn.value = it.t; searchLayer.clearLayers();
   if (it.b && it.b.isValid() && !it.b.getNorthEast().equals(it.b.getSouthWest())) map.fitBounds(it.b.pad(.1), { maxZoom: 15 }); else map.setView(it.ll, it.z || 14);
   const at = it.ll || it.b.getCenter();
-  if (it.pin || !it.b) L.circleMarker(at, { radius: 8, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1 }).addTo(searchLayer).bindTooltip(esc(it.t));
+  if (it.pin || !it.b){ const mk = L.circleMarker(at, { radius: 9, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1 }).addTo(searchLayer).bindTooltip(esc(it.t));
+    mk.on("click", ev => { L.DomEvent.stop(ev); if (!toolActive()) inspectAt(L.latLng(at)); });
+    if (it.pin) setTimeout(() => { if (!toolActive() && map.getBounds().contains(at)) inspectAt(L.latLng(at)); }, 1600); }
   if (it.b && it.s && /^Public land|unit|zone/i.test(it.s)) L.rectangle(it.b, { color: "#f2542d", weight: 2, fill: false, dashArray: "6 4", interactive: false }).addTo(searchLayer);
-  setTimeout(() => searchLayer.clearLayers(), 20000);
+  clearTimeout(window.__srchT); window.__srchT = setTimeout(() => searchLayer.clearLayers(), 120000);
   sIn.blur(); if (isPhone()) sheetTo(0);
 }
 async function runSearch(go){
@@ -4068,7 +4072,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "16.3 (Nov 2, 2026)";
+const APP_VERSION = "16.4 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
