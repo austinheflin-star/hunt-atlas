@@ -107,6 +107,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
+.wdist{margin-left:auto;font-size:12px;opacity:.8;white-space:nowrap;padding-left:8px}
 .wcard .lchd{align-items:center}.wct{flex:1;display:flex;align-items:center;gap:8px;font:700 15px var(--body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.wct .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:12px;flex:none}
 .wform input,.wform select,.wform textarea{background:#fff;color:#1f2a1f;color-scheme:light}.wcard .wform input,.wcard .wform select,.wcard .wform textarea{font-size:16px;padding:8px;border-radius:8px}.wcard .wform label{font-size:13px;font-weight:600;margin-top:8px}
 .leaflet-container.placing .sunbox{display:none}
@@ -470,7 +471,7 @@ h1 span{color:var(--blaze)}
     <div class="pane" id="pane-rules"></div>
     <div class="pane" id="pane-mine" hidden>
       <h2>My map</h2>
-      <p>Tap <b>⚑</b> on the map, then click to drop a waypoint. Measured lines are saved here too. Everything is stored in this browser.</p>
+      <p>Tap <b>⚑ Pin</b>, then tap the map (on a phone, slide the map under the crosshair and press <b>Drop waypoint here</b>). Lines from <b>↔ Draw</b> are saved here too. Everything is stored in this browser.</p>
       <div class="row"><button class="btn sm" id="btnExport">Export GPX</button><label class="btn sm ghost" for="importFile">Import GPX</label><input type="file" id="importFile" accept=".gpx,.json,.geojson" hidden></div>
       <h3>Sign & scouting</h3>
       <p style="font-size:14px">Drop a waypoint (⚑) wherever you find sign and set its type: rub, scrape, tracks, trail, bed, droppings, sighting and more. Add the direction it faces or travels. Then let the app read the pattern.</p>
@@ -892,6 +893,7 @@ const envStr = b => [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map(v
 
 /* ---------- Tabs ---------- */
 function showTab(t){
+  if (!$("#pane-" + t)) t = "rules";
   document.querySelectorAll("nav button").forEach(x => x.setAttribute("aria-selected", x.dataset.tab === t));
   ["rules","scan","mine","wx","trip","acct"].forEach(k => $("#pane-" + k).hidden = k !== t);
   if (window.__v8){ if (t === "acct") renderAcct(); drawDlBoxes(); }
@@ -1968,7 +1970,10 @@ function runScore(d, onProg){
 const FICON = {
   saddle: '<path d="M1 12C3 4 6 4 8 9C10 4 13 4 15 12"/>', bench: '<path d="M1 14L5 10H10L15 3"/>', ridge: '<path d="M1 13L8 3L15 13"/>',
   drain: '<path d="M2 3L8 13L14 3"/>', north: '<path d="M8 1L12 14L8 11L4 14Z"/>', water: '<path d="M8 2C8 2 3 8 3 11A5 5 0 0 0 13 11C13 8 8 2 8 2Z"/>',
-  remote: '<path d="M8 2L13 10H3Z"/><path d="M8 10V14"/>', flat: '<path d="M1 9H15M1 13H15"/>' };
+  remote: '<path d="M8 2L13 10H3Z"/><path d="M8 10V14"/>', flat: '<path d="M1 9H15M1 13H15"/>',
+  edge: '<path d="M2 14V4M6 14V6M2 4L4 1L6 6"/><path d="M9 12H15"/>', corner: '<path d="M3 2V13H14"/><path d="M6 10L9 7"/>', pinch: '<path d="M2 2C6 6 6 10 2 14M14 2C10 6 10 10 14 14"/>',
+  food: '<path d="M8 15V5M8 9C5 9 4 6 4 4C7 4 8 6 8 9M8 7C11 7 12 4 12 2C9 2 8 4 8 7"/>', cover: '<circle cx="5" cy="6" r="3"/><circle cx="11" cy="6" r="3"/><circle cx="8" cy="11" r="3"/>',
+  crossing: '<path d="M1 6C4 4 6 8 9 6S14 4 15 6M1 11C4 9 6 13 9 11S14 9 15 11"/><path d="M5 2V15"/>', leeward: '<path d="M1 5H10A2 2 0 1 0 8 3M1 9H13A2 2 0 1 1 11 11"/>', young: '<path d="M8 15V8M8 8L4 11M8 10L12 7M8 8C6 6 6 3 8 1C10 3 10 6 8 8"/>' };
 const fIcon = k => `<svg viewBox="0 0 16 16" aria-hidden="true">${FICON[k] || ""}</svg>`;
 const gradeOf = (sc, rank) => rank < 3 && sc >= 85 ? "A" : rank < 7 && sc >= 70 ? "B" : "C";
 function walkText(m){ if (m == null) return ""; const mi = m / 1609.34, min = Math.max(2, Math.round(mi / 1.6 * 60 / 5) * 5);
@@ -2417,9 +2422,15 @@ function drawLines(){
   for (const l of lines) L.polyline(l.pts, { color: "#f2542d", weight: 3, opacity: .85 }).addTo(lLayer).bindTooltip(esc(l.name) + " · " + fmtDist(l.dist));
 }
 function renderMine(){
-  $("#wptList").innerHTML = wpts.map(w => { const t = WTYPES[w.type] || WTYPES.other;
-    return `<div class="item" data-w="${w.id}"><span class="dot" style="background:${t[1]}">${t[2]}</span><span class="t">${esc(w.name)}<small>${esc(t[0])}${w.notes ? " · " + esc(w.notes) : ""}</small></span></div>`; }).join("") || '<p class="meta">No waypoints yet.</p>';
-  $("#lineList").innerHTML = lines.map(l => `<div class="item" data-l="${l.id}"><span class="t">${esc(l.name)}<small>${fmtDist(l.dist)}</small></span><button class="x" data-del="${l.id}" aria-label="Delete line">×</button></div>`).join("") || '<p class="meta">Use ↔ to measure; finished lines are saved here.</p>';
+  // With a GPS fix, list waypoints nearest-first with distance and direction from you
+  const here = typeof lastLoc !== "undefined" && lastLoc ? lastLoc : null;
+  const rel = w => { if (!here) return null; const d = map.distance(here, [w.lat, w.lng]);
+    const y = Math.sin((w.lng - here.lng) * Math.PI / 180) * Math.cos(w.lat * Math.PI / 180), x = Math.cos(here.lat * Math.PI / 180) * Math.sin(w.lat * Math.PI / 180) - Math.sin(here.lat * Math.PI / 180) * Math.cos(w.lat * Math.PI / 180) * Math.cos((w.lng - here.lng) * Math.PI / 180);
+    return { d, dir: DIRS16[Math.round(((Math.atan2(y, x) * 180 / Math.PI + 360) % 360) / 22.5) % 16] }; };
+  const list = wpts.map(w => [w, rel(w)]); if (here) list.sort((a, b) => a[1].d - b[1].d);
+  $("#wptList").innerHTML = list.map(([w, r]) => { const t = WTYPES[w.type] || WTYPES.other;
+    return `<div class="item" data-w="${w.id}"><span class="dot" style="background:${t[1]}">${t[2]}</span><span class="t">${esc(w.name)}<small>${esc(t[0])}${w.notes ? " · " + esc(w.notes) : ""}</small></span>${r ? `<span class="wdist n">${fmtDist(r.d)} ${r.dir}</span>` : ""}</div>`; }).join("") || '<p class="meta">No waypoints yet.</p>';
+  $("#lineList").innerHTML = lines.map(l => `<div class="item" data-l="${l.id}"><span class="t">${esc(l.name)}<small>${fmtDist(l.dist)}</small></span><button class="x" data-del="${l.id}" aria-label="Delete line">×</button></div>`).join("") || '<p class="meta">Use ↔ Draw to trace a trail or measure; finished lines are saved here.</p>';
   $("#wptList").querySelectorAll("[data-w]").forEach(el => el.onclick = () => { const w = wpts.find(x => x.id === el.dataset.w); openMarker(w._m, [w.lat, w.lng], 15); if (isPhone()) sheetTo(0); });
   if (typeof renderLog === "function") renderLog();
   $("#lineList").querySelectorAll("[data-l]").forEach(el => el.onclick = ev => {
@@ -2704,8 +2715,8 @@ document.addEventListener("keydown", e => { if (e.key === "Escape"){ closeCtx();
 
 /* ---------- Walking route: easiest path over the terrain, with distance, climb and time ---------- */
 const routing = { on: false, start: null, dest: null, destName: "" }, routeLayer = L.layerGroup().addTo(map);
-let lastLoc = null;
-map.on("locationfound", e => { lastLoc = e.latlng; if (routing.on && routing.dest && !routing.start) { routing.start = e.latlng; doRoute(); } });
+var lastLoc = null;
+map.on("locationfound", e => { const first = !lastLoc; lastLoc = e.latlng; if (first) renderMine(); if (routing.on && routing.dest && !routing.start) { routing.start = e.latlng; doRoute(); } });
 function stopRouting(){ placeStop(); routing.on = false; routing.start = routing.dest = null; $("#btnRoute").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; }
 $("#btnRoute").onclick = () => {
   if (routing.on){ stopRouting(); setInfo("<b>Route</b><br>Route planning off."); return; }
@@ -4019,7 +4030,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.6 (Nov 2, 2026)";
+const APP_VERSION = "15.7 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
