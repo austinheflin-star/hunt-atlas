@@ -1,0 +1,232 @@
+{
+ "name": "Kansas",
+ "center": [
+  38.5,
+  -98.4
+ ],
+ "zoom": 7,
+ "agency": "Kansas Department of Wildlife and Parks (KDWP)",
+ "agencyUrl": "https://www.ksoutdoors.gov",
+ "regsUrl": "https://www.ksoutdoors.gov/Hunting/Hunting-Regulations",
+ "year": "2026-27 seasons",
+ "summary": "Kansas is about 97% private land, so most public hunting is on KDWP wildlife areas around the big Corps reservoirs, state fishing lakes, the Cimarron National Grassland, and Walk-In Hunting Access (WIHA): private land KDWP leases so any licensed hunter can hunt on foot. Whitetails here grow big, and nonresident deer permits come through a spring draw.",
+ "publicNote": "KDWP wildlife areas: many require a free daily check-in (ksoutdoors.com/checkin or the GoOutdoors KS app). Baiting and trail cameras are prohibited on KDWP land and WIHA. WIHA is foot traffic only, no camping, no target shooting; fall tracts are open Sept 1-Jan 31, Nov 1-Jan 31 or Sept 1-Mar 31 (posted on each tract) and spring turkey tracts Apr 1-May 31.",
+ "fees": [
+  {
+   "item": "Annual hunting license",
+   "res": "about $30 (verify)",
+   "nonres": "$127.50",
+   "note": "Nonresident junior (15 and under) $42.50. Residents 65-74 pay $15."
+  },
+  {
+   "item": "Whitetail any-season (either-sex) permit",
+   "res": "$42.50",
+   "nonres": "$477.50",
+   "note": "Nonresident price includes the $27.50 draw application fee. Youth: $12.50 resident, $117.50 nonresident."
+  },
+  {
+   "item": "Whitetail antlerless permit",
+   "res": "$22.50",
+   "nonres": "$52.50",
+   "note": "Youth resident $10."
+  },
+  {
+   "item": "Either-species/either-sex firearm deer (draw)",
+   "res": "$52.50",
+   "nonres": "n/a",
+   "note": "Resident only."
+  },
+  {
+   "item": "Nonresident deer preference point",
+   "res": "—",
+   "nonres": "$27.50",
+   "note": ""
+  },
+  {
+   "item": "Spring turkey permit",
+   "res": "Unit 4 draw $32.50",
+   "nonres": "$75 (draw, Units 1-3, 5, 6)",
+   "note": "Youth spring permit $7.50. 2026 prices; internet fee extra."
+  }
+ ],
+ "rules": [
+  "Hunter education is required for anyone born on or after July 1, 1957 (verify current exemptions on KDWP).",
+  "Deer: blaze orange is required during the youth/disability, muzzleloader and pre-rut antlerless seasons per KDWP's deer page; check the regulations summary for other firearm seasons.",
+  "Baiting while hunting or preparing to hunt is illegal on all public lands; trail and game cameras are prohibited on KDWP lands and WIHA.",
+  "On KDWP lands: no more than two portable stands/blinds per hunter, marked with your name and address or KDWP number; place no more than 14 days before the season and remove within 14 days after. Portable blinds and decoys can't be left overnight.",
+  "Walk-In Hunting Access: open only on posted WIHA signs, on foot only; no camping, target shooting, dog training, horses, fires or trapping (unless the landowner allows trapping).",
+  "Many wildlife areas require a free daily check-in before hunting and check-out after."
+ ],
+ "seasons": [
+  [
+   "Deer",
+   "Youth & disability",
+   "Statewide",
+   "Sep 5 – Sep 13, 2026"
+  ],
+  [
+   "Deer",
+   "Muzzleloader",
+   "Statewide",
+   "Sep 14 – Sep 27, 2026"
+  ],
+  [
+   "Deer",
+   "Archery",
+   "Statewide",
+   "Sep 14 – Dec 31, 2026"
+  ],
+  [
+   "Deer",
+   "Pre-rut antlerless (WAO)",
+   "Statewide",
+   "Oct 10 – Oct 12, 2026"
+  ],
+  [
+   "Deer",
+   "Regular firearm",
+   "Statewide",
+   "Dec 2 – Dec 13, 2026"
+  ],
+  [
+   "Deer",
+   "Extended antlerless (WAO)",
+   "Units 4-10, 16 / 11-15, 19 / 3",
+   "Jan 1 – Jan 17 / Jan 24 / Jan 10, 2027"
+  ],
+  [
+   "Deer",
+   "Extended archery antlerless",
+   "Unit 19",
+   "Jan 25 – Jan 31, 2027"
+  ],
+  [
+   "Elk",
+   "Archery",
+   "Units 2, 3 (outside Fort Riley)",
+   "Sep 14 – Dec 31, 2026"
+  ],
+  [
+   "Elk",
+   "Firearm",
+   "Units 2, 3",
+   "Aug 1–31; Dec 2–13, 2026; Jan 1 – Mar 15, 2027"
+  ],
+  [
+   "Pronghorn",
+   "Archery / muzzleloader / firearm",
+   "Units 2, 17, 18",
+   "Sep 19–27 / Sep 28 – Oct 5 / Oct 3–5, 2026"
+  ],
+  [
+   "Pheasant & quail",
+   "Regular",
+   "Statewide",
+   "Nov 14, 2026 – Jan 31, 2027 (opens 2nd Saturday of Nov)"
+  ],
+  [
+   "Squirrel",
+   "General",
+   "Statewide",
+   "Jun 1, 2026 – Feb 28, 2027"
+  ],
+  [
+   "Rabbit",
+   "General",
+   "Statewide",
+   "Year-round"
+  ],
+  [
+   "Turkey",
+   "Spring 2027",
+   "Statewide",
+   "Dates not yet published (spring 2026: Apr 1 youth – May 31)"
+  ]
+ ],
+ "seasonsNote": "Big game dates are KDWP's 2026-27 seasons (as reported May 22, 2026). Waterfowl and dove dates follow the federal frameworks; check KDWP's waterfowl page. Fort Riley and Fort Leavenworth have their own deer segments.",
+ "areasLabel": "Major public lands",
+ "areas": [
+  {
+   "name": "Walk-In Hunting Access (WIHA)",
+   "where": "Statewide (private land leased for public hunting)",
+   "acres": 0
+  },
+  {
+   "name": "Cimarron National Grassland",
+   "where": "Southwest (Morton County)",
+   "acres": 108175
+  },
+  {
+   "name": "Milford Wildlife Area",
+   "where": "North-central (Milford Lake)",
+   "acres": 19000
+  },
+  {
+   "name": "Tuttle Creek Wildlife Area",
+   "where": "Northeast (Tuttle Creek Lake)",
+   "acres": 17800
+  },
+  {
+   "name": "Mined Land Wildlife Area",
+   "where": "Southeast (Cherokee & Crawford Co.)",
+   "acres": 14500
+  },
+  {
+   "name": "Elk City Wildlife Area",
+   "where": "Southeast",
+   "acres": 12446
+  },
+  {
+   "name": "Webster Wildlife Area",
+   "where": "Northwest",
+   "acres": 8018
+  },
+  {
+   "name": "Cheyenne Bottoms Wildlife Area",
+   "where": "Central (Great Bend)",
+   "acres": 0
+  }
+ ],
+ "links": [
+  [
+   "KDWP hunting regulations",
+   "https://www.ksoutdoors.gov/Hunting/Hunting-Regulations"
+  ],
+  [
+   "Public lands regulations",
+   "https://ksoutdoors.gov/Hunting/Hunting-Regulations/Public-Lands-Regulations"
+  ],
+  [
+   "WIHA area rules",
+   "https://ksoutdoors.com/Services/Private-Landowner-Assistance/Wildlife-Biologists/Walk-in-Hunting-Access-Program/WIHA-Area-Rules"
+  ],
+  [
+   "Wildlife areas",
+   "https://www.ksoutdoors.gov/about-kdwp/where-we-work/wildlife-areas"
+  ],
+  [
+   "Daily hunter check-in",
+   "https://ksoutdoors.com/checkin"
+  ],
+  [
+   "Deer information and fees",
+   "https://kdwpt.ks.gov/Hunting/Big-Game-Information/Deer"
+  ]
+ ],
+ "rut": "Whitetail rut peaks in mid-November; the regular firearm season (Dec 2-13) falls after the peak, so archery hunters get the rut.",
+ "nr": {
+  "parts": [
+   [
+    "NR whitetail any-season permit (draw)",
+    477.5
+   ],
+   [
+    "NR annual hunting license",
+    127.5
+   ]
+  ],
+  "note": "Nonresident deer permits are drawn in April for a single deer management unit. A preference point alone is $27.50."
+ },
+ "compiled": "Nov 2, 2026",
+ "everywhere": "Kansas hunting license (and HIP for migratory birds)"
+}

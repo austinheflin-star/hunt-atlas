@@ -2141,6 +2141,300 @@
    ],
    "acres": 193326,
    "source": "U.S. Army Corps of Engineers, Tulsa District lake hunting guide"
+  },
+  "bighill": {
+   "name": "Big Hill Lake",
+   "match": "big hill",
+   "state": "KS",
+   "district": "Tulsa",
+   "url": "https://www.swt.usace.army.mil/Portals/41/docs/missions/recreation/hunting/BigHill_2-10-2026.pdf",
+   "verdict": [
+    "yes",
+    "Open outside parks and dam areas",
+    "Corps land here is open to hunting under Kansas regulations except developed recreation areas and lands around the dam and other structures. Much of the land around the lake is also a KDWP wildlife area with its own rules."
+   ],
+   "rules": [
+    [
+     "General",
+     "Hunting at Big Hill Lake is in accordance with applicable federal and state regulations. Generally, all Corps lands are open to the public for hunting except developed recreational areas and lands around the dam and other structures."
+    ],
+    [
+     "Vehicles",
+     "Vehicles may be driven only on established roads."
+    ],
+    [
+     "Camping",
+     "Camping is restricted to designated campsites within developed camping areas. Fires are allowed only in designated fire rings or grills."
+    ],
+    [
+     "Duck blinds",
+     "Only temporary duck blinds are authorized, and they must be removed after each hunting trip."
+    ],
+    [
+     "Violations",
+     "Report wildlife violations to KDWP Operation Game Thief, 1-877-426-3843."
+    ]
+   ],
+   "contact": [
+    "Big Hill Lake Project Office, 19065 Cherryvale Pkwy, Cherryvale, KS 67335, (620) 336-2741"
+   ],
+   "acres": 2572,
+   "source": "U.S. Army Corps of Engineers, Tulsa District lake hunting guide"
+  },
+  "elkcity": {
+   "name": "Elk City Lake",
+   "match": "elk city",
+   "state": "KS",
+   "district": "Tulsa",
+   "url": "https://www.swt.usace.army.mil/Portals/41/docs/missions/recreation/hunting/Elk_City_5-20-22.pdf",
+   "verdict": [
+    "yes",
+    "Open outside parks and dam areas",
+    "Corps land here is open to hunting under Kansas regulations except developed recreation areas and lands around the dam and other structures. Much of the land around the lake is also a KDWP wildlife area with its own rules."
+   ],
+   "rules": [
+    [
+     "General",
+     "Hunting at Elk City Lake is in accordance with applicable federal and state regulations. Generally, all Corps lands are open to the public for hunting except developed recreational areas and lands around the dam and other structures."
+    ],
+    [
+     "Vehicles",
+     "Vehicles may be driven only on established roads."
+    ],
+    [
+     "Camping",
+     "Camping is restricted to designated campsites within developed camping areas. Fires are allowed only in designated fire rings or grills."
+    ],
+    [
+     "Duck blinds",
+     "Only temporary duck blinds are authorized, and they must be removed after each hunting trip."
+    ],
+    [
+     "Violations",
+     "Report wildlife violations to KDWP Operation Game Thief, 1-877-426-3843."
+    ]
+   ],
+   "contact": [
+    "Big Hill Lake Office, 19065 Cherryvale Pkwy, Cherryvale, KS 67335, (620) 336-2741"
+   ],
+   "acres": 18469,
+   "source": "U.S. Army Corps of Engineers, Tulsa District lake hunting guide"
+  },
+  "fallriver": {
+   "name": "Fall River Lake",
+   "match": "fall river",
+   "state": "KS",
+   "district": "Tulsa",
+   "url": "https://www.swt.usace.army.mil/Portals/41/docs/missions/recreation/hunting/fallriver2011.pdf",
+   "verdict": [
+    "yes",
+    "Open outside parks and dam areas",
+    "Corps land here is open to hunting under Kansas regulations except developed recreation areas and lands around the dam and other structures. Much of the land around the lake is also a KDWP wildlife area with its own rules."
+   ],
+   "rules": [
+    [
+     "General",
+     "Hunting at Fall River Lake is in accordance with applicable federal and state regulations. Generally, all Corps lands are open to the public for hunting except developed recreational areas and lands around the dam and other structures."
+    ],
+    [
+     "Vehicles",
+     "Vehicles may be driven only on established roads."
+    ],
+    [
+     "Camping",
+     "Camping is restricted to designated campsites within developed camping areas. Fires are allowed only in designated fire rings or grills."
+    ],
+    [
+     "Duck blinds",
+     "Only temporary duck blinds are authorized, and they must be removed after each hunting trip."
+    ],
+    [
+     "Violations",
+     "Report wildlife violations to KDWP Operation Game Thief, 1-877-426-3843."
+    ]
+   ],
+   "contact": [
+    "Fall River Lake Office, 2453 Lake Road, Fall River, KS 67047, (620) 658-4445",
+    "Tulsa District (918) 669-7370"
+   ],
+   "acres": null,
+   "source": "U.S. Army Corps of Engineers, Tulsa District lake hunting guide"
+  },
+  "toronto": {
+   "name": "Toronto Lake",
+   "match": "toronto",
+   "state": "KS",
+   "district": "Tulsa",
+   "url": "https://www.swt.usace.army.mil/Portals/41/docs/missions/recreation/hunting/toronto2011.pdf",
+   "verdict": [
+    "yes",
+    "Open outside parks and dam areas",
+    "Corps land here is open to hunting under Kansas regulations except developed recreation areas and lands around the dam and other structures. Much of the land around the lake is also a KDWP wildlife area with its own rules."
+   ],
+   "rules": [
+    [
+     "General",
+     "Hunting at Toronto Lake is in accordance with applicable federal and state regulations. Generally, all Corps lands are open to the public for hunting except developed recreational areas and lands around the dam and other structures."
+    ],
+    [
+     "Vehicles",
+     "Vehicles may be driven only on established roads."
+    ],
+    [
+     "Camping",
+     "Camping is restricted to designated campsites within developed camping areas. Fires are allowed only in designated fire rings or grills."
+    ],
+    [
+     "Duck blinds",
+     "Only temporary duck blinds are authorized, and they must be removed after each hunting trip."
+    ],
+    [
+     "Violations",
+     "Report wildlife violations to KDWP Operation Game Thief, 1-877-426-3843."
+    ]
+   ],
+   "contact": [
+    "Fall River Lake Office (manages Toronto), 2453 Lake Road, Fall River, KS 67047, (620) 658-4445",
+    "Tulsa District (918) 669-7370"
+   ],
+   "acres": null,
+   "source": "U.S. Army Corps of Engineers, Tulsa District lake hunting guide"
+  },
+  "marion": {
+   "name": "Marion Reservoir",
+   "match": "marion",
+   "state": "KS",
+   "district": "Tulsa",
+   "url": "https://www.swt.usace.army.mil/Portals/41/docs/missions/recreation/hunting/Marion_3-21-22.pdf",
+   "verdict": [
+    "yes",
+    "Open outside parks and dam areas",
+    "Corps land here is open to hunting under Kansas regulations except developed recreation areas and lands around the dam and other structures. Much of the land around the lake is also a KDWP wildlife area with its own rules."
+   ],
+   "rules": [
+    [
+     "General",
+     "Hunting at Marion Reservoir is in accordance with applicable federal and state regulations. Generally, all Corps lands are open to the public for hunting except developed recreational areas and lands around the dam and other structures."
+    ],
+    [
+     "Vehicles",
+     "Vehicles may be driven only on established roads."
+    ],
+    [
+     "Camping",
+     "Camping is restricted to designated campsites within developed camping areas. Fires are allowed only in designated fire rings or grills."
+    ],
+    [
+     "Duck blinds",
+     "Only temporary duck blinds are authorized, and they must be removed after each hunting trip."
+    ],
+    [
+     "Violations",
+     "Report wildlife violations to KDWP Operation Game Thief, 1-877-426-3843."
+    ]
+   ],
+   "contact": [
+    "Marion Lake Office, 2105 Pawnee, Marion, KS 66861, (620) 382-2101"
+   ],
+   "acres": 12249,
+   "source": "U.S. Army Corps of Engineers, Tulsa District lake hunting guide"
+  },
+  "johnredmond": {
+   "name": "John Redmond Reservoir",
+   "match": "john redmond",
+   "state": "KS",
+   "district": "Tulsa",
+   "url": "https://www.swt.usace.army.mil/Portals/41/docs/missions/recreation/hunting/JohnRedmond_11-19-24.pdf",
+   "verdict": [
+    "yes",
+    "Open: no centerfire rifles or pistols",
+    "Corps land here is open outside parks and dam areas, but only bows, shotguns, muzzleloaders and rimfire guns are allowed; possessing centerfire rifles or pistols is prohibited."
+   ],
+   "rules": [
+    [
+     "General",
+     "Hunting at John Redmond Reservoir is in accordance with applicable federal and state regulations. Generally, all Corps lands are open to the public for hunting except developed recreational areas and lands around the dam and other structures."
+    ],
+    [
+     "Vehicles",
+     "Vehicles may be driven only on established roads."
+    ],
+    [
+     "Camping",
+     "Camping is restricted to designated campsites within developed camping areas. Fires are allowed only in designated fire rings or grills."
+    ],
+    [
+     "Duck blinds",
+     "Only temporary duck blinds are authorized, and they must be removed after each hunting trip."
+    ],
+    [
+     "Violations",
+     "Report wildlife violations to KDWP Operation Game Thief, 1-877-426-3843."
+    ],
+    [
+     "Weapons",
+     "Bows and arrows, shotguns, muzzleloaders, rimfire rifles and rimfire pistols are permitted for hunting. The possession of centerfire rifles and/or centerfire pistols is prohibited."
+    ],
+    [
+     "Flint Hills NWR",
+     "Hunting on the Flint Hills National Wildlife Refuge is permitted only during special seasons and under restrictions set by the U.S. Fish & Wildlife Service."
+    ],
+    [
+     "Otter Creek Wildlife Area",
+     "Hunting on Otter Creek Wildlife Area is permitted only under restrictions set by KDWP."
+    ]
+   ],
+   "contact": [
+    "John Redmond Lake Office, 1565 Embankment Road SW, Burlington, KS 66839, (620) 364-8613",
+    "Flint Hills NWR (620) 392-5553",
+    "Otter Creek Wildlife Area (620) 637-2748"
+   ],
+   "acres": null,
+   "source": "U.S. Army Corps of Engineers, Tulsa District lake hunting guide"
+  },
+  "councilgrove": {
+   "name": "Council Grove Lake",
+   "match": "council grove",
+   "state": "KS",
+   "district": "Tulsa",
+   "url": "https://www.swt.usace.army.mil/Portals/41/docs/missions/recreation/hunting/Council_Grove_3-24-22.pdf",
+   "verdict": [
+    "yes",
+    "Open on mapped hunting areas",
+    "About 2,450 acres are open to hunting: 1,950 licensed to KDWP and 500 managed by the Corps. Park areas and operations areas are closed."
+   ],
+   "rules": [
+    [
+     "Hunting land",
+     "Approximately 2,450 acres are open to hunting around the lake. 1,950 acres are licensed to and managed by KDWP; the remaining 500 acres are managed by the Corps of Engineers."
+    ],
+    [
+     "Where",
+     "All lands indicated on the public hunting map are open for hunting of all species legally taken during open season, under state and federal regulations. Watch for special restrictions marked on the map."
+    ],
+    [
+     "Closed areas",
+     "Hunting is prohibited in all park areas and other areas reserved for lake operational purposes."
+    ],
+    [
+     "Blinds and stands",
+     "Duck blinds are permitted only if removed by the end of the day. Permanent hunting stands are not permitted."
+    ],
+    [
+     "Vehicles and camping",
+     "Vehicles may be driven only on established and maintained roads. Camping only in designated campsites in developed camping areas; fires only in fire rings or grills. Seven Corps parks offer camping (fees year-round; full services April 1-Oct 31)."
+    ],
+    [
+     "Violations",
+     "Report wildlife violations to KDWP Operation Game Thief, 1-877-426-3843."
+    ]
+   ],
+   "contact": [
+    "Council Grove Lake, 945 Lake Road, Council Grove, KS 66846, (620) 767-5195",
+    "KDWP office in Canning Creek Cove park"
+   ],
+   "acres": 5975,
+   "source": "U.S. Army Corps of Engineers, Tulsa District lake hunting guide"
   }
  }
 }
