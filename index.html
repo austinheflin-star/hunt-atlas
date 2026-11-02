@@ -112,6 +112,9 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .wcard .lchd{align-items:center}.wct{flex:1;display:flex;align-items:center;gap:8px;font:700 15px var(--body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.wct .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:12px;flex:none}
 .wform input,.wform select,.wform textarea{background:#fff;color:#1f2a1f;color-scheme:light}.wcard .wform input,.wcard .wform select,.wcard .wform textarea{font-size:16px;padding:8px;border-radius:8px}.wcard .wform label{font-size:13px;font-weight:600;margin-top:8px}
 .leaflet-container.placing .sunbox{display:none}
+.wcard .wform .wacts{grid-template-columns:repeat(4,1fr);position:sticky;bottom:-10px;background:#fffdf6;padding:8px 0 10px;margin-top:6px}.wcard .wform .wacts button{min-height:40px;border-radius:8px;font-size:12px;line-height:1.15;padding:4px 2px}
+.wcard .wform .ws{grid-column:span 3;font-size:15px!important}.wcard .wform .wx{grid-column:span 1}
+.wcard .wform textarea{min-height:44px}.wcard .lcb{padding-top:2px}
 .ownbtn{display:block;width:100%;margin:6px 0 4px;padding:9px;border:0;border-radius:8px;background:#ffd23f;color:#1f2a1f;font:700 14px var(--body);cursor:pointer}
 .ownr{margin-top:8px;padding:8px 10px;border-radius:8px;background:#f1efe3;font-size:13px;line-height:1.45}.ownr a{color:#c2410c;font-weight:700}
 .leaflet-popup-content h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
@@ -136,7 +139,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .item .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px}
 .wpt{width:22px!important;height:22px!important;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;color:#fff;font:700 11px var(--mono);box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .wform label{margin:6px 0 2px;font-size:12px}.wform input,.wform select,.wform textarea{width:100%;font:13px var(--body);padding:4px;border:1px solid #ccc;border-radius:3px;box-sizing:border-box}
-.wform .acts{display:flex;gap:6px;margin-top:8px}.wform .acts button{flex:1;padding:5px;border:0;border-radius:3px;cursor:pointer;font:600 12px var(--body);color:#1f2a1f}
+.wform .acts{display:flex;gap:6px;margin-top:8px}.wform .wacts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}.wform .wacts button{padding:5px;border:0;border-radius:3px;cursor:pointer;font:600 12px var(--body);color:#1f2a1f}.wform .acts button{flex:1;padding:5px;border:0;border-radius:3px;cursor:pointer;font:600 12px var(--body);color:#1f2a1f}
 @media (pointer:coarse){.wform .acts button{min-height:40px;font-size:14px;border-radius:8px}}
 .wxnow{display:flex;gap:14px;align-items:center;margin:10px 0}
 .wxnow .big{font:600 34px var(--mono)}
@@ -2395,9 +2398,8 @@ function wForm(w){
       <div><label>Size</label><input class="wsz" placeholder="tree 4 in, track 3 in" value="${esc(w.size || "")}"></div></div></div>
     <label>Notes</label><textarea class="wd" rows="2">${esc(w.notes || "")}</textarea>
     <div class="meta" style="margin-top:4px">${w.lat.toFixed(5)}, ${w.lng.toFixed(5)}</div>
-    <div class="acts"><button class="ws" style="background:#f2542d;color:#fff">Save</button><button class="wx" style="background:#e7e6da">Delete</button></div>
-    <div class="acts"><button class="wc" style="background:#e7e6da">Wind check</button><button class="wl" style="background:#e7e6da">Log a hunt</button></div>
-    <div class="acts"><button class="wr" style="background:#e7e6da">Route here</button><button class="wsm" style="background:#e7e6da">Sun & moon</button></div></div>`;
+    <div class="wacts"><button class="ws" style="background:#f2542d;color:#fff">Save</button><button class="wx" style="background:#e7e6da">Delete</button>
+    <button class="wr" style="background:#e7e6da">⤳ Route here</button><button class="wc" style="background:#e7e6da">≋ Wind check</button><button class="wl" style="background:#e7e6da">✎ Log a hunt</button><button class="wsm" style="background:#e7e6da">☾ Sun & moon</button></div></div>`;
 }
 function drawWpts(){
   wLayer.clearMarkers();
@@ -4060,7 +4062,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "16.0 (Nov 2, 2026)";
+const APP_VERSION = "16.1 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
