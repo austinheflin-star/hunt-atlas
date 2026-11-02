@@ -2144,12 +2144,14 @@ toolsCtl.addTo(map);
 /* Me: first tap finds you and keeps tracking (the map follows you until you drag it). Tap again to re-center; tap while following to stop.
    The info box says whether the spot you're standing on is mapped public land, and updates when you cross a boundary. */
 const TRACK = { id: null, follow: false, first: true, land: null };
-function landHere(ll){ const fs = featsAt(ll); if (!fs.length) return padHave && padHave.contains(ll) ? { k: "none" } : null;
-  const m = pickLand(fs).main, c = huntClass(m); return { k: c, name: m.Unit_Nm || "Public land" }; }
+async function landHere(ll){ const fs = featsAt(ll); if (!fs.length) return padHave && padHave.contains(ll) ? { k: "none" } : null;
+  const { main, others } = pickLand(fs); let k = huntClass(main), name = main.Unit_Nm || "Public land", word = null;
+  try { const a = await areaFor(main, others); if (a && a.verdict){ k = a.verdict[0]; word = a.verdict[1]; } if (a && a.title) name = a.title; } catch {}
+  return { k, name, word }; }
 const LAND_WORD = { yes: "✓ Open to hunting", permit: "Permit or check-in needed", check: "Check the rules", no: "✕ No hunting" };
-function trackInfo(ll, acc){ const h = landHere(ll), k = h ? h.k + (h.name || "") : "?";
+async function trackInfo(ll, acc){ const h = await landHere(ll), k = h ? h.k + (h.name || "") : "?";
   if (!TRACK.first && k === TRACK.land) return; TRACK.land = k; TRACK.first = false;
-  setInfo(`<b>You are here</b><br>${h ? h.k === "none" ? "<b style=\"color:#b91c1c\">Not on mapped public land</b>" : `On <b>${esc(h.name)}</b>: ${LAND_WORD[h.k] || ""}` : "Zoom in to see the land you're on"}<br><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span> · ±${Math.round(acc * 1.0936)} yd${TRACK.id != null ? `<br><small>Tracking you. Drag the map to look around; tap ◎ to come back.</small>` : ""}`); }
+  setInfo(`<b>You are here</b><br>${h ? h.k === "none" ? "<b style=\"color:#b91c1c\">Not on mapped public land</b>" : `On <b>${esc(h.name)}</b>: ${esc(h.word ? (VGLYPH[h.k] || "") + h.word : LAND_WORD[h.k] || "")}` : "Zoom in to see the land you're on"}<br><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span> · ±${Math.round(acc * 1.0936)} yd${TRACK.id != null ? `<br><small>Tracking you. Drag the map to look around; tap ◎ to come back.</small>` : ""}`); }
 function locBtn(){ const b = $("#btnLocate"); b.setAttribute("aria-pressed", TRACK.id != null); b.classList.toggle("follow", TRACK.id != null && TRACK.follow); }
 function stopTrack(){ if (TRACK.id != null) navigator.geolocation.clearWatch(TRACK.id); TRACK.id = null; TRACK.follow = false; locBtn(); }
 $("#btnLocate").onclick = () => {
@@ -4053,7 +4055,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.8 (Nov 2, 2026)";
+const APP_VERSION = "15.9 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
