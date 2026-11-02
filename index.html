@@ -89,6 +89,23 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .bar span{display:block;height:100%;background:var(--olive)}
 #map{height:100%;width:100%;background:#cfd3c4}
 .leaflet-popup-content{font:14px/1.45 var(--body);margin:10px 12px}
+.placeui{position:absolute;inset:0;pointer-events:none;z-index:900}
+.xhair{position:absolute;left:50%;top:42%;width:46px;height:46px;margin:-23px 0 0 -23px}
+.xhair:before,.xhair:after{content:"";position:absolute;background:#f2542d;box-shadow:0 0 0 1.5px #fff}
+.xhair:before{left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px}.xhair:after{top:50%;left:0;right:0;height:3px;margin-top:-1.5px}
+.xhair span{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border:2px solid #fff;border-radius:50%;background:#f2542d}
+.placebar{position:absolute;left:10px;right:10px;bottom:calc(var(--sheetpeek,130px) + 10px);pointer-events:auto;background:#fffdf6;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.35);padding:10px;font:14px var(--body);color:#1f2a1f}
+.pbt{font-size:13px;color:#5b6656;margin:0 2px 8px}.pbr{display:flex;gap:8px}.pbr+.pbr{margin-top:8px}
+.pbgo{flex:1;min-height:48px;border:0;border-radius:10px;background:#f2542d;color:#fff;font:700 16px var(--body)}
+.pbx,.pbo{min-height:48px;border:1px solid #b9b9ad;border-radius:10px;background:#fff;color:#1f2a1f;font:600 14px var(--body);padding:0 14px}.pbo{flex:1}
+.landcard{position:absolute;left:8px;right:8px;bottom:calc(var(--sheetpeek,130px) + 8px);max-height:58%;z-index:880;background:#fffdf6;color:#1f2a1f;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden}
+.lchd{display:flex;gap:6px;padding:8px;border-bottom:1px solid #e3e1d3;background:#f6f3e7}
+.lca{flex:1;min-height:42px;border:1px solid #b9b9ad;border-radius:9px;background:#fff;font:600 14px var(--body);color:#1f2a1f}
+.lca[data-a="wpt"]{background:#f2542d;color:#fff;border-color:#f2542d}
+.lcx{width:42px;min-height:42px;border:0;border-radius:9px;background:#e7e6da;font:22px/1 var(--body);color:#1f2a1f}
+.lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
+.lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
+.lpacts{display:flex;gap:6px;margin:0 0 8px}
 .leaflet-popup-content h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .pin{background:var(--blaze);color:#fff;border:2px solid #fff;border-radius:50%;width:26px!important;height:26px!important;display:grid;place-items:center;font:700 13px var(--mono);box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .tools{display:flex;flex-direction:column;gap:6px}
@@ -1004,7 +1021,7 @@ function huntClass(p){
 const HUNT = { yes: ["Open to hunting under state rules", "#2f8f4e"], permit: ["Hunting with a permit or special rules", "#d39a1c"], check: ["Check before you hunt: hunting is often limited", "#4a8fb5"], no: ["Public land, but no hunting", "#8d8d8d"] };
 const padLayer = L.geoJSON(null, {
   style: f => { const h = huntClass(f.properties); return h === "no" ? { color: "#8d8d8d", weight: 1, dashArray: "3 4", fillOpacity: .05, fillColor: "#8d8d8d" } : { color: HUNT[h][1], weight: 1.5, fillOpacity: h === "check" ? .1 : .18 }; },
-  onEachFeature: (f, l) => l.on("click", e => { L.DomEvent.stop(e); openLandPopup(e.latlng, featsAt(e.latlng)); })
+  onEachFeature: (f, l) => l.on("click", e => { if (toolActive()) return; L.DomEvent.stop(e); openLandPopup(e.latlng, featsAt(e.latlng)); })
 });
 const publicGroup = L.layerGroup([padTiles, padLayer]);
 // Slope shading computed in the browser from the elevation tiles
@@ -2121,7 +2138,7 @@ function clearMeasure(){ mPts = []; if (mLine) map.removeLayer(mLine); if (mLabe
 $("#btnMeasure").onclick = () => {
   measuring = !measuring; $("#btnMeasure").setAttribute("aria-pressed", measuring);
   map.getContainer().style.cursor = measuring ? "crosshair" : ""; map.doubleClickZoom[measuring ? "disable" : "enable"]();
-  if (measuring){ clearMeasure(); measureInfo(); } else finishMeasure(true);
+  if (measuring){ clearMeasure(); measureInfo(); if (isPhone()) placeStart("+ Add point here", ll => { mPts.push(ll); updateMeasure(); measureInfo(); }); } else finishMeasure(true);
 };
 function measureInfo(){
   let d = 0; for (let i = 1; i < mPts.length; i++) d += map.distance(mPts[i-1], mPts[i]);
@@ -2132,7 +2149,7 @@ function measureInfo(){
 }
 function finishMeasure(cancel){
   if (!cancel && mPts.length > 1){ saveLine(mPts.slice()); setInfo(`<b>Saved</b><br>Line added to My map.`); } else if (cancel) $("#infobox").hidden = true;
-  measuring = false; $("#btnMeasure").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; clearMeasure(); setTimeout(() => map.doubleClickZoom.enable(), 50);
+  measuring = false; placeStop(); $("#btnMeasure").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; clearMeasure(); setTimeout(() => map.doubleClickZoom.enable(), 50);
 }
 function updateMeasure(){
   if (!mLine) mLine = L.polyline(mPts, { color: "#f2542d", weight: 3, dashArray: "6 5" }).addTo(map); else mLine.setLatLngs(mPts);
@@ -2152,12 +2169,54 @@ infoCtl.addTo(map);
 function setInfo(html){ const el = $("#infobox"); el.innerHTML = `<button class="ib-x" aria-label="Close">×</button>` + html; el.hidden = false;
   if (typeof overlay === "function") overlay("info");
   el.querySelector(".ib-x").onclick = () => { el.hidden = true; if (/Wind check/.test(html) && typeof stopPlume === "function") stopPlume(); }; }
+/* ---------- Phone placement: a fixed crosshair you drag the map under, then press the big button ---------- */
+const PLACE = { on: false, pick: null, el: null };
+function placeStart(label, onPick, extra){
+  placeStop(); PLACE.on = true; PLACE.pick = onPick;
+  const wrap = document.createElement("div"); wrap.className = "placeui";
+  wrap.innerHTML = `<div class="xhair" aria-hidden="true"><span></span></div>
+    <div class="placebar"><div class="pbt">Move the map so the crosshair is on the spot</div>
+      <div class="pbr"><button class="pbgo">${label}</button><button class="pbx" aria-label="Cancel">Cancel</button></div>${extra ? `<div class="pbr pbx2">${extra}</div>` : ""}</div>`;
+  map.getContainer().appendChild(wrap); PLACE.el = wrap; L.DomEvent.disableClickPropagation(wrap.querySelector(".placebar"));
+  const pt = () => { const sz = map.getSize(), r = wrap.querySelector(".xhair").getBoundingClientRect(), m = map.getContainer().getBoundingClientRect();
+    return map.containerPointToLatLng([r.left + r.width / 2 - m.left, r.top + r.height / 2 - m.top]); };
+  wrap.querySelector(".pbgo").onclick = () => { const f = PLACE.pick; f && f(pt()); };
+  wrap.querySelector(".pbx").onclick = () => { placeStop(); if (routing.on) stopRouting(); if (measuring) finishMeasure(true); if (dropping){ dropping = false; $("#btnWpt").setAttribute("aria-pressed", false); } };
+  if (typeof sheetTo === "function") sheetTo(0); setPeek();
+  return wrap;
+}
+function setPeek(){ const sh = document.getElementById("sheet"), c = map.getContainer(); const f = () => { const t = sh ? sh.getBoundingClientRect().top : innerHeight; c.style.setProperty("--sheetpeek", Math.max(0, innerHeight - t) + "px"); }; f(); setTimeout(f, 350); }
+function placeLabel(label, hint){ if (!PLACE.el) return; PLACE.el.querySelector(".pbgo").textContent = label; if (hint) PLACE.el.querySelector(".pbt").textContent = hint; }
+function placeStop(){ PLACE.on = false; PLACE.pick = null; if (PLACE.el) PLACE.el.remove(); PLACE.el = null; }
+
+/* ---------- Phone land card: docked at the bottom instead of a popup that covers the map ---------- */
+let landCardEl = null, landMark = null;
+function landCard(ll){
+  closeLandCard();
+  const el = document.createElement("div"); el.className = "landcard"; map.getContainer().appendChild(el); landCardEl = el;
+  L.DomEvent.disableClickPropagation(el); L.DomEvent.disableScrollPropagation(el);
+  landMark = L.circleMarker(ll, { radius: 8, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1, interactive: false }).addTo(map);
+  const card = { open: true, setContent(html){ if (!card.open) return; el.innerHTML = `<div class="lchd"><button class="lca" data-a="wpt">⚑ Waypoint here</button><button class="lca" data-a="route">⤳ Route here</button><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${html}</div>`;
+      el.querySelector(".lcx").onclick = closeLandCard; wireLandActs(el, ll, closeLandCard);
+      const b = el.querySelector(".askland"), h4 = el.querySelector("h4"), cat = el.querySelector(".lpcat");
+      if (b) b.onclick = () => askClaude(`Can I hunt on ${h4 ? h4.textContent : "this public land"} (${cat ? cat.textContent : ""})? What licenses and permits do I need, what seasons are open, and what special rules apply there?`); } };
+  el._card = card; if (typeof sheetTo === "function") sheetTo(0); setPeek();
+  return card;
+}
+function closeLandCard(){ if (landCardEl){ if (landCardEl._card) landCardEl._card.open = false; landCardEl.remove(); landCardEl = null; } if (landMark){ map.removeLayer(landMark); landMark = null; } }
+function wireLandActs(el, ll, done){
+  el.querySelectorAll("[data-a]").forEach(b => b.onclick = ev => { ev.stopPropagation(); done && done();
+    if (b.dataset.a === "wpt") addWaypoint(ll); else if (b.dataset.a === "route") routeTo(ll, "this spot"); });
+}
+function toolActive(){ return !!((typeof routing !== "undefined" && routing.on) || measuring || dropping || PLACE.on); }
+map.on("popupopen", ev => { if (toolActive() && !ev.popup._keep) setTimeout(() => map.closePopup(ev.popup), 0); });
 let lastPopupClose = 0; map.on("popupclose", () => { lastPopupClose = Date.now(); });
 let clickTimer;
 map.on("click", e => {
   if (routing.on){ routeClick(e.latlng); return; }
   if (measuring){ mPts.push(e.latlng); updateMeasure(); measureInfo(); return; }
-  if (dropping){ dropping = false; $("#btnWpt").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; addWaypoint(e.latlng); return; }
+  if (dropping){ dropping = false; placeStop(); $("#btnWpt").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; addWaypoint(e.latlng); return; }
+  if (landCardEl){ closeLandCard(); return; }
   if (Date.now() - lastPopupClose < 400 || (ctxEl && !ctxEl.hidden)) return; // that tap just closed a popup or menu
   if (typeof overlayAnyOpen === "function" && isPhone() && overlayAnyOpen()){ overlayCloseAll(); return; }
   if (!(PREF.tapInfo ?? !isPhone())) return;
@@ -2232,6 +2291,8 @@ const saveAll = () => { store.set("rrha_wpts", wpts); store.set("rrha_lines", li
 $("#btnWpt").onclick = () => {
   dropping = !dropping; $("#btnWpt").setAttribute("aria-pressed", dropping);
   map.getContainer().style.cursor = dropping ? "copy" : "";
+  if (dropping && isPhone()){ placeStart("⚑ Drop waypoint here", ll => { placeStop(); dropping = false; $("#btnWpt").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; addWaypoint(ll); }); return; }
+  if (!dropping) placeStop();
   if (dropping) setInfo("<b>Drop a waypoint</b><br>Tap the map where you want it. You can set the type (stand, rub, scrape, bed…) after.");
 };
 function wIcon(w){ const t = WTYPES[w.type] || WTYPES.other; return L.divIcon({ className: "", html: `<div class="wpt" style="background:${t[1]}">${t[2]}</div>`, iconSize: [22,22], iconAnchor: [11,11] }); }
@@ -2573,11 +2634,12 @@ document.addEventListener("keydown", e => { if (e.key === "Escape"){ closeCtx();
 const routing = { on: false, start: null, dest: null, destName: "" }, routeLayer = L.layerGroup().addTo(map);
 let lastLoc = null;
 map.on("locationfound", e => { lastLoc = e.latlng; if (routing.on && routing.dest && !routing.start) { routing.start = e.latlng; doRoute(); } });
-function stopRouting(){ routing.on = false; routing.start = routing.dest = null; $("#btnRoute").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; }
+function stopRouting(){ placeStop(); routing.on = false; routing.start = routing.dest = null; $("#btnRoute").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; }
 $("#btnRoute").onclick = () => {
   if (routing.on){ stopRouting(); setInfo("<b>Route</b><br>Route planning off."); return; }
   routing.on = true; routing.start = routing.dest = null; $("#btnRoute").setAttribute("aria-pressed", true); map.getContainer().style.cursor = "crosshair";
   setInfo("<b>Plan a route</b><br>Tap your starting point (truck, parking), then the spot you're walking to.");
+  if (isPhone()) placeStart("Set start here", ll => routeClick(ll));
 };
 function routeTo(dest, name){
   routing.on = true; routing.dest = dest; routing.destName = name || "the spot"; routing.start = null; $("#btnRoute").setAttribute("aria-pressed", true);
@@ -2590,12 +2652,13 @@ function routeTo(dest, name){
   const p = $("#rtPark"), l = $("#rtLoc");
   if (p) p.onclick = () => { routing.start = parks[0]; doRoute(); };
   if (l) l.onclick = () => { routing.start = lastLoc; doRoute(); };
-  if (isPhone()) sheetTo(0);
+  if (isPhone()) placeStart("Start from here", ll => routeClick(ll), [lastLoc && map.distance(lastLoc, dest) < 15000 ? `<button class="pbo" data-r="loc">From my location</button>` : "", parks.length ? `<button class="pbo" data-r="park">From my parking</button>` : ""].join(""));
+  if (PLACE.el) PLACE.el.querySelectorAll("[data-r]").forEach(b => b.onclick = () => { routing.start = b.dataset.r === "loc" ? lastLoc : parks[0]; doRoute(); });
 }
 function routeClick(ll){
   if (!routing.start && routing.dest){ routing.start = ll; doRoute(); return; }
   if (!routing.start){ routing.start = ll; routeLayer.clearLayers(); L.circleMarker(ll, { radius: 7, color: "#fff", weight: 2, fillColor: "#2f8f4e", fillOpacity: 1 }).addTo(routeLayer);
-    setInfo("<b>Plan a route</b><br>Now tap where you're walking to."); return; }
+    setInfo("<b>Plan a route</b><br>Now tap where you're walking to."); placeLabel("Set destination here", "Now put the crosshair on where you're walking to"); return; }
   routing.dest = ll; routing.destName = "the spot"; doRoute();
 }
 class Heap { constructor(){ this.i = []; this.p = []; }
@@ -3495,7 +3558,7 @@ function padPopup(p, ctx){
   if (area && area.verdict){ hc = area.verdict[0]; V = [VGLYPH[hc] + area.verdict[1], area.verdict[2]]; }
   const sn = hc === "no" ? null : seasonsNow(st);
   const li = a => a.map(x => `<li>${esc(x)}</li>`).join("");
-  return `<div class="lp"><div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
+  return `<div class="lp">${ctx.ll ? `<div class="lpacts" data-ll="${ctx.ll.lat},${ctx.ll.lng}"><button class="btn sm" data-a="wpt">⚑ Waypoint here</button><button class="btn sm ghost" data-a="route">⤳ Route here</button></div>` : ""}<div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
     <h4>${esc(tp && tp.kind === "aph" ? tp.name : p.Unit_Nm || "Unnamed area")}</h4>
     <div class="lpcat">${tp && tp.kind === "aph" ? `<b>TPWD Public Hunting Land</b> · Texas Parks and Wildlife${tp.unit ? " · unit " + esc(tp.unit) : ""}` : `<b>${esc(cat)}</b> · ${esc(MGR[m] || p.Mang_Name || "")}${p.GIS_Acres ? ` · <span class="n">${Math.round(p.GIS_Acres).toLocaleString()} ac</span>` : ""}`}${st && D[st] ? " · " + esc(D[st].name) : ""}</div>
     ${areaHtml(area)}${ctx.areaPending ? `<p class="meta"><span class="spin"></span> Loading this area's own rules…</p>` : ""}
@@ -3592,7 +3655,7 @@ async function areaFor(main, others, tp){
         src: [["CPW page: " + tp.name, tp.url], ["CPW Chapter W-9, 07/16/2026", db && db.w9]].filter(x => x[1]) };
     }
   }
-  const isPark = /\b(park|recreation area|campground|golf)\b/i.test(main.Unit_Nm || "") && !/wildlife|wma|hunting|preserve/i.test(main.Unit_Nm || "");
+  const isPark = /\b(park|recreation area|campground|golf)\b/i.test(main.Unit_Nm || "") && !/wildlife|wma|hunting|preserve/i.test(main.Unit_Nm || "") && (main.GIS_Acres || 0) < 3000;
   if (WMA_FILES[st] && !isPark){
     const db = await areaJSON(WMA_FILES[st]);
     if (db){ const hit = wmaMatch(db, [main].concat(others || []));
@@ -3613,7 +3676,7 @@ async function areaFor(main, others, tp){
     const names = [main].concat(others || []).map(x => (x.Unit_Nm || "").toLowerCase()).join(" ");
     const lake = Object.values(db.lakes).find(l => (!l.state || l.state === "*" || l.state === st) && names.includes(l.match));
     const FWG = ["Fort Worth District Public Hunting Guide 2026-27", "https://www.swf-wc.usace.army.mil/lake/Fort%20Worth%20District%20Hunting%20Guide%202026-2027_FINAL_11%20AUG%202026.pdf"];
-    if (/\b(park|recreation area|campground)\b/i.test(main.Unit_Nm || "") && !/wildlife|wma|hunting/i.test(main.Unit_Nm || ""))
+    if (/\b(park|recreation area|campground)\b/i.test(main.Unit_Nm || "") && !/wildlife|wma|hunting/i.test(main.Unit_Nm || "") && (main.GIS_Acres || 0) < 3000 && !/RMA|REC/.test(main.Des_Tp || ""))
       return { title: main.Unit_Nm, verdict: ["no", "No hunting: Corps park", "Developed Corps of Engineers parks are closed to hunting" + (lake && lake.district !== "Fort Worth" ? "." : ", and firearms can't be fired within 600 ft of one (archery 100 ft).")], sections: [], src: [lake && lake.district !== "Fort Worth" ? [lake.source, lake.url] : FWG] };
     if (lake) return { title: lake.name, verdict: lake.verdict, sections: [["This lake's hunting rules", lake.rules], ["Contacts", lake.contact]], src: [[lake.source, lake.url]], compiled: db.compiled };
     return { title: main.Unit_Nm, sections: [], src: [], note: "This lake's own hunting rules haven't been added yet. Every Corps lake sets its own: where you can hunt, legal game, weapons and permits. Call the lake office or check its hunting page before you go." };
@@ -3679,15 +3742,20 @@ async function openLandPopup(ll, fs){
   if (!fs || !fs.length) return;
   const { main, others } = pickLand(fs), st = main.State_Nm, isTX = st === "TX" || st === "Texas";
   const opts = { minWidth: 260, maxHeight: Math.round(innerHeight * (isPhone() ? .55 : .7)), autoPanPadding: [10, 10] };
-  const pop = L.popup(opts).setLatLng(ll).setContent(padPopup(main, { others, tpPending: isTX, areaPending: true })).openOn(map);
+  const phone = isPhone(), card = phone ? landCard(ll) : null;
+  const pop = phone ? null : L.popup(opts).setLatLng(ll).setContent(padPopup(main, { others, tpPending: isTX, areaPending: true, ll })).openOn(map);
+  const live = () => phone ? card.open : map.hasLayer(pop), put = h => phone ? card.setContent(h) : pop.setContent(h);
+  if (phone) put(padPopup(main, { others, tpPending: isTX, areaPending: true }));
   const isCO = st === "CO" || st === "Colorado";
   let tp = null; if (isTX) try { tp = await tpwdAt(ll); } catch {}
   if (isCO) try { tp = await cpwAt(ll); } catch {}
-  if (!map.hasLayer(pop)) return;
-  pop.setContent(padPopup(main, { others, tp, areaPending: true }));
+  if (!live()) return;
+  put(padPopup(main, { others, tp, areaPending: true, ll: phone ? null : ll }));
   let area = null; try { area = await areaFor(main, others, tp); } catch {}
-  if (map.hasLayer(pop)) pop.setContent(padPopup(main, { others, tp, area }));
+  if (live()) put(padPopup(main, { others, tp, area, ll: phone ? null : ll }));
 }
+map.on("popupopen", ev => { const el0 = ev.popup.getElement(), acts = el0 && el0.querySelector(".lpacts");
+  if (acts){ const [a, b] = acts.dataset.ll.split(",").map(Number); wireLandActs(acts, L.latLng(a, b), () => map.closePopup(ev.popup)); } });
 map.on("popupopen", ev => { const el = ev.popup.getElement(), b = el && el.querySelector(".askland"); if (!b) return;
   const h4 = el.querySelector("h4"), cat = el.querySelector(".lpcat");
   b.onclick = () => askClaude(`Can I hunt on ${h4 ? h4.textContent : "this public land"} (${cat ? cat.textContent : ""})? What licenses and permits do I need, what seasons are open, and what special rules apply there?`); });
@@ -3840,7 +3908,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "14.3 (Nov 2, 2026)";
+const APP_VERSION = "14.4 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
