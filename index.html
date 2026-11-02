@@ -107,6 +107,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
+#btnLocate[aria-pressed=true]{color:#2a7fff}#btnLocate.follow{background:#2a7fff;color:#fff}#btnLocate.follow .tl{color:#fff}
 .wdist{margin-left:auto;font-size:12px;opacity:.8;white-space:nowrap;padding-left:8px}
 .wcard .lchd{align-items:center}.wct{flex:1;display:flex;align-items:center;gap:8px;font:700 15px var(--body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.wct .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:12px;flex:none}
 .wform input,.wform select,.wform textarea{background:#fff;color:#1f2a1f;color-scheme:light}.wcard .wform input,.wcard .wform select,.wcard .wform textarea{font-size:16px;padding:8px;border-radius:8px}.wcard .wform label{font-size:13px;font-weight:600;margin-top:8px}
@@ -2140,17 +2141,39 @@ toolsCtl.onAdd = () => {
   return d;
 };
 toolsCtl.addTo(map);
+/* Me: first tap finds you and keeps tracking (the map follows you until you drag it). Tap again to re-center; tap while following to stop.
+   The info box says whether the spot you're standing on is mapped public land, and updates when you cross a boundary. */
+const TRACK = { id: null, follow: false, first: true, land: null };
+function landHere(ll){ const fs = featsAt(ll); if (!fs.length) return padHave && padHave.contains(ll) ? { k: "none" } : null;
+  const m = pickLand(fs).main, c = huntClass(m); return { k: c, name: m.Unit_Nm || "Public land" }; }
+const LAND_WORD = { yes: "✓ Open to hunting", permit: "Permit or check-in needed", check: "Check the rules", no: "✕ No hunting" };
+function trackInfo(ll, acc){ const h = landHere(ll), k = h ? h.k + (h.name || "") : "?";
+  if (!TRACK.first && k === TRACK.land) return; TRACK.land = k; TRACK.first = false;
+  setInfo(`<b>You are here</b><br>${h ? h.k === "none" ? "<b style=\"color:#b91c1c\">Not on mapped public land</b>" : `On <b>${esc(h.name)}</b>: ${LAND_WORD[h.k] || ""}` : "Zoom in to see the land you're on"}<br><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span> · ±${Math.round(acc * 1.0936)} yd${TRACK.id != null ? `<br><small>Tracking you. Drag the map to look around; tap ◎ to come back.</small>` : ""}`); }
+function locBtn(){ const b = $("#btnLocate"); b.setAttribute("aria-pressed", TRACK.id != null); b.classList.toggle("follow", TRACK.id != null && TRACK.follow); }
+function stopTrack(){ if (TRACK.id != null) navigator.geolocation.clearWatch(TRACK.id); TRACK.id = null; TRACK.follow = false; locBtn(); }
 $("#btnLocate").onclick = () => {
-  setInfo("<b>Finding you…</b><br>Allow location access if Chrome asks.");
-  map.locate({ setView: true, maxZoom: 15, enableHighAccuracy: true });
+  if (TRACK.id != null && !TRACK.follow && lastLoc){ TRACK.follow = true; map.setView(lastLoc, Math.max(map.getZoom(), 15)); locBtn(); TRACK.first = true; return; }
+  if (TRACK.id != null){ stopTrack(); setInfo("<b>Stopped tracking</b><br>Tap ◎ to find yourself again."); return; }
+  if (!navigator.geolocation){ setInfo("<b>Location unavailable</b><br>This browser can't share your location."); return; }
+  setInfo("<b>Finding you…</b><br>Allow location access if your browser asks.");
+  TRACK.follow = true; TRACK.first = true; let centered = false;
+  TRACK.id = navigator.geolocation.watchPosition(p => {
+    const ll = L.latLng(p.coords.latitude, p.coords.longitude);
+    map.fire("locationfound", { latlng: ll, accuracy: p.coords.accuracy, heading: p.coords.heading, timestamp: p.timestamp });
+    if (TRACK.follow){ if (!centered){ centered = true; map.setView(ll, Math.max(map.getZoom(), 15)); } else if (!map.getBounds().pad(-.25).contains(ll)) map.panTo(ll); }
+    setTimeout(() => trackInfo(ll, p.coords.accuracy), centered ? 900 : 0);
+  }, e => { stopTrack(); map.fire("locationerror", { message: e.message, code: e.code }); }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 30000 });
+  locBtn();
 };
+map.on("dragstart", () => { if (TRACK.follow){ TRACK.follow = false; locBtn(); } });
 map.on("locationfound", e => {
   locLayer.clearLayers();
-  L.circle(e.latlng, { radius: e.accuracy, color: "#2a7fff", weight: 1, fillOpacity: .12 }).addTo(locLayer);
-  L.circleMarker(e.latlng, { radius: 7, color: "#fff", weight: 2, fillColor: "#2a7fff", fillOpacity: 1 }).addTo(locLayer);
-  setInfo(`<b>You are here</b><br><span class="n">${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}</span><br>Accuracy about ${Math.round(e.accuracy * 1.0936)} yd`);
+  L.circle(e.latlng, { radius: e.accuracy, color: "#2a7fff", weight: 1, fillOpacity: .12, interactive: false }).addTo(locLayer);
+  L.circleMarker(e.latlng, { radius: 7, color: "#fff", weight: 2, fillColor: "#2a7fff", fillOpacity: 1, interactive: false }).addTo(locLayer);
+  if (TRACK.id == null) setInfo(`<b>You are here</b><br><span class="n">${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}</span><br>Accuracy about ${Math.round(e.accuracy * 1.0936)} yd`);
 });
-map.on("locationerror", e => setInfo("<b>Location unavailable</b><br>" + esc(e.message) + ". Allow location for this page in Chrome's address bar."));
+map.on("locationerror", e => setInfo("<b>Location unavailable</b><br>" + esc(e.message || "") + ". Allow location for this site in your browser settings."));
 
 let rubLine = null;
 function rubber(){ if (!measuring || !PLACE.el || !mPts.length){ if (rubLine){ map.removeLayer(rubLine); rubLine = null; } return; }
@@ -4030,7 +4053,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.7 (Nov 2, 2026)";
+const APP_VERSION = "15.8 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
