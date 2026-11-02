@@ -993,7 +993,7 @@ function hashView(){ const m = location.hash.match(/^#(\d{1,2}(?:\.\d+)?)\/(-?\d
   map.setView([la, ln], z, { animate: false });
   if (m[4]) window.__sharedPin = [la, ln]; // a shared spot: pinned and inspected once the app has loaded
   return true; }
-hashView(); addEventListener("hashchange", () => { hashView(); if (typeof sharedPin === "function") sharedPin(); });
+hashView(); addEventListener("hashchange", () => { if (Date.now() - (window.__backT || 0) < 800) return; hashView(); if (typeof sharedPin === "function") sharedPin(); });
 { let ht; map.on("moveend", () => { clearTimeout(ht); ht = setTimeout(() => { const c = map.getCenter(), z = map.getZoom(), d = z >= 15 ? 5 : z >= 10 ? 4 : 3;
   try { history.replaceState(null, "", location.pathname + location.search + `#${z}/${c.lat.toFixed(d)}/${c.lng.toFixed(d)}`); } catch {} }, 500); }); }
 // Phones have 2-3x sharper screens: satellite asks for the next zoom's imagery so it stays crisp (Esri imagery goes to zoom 19)
@@ -4091,7 +4091,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "16.7 (Nov 2, 2026)";
+const APP_VERSION = "16.8 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
@@ -4120,6 +4120,19 @@ function overlayClosed(){ if (!ovStash || layersOpen() || popupOpen() || !ctxEl.
 function overlayAnyOpen(){ const ib = ibEl(); return layersOpen() || !ctxEl.hidden || popupOpen() || sunOpen || !!PREF.legOpen || (!ib.hidden && !isToolInfo()); }
 function overlayCloseAll(){ closeLayers(); closeCtx(); if (popupOpen()) map.closePopup(); collapseLegend(); if (sunOpen){ sunOpen = false; renderSun(); }
   const ib = ibEl(); if (!ib.hidden && !isToolInfo()) ib.hidden = true; }
+/* Android Back button: close what's open (card, tool, menu, panel, raised sheet) instead of leaving the site.
+   One guard history entry is kept while something is open; Back with nothing open goes back as usual. */
+const BACK = { armed: false };
+function backOpen(){ return !!(landCardEl || PLACE.on || (typeof routing !== "undefined" && routing.on) || measuring || dropping || overlayAnyOpen() || (typeof sheetState !== "undefined" && sheetState > 0)); }
+function backArm(){ if (!isPhone() || BACK.armed || !backOpen()) return; BACK.armed = true; try { history.pushState({ psBack: 1 }, "", location.href); } catch {} }
+addEventListener("popstate", () => { window.__backT = Date.now(); if (!BACK.armed) return; BACK.armed = false;
+  if (!backOpen()) { history.back(); return; }
+  if (landCardEl) closeLandCard();
+  else if (PLACE.on || measuring || dropping || routing.on){ const x = PLACE.el && PLACE.el.querySelector(".pbx"); if (x) x.click(); else { if (measuring) finishMeasure(true); if (routing.on) stopRouting(); dropping = false; placeStop(); } }
+  else if (overlayAnyOpen()) overlayCloseAll();
+  else if (sheetState > 0) sheetTo(0);
+  setTimeout(backArm, 50); });
+setInterval(backArm, 700); document.addEventListener("click", () => setTimeout(backArm, 80), true);
 map.on("popupopen", () => overlay("popup"));
 map.on("popupclose", () => setTimeout(overlayClosed, 0));
 map.on("dragstart", () => { if (!isPhone()) return; closeLayers(); if (sunOpen){ sunOpen = false; renderSun(); } if (sheetState === 2) sheetSnap(1); });
