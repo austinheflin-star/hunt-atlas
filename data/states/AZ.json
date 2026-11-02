@@ -1,0 +1,201 @@
+{
+ "name": "Arizona",
+ "center": [
+  34.3,
+  -111.7
+ ],
+ "zoom": 7,
+ "agency": "Arizona Game and Fish Department (AZGFD)",
+ "agencyUrl": "https://www.azgfd.com",
+ "regsUrl": "https://www.azgfd.com/hunting/regulations/",
+ "year": "2026-27 hunt year (fall 2026 and spring 2027 draws)",
+ "summary": "Most of Arizona is public land: national forest, BLM, State Trust land and wildlife refuges, plus tribal lands with their own rules. Almost all big game (elk, deer, pronghorn, sheep, most javelina and turkey) is drawn by hunt number and unit through AZGFD's draw. Over-the-counter options include archery deer (nonpermit-tag, unit harvest limits), some javelina and turkey, and mountain lion.",
+ "publicNote": "Tribal lands are not public and need tribal permits. AZGFD wildlife areas have their own restrictions under R12-4-802 (shown when you tap one). On State Trust land, licensed hunters may hunt and cross while hunting; check the Arizona State Land Department for camping and vehicle limits.",
+ "fees": [
+  {
+   "item": "General hunting license",
+   "res": "$37",
+   "nonres": "n/a (combo only)",
+   "note": "Fee amounts in Ariz. Admin. Code R12-4-102; AZGFD's posted prices may differ (verify)."
+  },
+  {
+   "item": "Combination hunt & fish license",
+   "res": "$57",
+   "nonres": "$160",
+   "note": "Youth combo $5."
+  },
+  {
+   "item": "Draw application fee",
+   "res": "$13",
+   "nonres": "$15",
+   "note": ""
+  },
+  {
+   "item": "Deer hunt permit-tag",
+   "res": "$45",
+   "nonres": "$300",
+   "note": "Youth $25."
+  },
+  {
+   "item": "Elk hunt permit-tag",
+   "res": "$135",
+   "nonres": "$650",
+   "note": "Youth $50."
+  },
+  {
+   "item": "Pronghorn hunt permit-tag",
+   "res": "$90",
+   "nonres": "$550",
+   "note": ""
+  },
+  {
+   "item": "Javelina / bear / turkey permit-tag",
+   "res": "$25 each",
+   "nonres": "$100 / $150 / $90",
+   "note": ""
+  },
+  {
+   "item": "Mountain lion nonpermit-tag",
+   "res": "$15",
+   "nonres": "$75",
+   "note": ""
+  }
+ ],
+ "rules": [
+  "Big game hunts are by hunt number and Game Management Unit; your tag is good only for its unit(s) and dates.",
+  "Over-the-counter archery deer: one deer per calendar year; units close at sundown the Wednesday after their harvest limit is reached; report harvest online within 48 hours.",
+  "Check the archery deer harvest-limit page before every hunt to confirm your unit is still open.",
+  "Vehicle travel off roads on AZGFD wildlife areas is limited; big game retrieval follows R12-4-110(H).",
+  "Tribal lands require tribal licenses and permits; state licenses aren't valid there."
+ ],
+ "seasons": [
+  [
+   "Elk",
+   "Archery / muzzleloader / rifle (draw)",
+   "By unit",
+   "Sep – Dec 2026; see 2026-27 regulations"
+  ],
+  [
+   "Deer",
+   "General & archery (draw)",
+   "By unit",
+   "Oct – Dec 2026; see 2026-27 regulations"
+  ],
+  [
+   "Deer",
+   "Archery OTC (nonpermit-tag)",
+   "Open units",
+   "By unit, Aug – Jan; unit closes at harvest limit"
+  ],
+  [
+   "Pronghorn",
+   "Archery / muzzleloader / rifle (draw)",
+   "By unit",
+   "Aug – Oct 2026; see regulations"
+  ],
+  [
+   "Javelina",
+   "Draw and OTC",
+   "By unit",
+   "Jan – Mar 2027 mostly; see regulations"
+  ],
+  [
+   "Turkey",
+   "Spring 2027 (draw) / fall",
+   "By unit",
+   "Varies by unit"
+  ],
+  [
+   "Mountain lion",
+   "Year-round in most units",
+   "Statewide (OTC)",
+   "Varies by unit"
+  ]
+ ],
+ "seasonsNote": "Arizona sets almost every season by hunt number and unit in the annual Hunting Regulations booklet; I haven't listed exact dates here because they differ unit to unit. Check the booklet or your hunt permit-tag.",
+ "areasLabel": "Major public lands",
+ "areas": [
+  {
+   "name": "Tonto National Forest",
+   "where": "Central",
+   "acres": 2900000
+  },
+  {
+   "name": "Coconino National Forest",
+   "where": "North-central (Flagstaff)",
+   "acres": 1856000
+  },
+  {
+   "name": "Kaibab National Forest",
+   "where": "North (Grand Canyon)",
+   "acres": 1600000
+  },
+  {
+   "name": "Apache-Sitgreaves National Forests",
+   "where": "East (White Mountains)",
+   "acres": 2000000
+  },
+  {
+   "name": "Coronado National Forest",
+   "where": "Southeast (sky islands)",
+   "acres": 1780000
+  },
+  {
+   "name": "Prescott National Forest",
+   "where": "Central",
+   "acres": 1250000
+  },
+  {
+   "name": "AZGFD wildlife areas",
+   "where": "Statewide (40 areas)",
+   "acres": 0
+  },
+  {
+   "name": "Arizona State Trust land",
+   "where": "Statewide",
+   "acres": 9200000
+  }
+ ],
+ "links": [
+  [
+   "AZGFD hunting regulations",
+   "https://www.azgfd.com/hunting/regulations/"
+  ],
+  [
+   "OTC archery deer and harvest limits",
+   "https://www.azgfd.com/hunting/hunt-draw-and-licenses/tags/non-permit-tags/over-the-counter-archery-deer-hunting/"
+  ],
+  [
+   "Nonpermit (OTC) tags",
+   "https://www.azgfd.com/hunting/hunt-draw-and-licenses/tags/non-permit-tags/"
+  ],
+  [
+   "Wildlife area restrictions (R12-4-802)",
+   "https://www.law.cornell.edu/regulations/arizona/Ariz-Admin-Code-SS-R12-4-802"
+  ],
+  [
+   "License and tag fees (R12-4-102)",
+   "https://www.law.cornell.edu/regulations/arizona/Ariz-Admin-Code-SS-R12-4-102"
+  ]
+ ],
+ "rut": "Coues whitetail rut runs late December through January (archery OTC hunters target it); mule deer rut is mid-November to December; elk bugle in September.",
+ "nr": {
+  "parts": [
+   [
+    "NR combination hunt & fish license",
+    160
+   ],
+   [
+    "NR deer hunt permit-tag (draw)",
+    300
+   ],
+   [
+    "NR application fee",
+    15
+   ]
+  ],
+  "note": "Fee amounts from R12-4-102 (verify AZGFD's posted prices). OTC archery deer for nonresidents is sold separately and limited."
+ },
+ "compiled": "Nov 2, 2026",
+ "everywhere": "Arizona hunting or combination license"
+}
