@@ -2119,7 +2119,7 @@ let measuring = false, mPts = [], mLine = null, mLabel = null, locLayer = L.laye
 toolsCtl.onAdd = () => {
   const d = L.DomUtil.create("div", "tools");
   d.innerHTML = `<button id="btnLocate" title="Show my location" aria-label="Show my location"><span class="ti">◎</span><small class="tl">Me</small></button>
-    <button id="btnMeasure" title="Measure distance: click points, double-click to finish" aria-label="Measure distance" aria-pressed="false"><span class="ti">↔</span><small class="tl">Measure</small></button>
+    <button id="btnMeasure" title="Measure distance: click points, double-click to finish" aria-label="Measure distance" aria-pressed="false"><span class="ti">↔</span><small class="tl">Draw</small></button>
     <button id="btnWpt" title="Drop a waypoint: click the map" aria-label="Drop a waypoint" aria-pressed="false"><span class="ti">⚑</span><small class="tl">Pin</small></button>
     <button id="btnRoute" title="Plan a walking route: tap start, then destination" aria-label="Plan a walking route" aria-pressed="false"><span class="ti">⤳</span><small class="tl">Route</small></button>`;
   L.DomEvent.disableClickPropagation(d);
@@ -2138,22 +2138,28 @@ map.on("locationfound", e => {
 });
 map.on("locationerror", e => setInfo("<b>Location unavailable</b><br>" + esc(e.message) + ". Allow location for this page in Chrome's address bar."));
 
+let rubLine = null;
+function rubber(){ if (!measuring || !PLACE.el || !mPts.length){ if (rubLine){ map.removeLayer(rubLine); rubLine = null; } return; }
+  const r = PLACE.el.querySelector(".xhair").getBoundingClientRect(), m = map.getContainer().getBoundingClientRect(), c = map.containerPointToLatLng([r.left + r.width / 2 - m.left, r.top + r.height / 2 - m.top]);
+  let d = 0; for (let i = 1; i < mPts.length; i++) d += map.distance(mPts[i-1], mPts[i]); d += map.distance(mPts.at(-1), c);
+  if (!rubLine) rubLine = L.polyline([], { color: "#f2542d", weight: 2, dashArray: "4 6", opacity: .9, interactive: false }).addTo(map);
+  rubLine.setLatLngs([mPts.at(-1), c]); placeLabel("+ Add point · " + fmtDist(d)); }
 function clearMeasure(){ mPts = []; if (mLine) map.removeLayer(mLine); if (mLabel) map.removeLayer(mLabel); mLine = mLabel = null; }
 $("#btnMeasure").onclick = () => {
   measuring = !measuring; $("#btnMeasure").setAttribute("aria-pressed", measuring);
   map.getContainer().style.cursor = measuring ? "crosshair" : ""; map.doubleClickZoom[measuring ? "disable" : "enable"]();
-  if (measuring){ clearMeasure(); measureInfo(); if (isPhone()) placeStart("+ Add point here", ll => { mPts.push(ll); updateMeasure(); measureInfo(); }); } else finishMeasure(true);
+  if (measuring){ clearMeasure(); measureInfo(); if (isPhone()){ placeStart("+ Add point here", ll => { mPts.push(ll); updateMeasure(); measureInfo(); rubber(); }); map.on("move", rubber); } } else finishMeasure(true);
 };
 function measureInfo(){
   let d = 0; for (let i = 1; i < mPts.length; i++) d += map.distance(mPts[i-1], mPts[i]);
-  setInfo(`<b>Measuring</b><br>${mPts.length < 2 ? "Tap points on the map." : "Total <b>" + fmtDist(d) + "</b> · " + mPts.length + " points"}
+  setInfo(`<b>Draw a trail or measure</b><br>${mPts.length < 2 ? (isPhone() ? "Add points along the trail, then Finish & save to keep it in My map." : "Tap points along the trail. Finish & save keeps it in My map.") : "Total <b>" + fmtDist(d) + "</b> · " + mPts.length + " points"}
     <div class="row" style="margin:6px 0 0"><button class="btn sm" id="mDone" ${mPts.length < 2 ? "disabled" : ""}>Finish & save</button><button class="btn sm ghost" id="mUndo" ${mPts.length ? "" : "disabled"}>Undo</button><button class="btn sm ghost" id="mStop">Cancel</button></div>`);
   $("#mDone").onclick = () => finishMeasure(false); $("#mStop").onclick = () => finishMeasure(true);
   $("#mUndo").onclick = () => { mPts.pop(); if (mPts.length) updateMeasure(); else clearMeasure(); measureInfo(); };
 }
 function finishMeasure(cancel){
   if (!cancel && mPts.length > 1){ saveLine(mPts.slice()); setInfo(`<b>Saved</b><br>Line added to My map.`); } else if (cancel) $("#infobox").hidden = true;
-  measuring = false; placeStop(); $("#btnMeasure").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; clearMeasure(); setTimeout(() => map.doubleClickZoom.enable(), 50);
+  measuring = false; placeStop(); map.off("move", rubber); if (rubLine){ map.removeLayer(rubLine); rubLine = null; } $("#btnMeasure").setAttribute("aria-pressed", false); map.getContainer().style.cursor = ""; clearMeasure(); setTimeout(() => map.doubleClickZoom.enable(), 50);
 }
 function updateMeasure(){
   if (!mLine) mLine = L.polyline(mPts, { color: "#f2542d", weight: 3, dashArray: "6 5" }).addTo(map); else mLine.setLatLngs(mPts);
@@ -3952,7 +3958,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.0 (Nov 2, 2026)";
+const APP_VERSION = "15.1 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
