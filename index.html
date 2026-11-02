@@ -419,6 +419,7 @@ aside > nav, aside > header, .sheet-handle{flex:none}
 }
 /* ---------- v9 ---------- */
 body.lyr-open .sunbox{display:none!important}
+body.lyr-open .leaflet-bottom.leaflet-left,body.lyr-open .leaflet-bottom.leaflet-right{visibility:hidden}
 .mile{background:none;border:0}
 .zlt13 .mile{display:none}
 .mile span{display:inline-block;transform:translate(-50%,-50%);background:#fffdf6;color:#7a3b12;border:1.5px solid #a0522d;border-radius:3px;font:700 10px/1.2 var(--mono);padding:0 3px;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.3)}
@@ -4067,7 +4068,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "16.2 (Nov 2, 2026)";
+const APP_VERSION = "16.3 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
