@@ -90,7 +90,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 #map{height:100%;width:100%;background:#cfd3c4}
 .leaflet-popup-content{font:14px/1.45 var(--body);margin:10px 12px}
 .placeui{position:absolute;inset:0;pointer-events:none;z-index:1100}
-.leaflet-container.placing .infobox{position:fixed;top:calc(118px + env(safe-area-inset-top,0px));left:10px;bottom:auto;max-height:30dvh;z-index:1101}
+.leaflet-container.placing .infobox{position:fixed;top:calc(118px + env(safe-area-inset-top,0px));left:74px;width:calc(100vw - 84px);bottom:auto;max-height:30dvh;z-index:1101}
 .xhair{position:absolute;left:50%;top:42%;width:46px;height:46px;margin:-23px 0 0 -23px}
 .xhair:before,.xhair:after{content:"";position:absolute;background:#f2542d;box-shadow:0 0 0 1.5px #fff}
 .xhair:before{left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px}.xhair:after{top:50%;left:0;right:0;height:3px;margin-top:-1.5px}
@@ -2655,8 +2655,14 @@ function routeTo(dest, name){
   const p = $("#rtPark"), l = $("#rtLoc");
   if (p) p.onclick = () => { routing.start = parks[0]; doRoute(); };
   if (l) l.onclick = () => { routing.start = lastLoc; doRoute(); };
-  if (isPhone()) placeStart("Start from here", ll => routeClick(ll), [lastLoc && map.distance(lastLoc, dest) < 15000 ? `<button class="pbo" data-r="loc">From my location</button>` : "", parks.length ? `<button class="pbo" data-r="park">From my parking</button>` : ""].join(""));
-  if (PLACE.el) PLACE.el.querySelectorAll("[data-r]").forEach(b => b.onclick = () => { routing.start = b.dataset.r === "loc" ? lastLoc : parks[0]; doRoute(); });
+  routeLayer.clearLayers(); L.circleMarker(dest, { radius: 8, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1 }).addTo(routeLayer).bindTooltip(esc(routing.destName), { permanent: true, direction: "top", offset: [0, -8] });
+  if (isPhone()){ $("#infobox").hidden = true;
+    placeStart("Start from here", ll => routeClick(ll), `<button class="pbo" data-r="loc">From my location</button>${parks.length ? `<button class="pbo" data-r="park">From my parking</button>` : ""}`);
+    placeLabel("Start from here", "Put the crosshair where you'll start walking (truck, parking)");
+    if (PLACE.el) PLACE.el.querySelectorAll("[data-r]").forEach(b => b.onclick = () => {
+      if (b.dataset.r === "park"){ routing.start = parks[0]; doRoute(); return; }
+      if (lastLoc && map.distance(lastLoc, dest) < 15000){ routing.start = lastLoc; doRoute(); return; }
+      placeLabel("Start from here", "Finding your location…"); map.locate({ enableHighAccuracy: true }); }); }
 }
 function routeClick(ll){
   if (!routing.start && routing.dest){ routing.start = ll; doRoute(); return; }
@@ -2755,7 +2761,8 @@ async function doRoute(){
       <div class="row" style="margin:6px 0 0"><button class="btn sm" id="rtSave">Save route</button><button class="btn sm ghost" id="rtClear">Clear</button></div>`);
     $("#rtSave").onclick = () => { saveLine(pts); lines.at(-1).name = "Route to " + (routing.destName || "spot"); saveAll(); drawLines(); routeLayer.clearLayers(); setInfo("<b>Saved</b><br>Route added to My map."); };
     $("#rtClear").onclick = () => { routeLayer.clearLayers(); $("#infobox").hidden = true; };
-    map.fitBounds(L.latLngBounds(pts).pad(.2));
+    { const ib = $("#infobox"), sh = document.getElementById("sheet"), bot = isPhone() ? (innerHeight - Math.min(ib && !ib.hidden ? ib.getBoundingClientRect().top : innerHeight, sh ? sh.getBoundingClientRect().top : innerHeight)) + 16 : 20;
+      map.fitBounds(L.latLngBounds(pts).pad(.1), { paddingTopLeft: [isPhone() ? 70 : 20, isPhone() ? 120 : 20], paddingBottomRight: [20, bot] }); }
   } catch (e){ setInfo(`<b>Route failed</b><br>${esc(e.message)}. Try again or move the points.`); }
 }
 
@@ -3943,7 +3950,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "14.8 (Nov 2, 2026)";
+const APP_VERSION = "14.9 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
