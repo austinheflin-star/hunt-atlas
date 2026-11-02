@@ -112,6 +112,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .wcard .lchd{align-items:center}.wct{flex:1;display:flex;align-items:center;gap:8px;font:700 15px var(--body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.wct .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:12px;flex:none}
 .wform input,.wform select,.wform textarea{background:#fff;color:#1f2a1f;color-scheme:light}.wcard .wform input,.wcard .wform select,.wcard .wform textarea{font-size:16px;padding:8px;border-radius:8px}.wcard .wform label{font-size:13px;font-weight:600;margin-top:8px}
 .leaflet-container.placing .sunbox{display:none}
+.ownbtn{display:block;width:100%;margin:6px 0 4px;padding:9px;border:0;border-radius:8px;background:#ffd23f;color:#1f2a1f;font:700 14px var(--body);cursor:pointer}
 .ownr{margin-top:8px;padding:8px 10px;border-radius:8px;background:#f1efe3;font-size:13px;line-height:1.45}.ownr a{color:#c2410c;font-weight:700}
 .leaflet-popup-content h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .pin{background:var(--blaze);color:#fff;border:2px solid #fff;border-radius:50%;width:26px!important;height:26px!important;display:grid;place-items:center;font:700 13px var(--mono);box-shadow:0 1px 4px rgba(0,0,0,.5)}
@@ -2150,7 +2151,8 @@ async function landHere(ll){ const fs = featsAt(ll); if (!fs.length) return padH
   return { k, name, word }; }
 const LAND_WORD = { yes: "✓ Open to hunting", permit: "Permit or check-in needed", check: "Check the rules", no: "✕ No hunting" };
 async function trackInfo(ll, acc){ const h = await landHere(ll), k = h ? h.k + (h.name || "") : "?";
-  if (!TRACK.first && k === TRACK.land) return; TRACK.land = k; TRACK.first = false;
+  if (!TRACK.first && k === TRACK.land) return; const crossed = !TRACK.first && TRACK.land != null; TRACK.land = k; TRACK.first = false;
+  if (crossed && h && (h.k === "none" || h.k === "no")) try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch {} // buzz when you walk off huntable land
   setInfo(`<b>You are here</b><br>${h ? h.k === "none" ? "<b style=\"color:#b91c1c\">Not on mapped public land</b>" : `On <b>${esc(h.name)}</b>: ${esc(h.word ? (VGLYPH[h.k] || "") + h.word : LAND_WORD[h.k] || "")}` : "Zoom in to see the land you're on"}<br><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span> · ±${Math.round(acc * 1.0936)} yd${TRACK.id != null ? `<br><small>Tracking you. Drag the map to look around; tap ◎ to come back.</small>` : ""}`); }
 function locBtn(){ const b = $("#btnLocate"); b.setAttribute("aria-pressed", TRACK.id != null); b.classList.toggle("follow", TRACK.id != null && TRACK.follow); }
 function stopTrack(){ if (TRACK.id != null) navigator.geolocation.clearWatch(TRACK.id); TRACK.id = null; TRACK.follow = false; locBtn(); }
@@ -2283,16 +2285,19 @@ map.on("click", e => {
 });
 let lastPopupOpen = 0; map.on("popupopen", () => { lastPopupOpen = Date.now(); });
 /* ---------- Who owns this? County lookup + assessor link (and the free statewide parcel layers where we have them) ---------- */
-const OWNER_LAYER_STATES = { TX: "Texas", AR: "Arkansas" };
+const OWNER_LAYER_STATES = { TX: "txparcel", AR: "arparcel" };
+document.addEventListener("click", ev => { const b = ev.target.closest && ev.target.closest(".ownbtn"); if (!b) return; ev.preventDefault(); ev.stopPropagation();
+  layerOn(b.dataset.lyr, true); closeLandCard(); map.closePopup(); const ll = L.latLng(+b.dataset.lat, +b.dataset.lng);
+  map.setView(ll, Math.max(map.getZoom(), 16)); setInfo("<b>Property lines on</b><br>Tap the parcel to see who owns it."); }, true);
 const cntyCache = new Map();
 async function countyAt(ll){ const k = ll.lat.toFixed(3) + "," + ll.lng.toFixed(3); if (cntyCache.has(k)) return cntyCache.get(k);
   let r = null; try { const j = await (await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?location=${ll.lng},${ll.lat}&f=json&langCode=en&forStorage=false`)).json();
     const ad = j.address || {}; if (ad.Subregion || ad.Region) r = { county: ad.Subregion || "", state: ad.Region || "", st: STATE_TO[ad.Region] || null }; } catch {}
   cntyCache.set(k, r); return r; }
-function ownerHtml(c){ if (!c) return "";
+function ownerHtml(c, ll){ if (!c) return "";
   const cty = /county|parish|borough/i.test(c.county) ? c.county : c.county + (c.st === "LA" ? " Parish" : " County");
   const q = encodeURIComponent(`${cty} ${c.state} ${c.st === "TX" ? "appraisal district" : "assessor"} property search owner`);
-  return `<div class="ownr"><b>Who owns it?</b> ${OWNER_LAYER_STATES[c.st] ? `Turn on <i>Property lines</i> in Layers and tap the parcel for the owner's name, or ` : ""}<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">search the ${esc(cty)} ${c.st === "TX" ? "appraisal district" : "assessor"} ↗</a> by parcel or map.</div>`; }
+  return `<div class="ownr"><b>Who owns it?</b> ${OWNER_LAYER_STATES[c.st] && ll ? `<button class="ownbtn" data-lyr="${OWNER_LAYER_STATES[c.st]}" data-lat="${ll.lat}" data-lng="${ll.lng}">Show property lines &amp; owners</button> or ` : OWNER_LAYER_STATES[c.st] ? `Turn on <i>Property lines</i> in Layers and tap the parcel, or ` : ""}<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">search the ${esc(cty)} ${c.st === "TX" ? "appraisal district" : "assessor"} ↗</a> by parcel or map.</div>`; }
 async function privateCard(ll){
   if (featsAt(ll).length){ openLandPopup(ll, featsAt(ll)); return; }
   if (!padHave || !padHave.contains(ll)){ pointInfo(ll); return; } // public-land outlines not loaded here yet; don't claim it's private
@@ -2301,7 +2306,7 @@ async function privateCard(ll){
   card.setContent(head + `<p class="meta"><span class="spin"></span> Looking up the county…</p>`);
   let c = null, ft = NaN;
   const draw = () => card.setContent(head + `<h4>${c ? esc(c.county + ", " + c.state) : "Private or unmapped land"}</h4>
-    <div class="lpcat"><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span>${isFinite(ft) ? ` · ${ft.toLocaleString()} ft` : ""}</div>${ownerHtml(c)}
+    <div class="lpcat"><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span>${isFinite(ft) ? ` · ${ft.toLocaleString()} ft` : ""}</div>${ownerHtml(c, ll)}
     <p class="meta" style="margin-top:6px">PAD-US doesn't show public land here. Small public tracts and recent purchases can be missing; check posted signs.</p>`);
   fetch(`https://epqs.nationalmap.gov/v1/json?x=${ll.lng}&y=${ll.lat}&units=Feet&wkid=4326`).then(r => r.json()).then(j => { ft = Math.round(+j.value); if (isFinite(ft) && c !== undefined) draw(); }).catch(() => {});
   c = await countyAt(ll); draw();
@@ -2315,7 +2320,7 @@ async function pointInfo(ll){
       const r = await fetch(`https://epqs.nationalmap.gov/v1/json?x=${lng}&y=${lat}&units=Feet&wkid=4326`);
       const j = await r.json(); const ft = Math.round(+j.value);
       setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span><br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${hint}`);
-      const c = await countyAt(ll); if (c && !$("#infobox").hidden && $("#infobox").textContent.includes(lat.toFixed(5))) setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span> · ${esc(c.county)}<br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${ownerHtml(c)}${hint}`);
+      const c = await countyAt(ll); if (c && !$("#infobox").hidden && $("#infobox").textContent.includes(lat.toFixed(5))) setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span> · ${esc(c.county)}<br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${ownerHtml(c, ll)}${hint}`);
     } catch { setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span>`); }
   }
 }
@@ -2719,7 +2724,7 @@ map.on("contextmenu", e => {
     ["⚑", "Drop a waypoint here", () => addWaypoint(ll)],
     ["⌖", "Scan for spots around here", () => { showTab("scan"); map.setView(ll, Math.max(13, map.getZoom())); map.once("moveend", () => setTimeout(scan, 200)); }],
     ["⤳", "Route here", () => routeTo(ll, "this spot")],
-    ["⌂", "Find the landowner", async () => { const c = await countyAt(ll); setInfo(`<b>Landowner lookup</b><br>${c ? esc(c.county + ", " + c.state) : ""}${ownerHtml(c) || "<br>Couldn't find the county here."}`); }],
+    ["⌂", "Find the landowner", async () => { const c = await countyAt(ll); setInfo(`<b>Landowner lookup</b><br>${c ? esc(c.county + ", " + c.state) : ""}${ownerHtml(c, ll) || "<br>Couldn't find the county here."}`); }],
     ["≋", "Wind check here", () => windCheck({ id: null, lat: ll.lat, lng: ll.lng, name: "This spot" })],
     ["☁", "Weather here", () => { wxPin = ll; showTab("wx"); renderWx(); }],
     ["☾", "Sun & moon here", () => sunMoonPopup(ll)],
@@ -4055,7 +4060,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.9 (Nov 2, 2026)";
+const APP_VERSION = "16.0 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
