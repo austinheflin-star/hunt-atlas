@@ -89,7 +89,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .bar span{display:block;height:100%;background:var(--olive)}
 #map{height:100%;width:100%;background:#cfd3c4}
 .leaflet-popup-content{font:14px/1.45 var(--body);margin:10px 12px}
-.placeui{position:absolute;inset:0;pointer-events:none;z-index:900}
+.placeui{position:absolute;inset:0;pointer-events:none;z-index:1100}
 .xhair{position:absolute;left:50%;top:42%;width:46px;height:46px;margin:-23px 0 0 -23px}
 .xhair:before,.xhair:after{content:"";position:absolute;background:#f2542d;box-shadow:0 0 0 1.5px #fff}
 .xhair:before{left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px}.xhair:after{top:50%;left:0;right:0;height:3px;margin-top:-1.5px}
@@ -98,7 +98,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .pbt{font-size:13px;color:#5b6656;margin:0 2px 8px}.pbr{display:flex;gap:8px}.pbr+.pbr{margin-top:8px}
 .pbgo{flex:1;min-height:48px;border:0;border-radius:10px;background:#f2542d;color:#fff;font:700 16px var(--body)}
 .pbx,.pbo{min-height:48px;border:1px solid #b9b9ad;border-radius:10px;background:#fff;color:#1f2a1f;font:600 14px var(--body);padding:0 14px}.pbo{flex:1}
-.landcard{position:absolute;left:8px;right:8px;bottom:calc(var(--sheetpeek,130px) + 8px);max-height:58%;z-index:880;background:#fffdf6;color:#1f2a1f;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden}
+.landcard{position:absolute;left:8px;right:8px;bottom:calc(var(--sheetpeek,130px) + 8px);max-height:58%;z-index:1100;background:#fffdf6;color:#1f2a1f;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden}
 .lchd{display:flex;gap:6px;padding:8px;border-bottom:1px solid #e3e1d3;background:#f6f3e7}
 .lca{flex:1;min-height:42px;border:1px solid #b9b9ad;border-radius:9px;background:#fff;font:600 14px var(--body);color:#1f2a1f}
 .lca[data-a="wpt"]{background:#f2542d;color:#fff;border-color:#f2542d}
@@ -126,7 +126,8 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .item .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px}
 .wpt{width:22px!important;height:22px!important;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;color:#fff;font:700 11px var(--mono);box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .wform label{margin:6px 0 2px;font-size:12px}.wform input,.wform select,.wform textarea{width:100%;font:13px var(--body);padding:4px;border:1px solid #ccc;border-radius:3px;box-sizing:border-box}
-.wform .acts{display:flex;gap:6px;margin-top:8px}.wform .acts button{flex:1;padding:5px;border:0;border-radius:3px;cursor:pointer;font:600 12px var(--body)}
+.wform .acts{display:flex;gap:6px;margin-top:8px}.wform .acts button{flex:1;padding:5px;border:0;border-radius:3px;cursor:pointer;font:600 12px var(--body);color:#1f2a1f}
+@media (pointer:coarse){.wform .acts button{min-height:40px;font-size:14px;border-radius:8px}}
 .wxnow{display:flex;gap:14px;align-items:center;margin:10px 0}
 .wxnow .big{font:600 34px var(--mono)}
 .arrow{display:inline-block;transition:transform .3s}
@@ -2208,6 +2209,7 @@ function wireLandActs(el, ll, done){
   el.querySelectorAll("[data-a]").forEach(b => b.onclick = ev => { ev.stopPropagation(); done && done();
     if (b.dataset.a === "wpt") addWaypoint(ll); else if (b.dataset.a === "route") routeTo(ll, "this spot"); });
 }
+if (isPhone()) Object.assign(L.Popup.prototype.options, { autoPanPaddingTopLeft: L.point(70, 120), autoPanPaddingBottomRight: L.point(12, 110), maxHeight: Math.round(innerHeight * .55) });
 function toolActive(){ return !!((typeof routing !== "undefined" && routing.on) || measuring || dropping || PLACE.on); }
 map.on("popupopen", ev => { if (toolActive() && !ev.popup._keep) setTimeout(() => map.closePopup(ev.popup), 0); });
 let lastPopupClose = 0; map.on("popupclose", () => { lastPopupClose = Date.now(); });
@@ -3940,7 +3942,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "14.5 (Nov 2, 2026)";
+const APP_VERSION = "14.6 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
