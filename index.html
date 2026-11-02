@@ -112,6 +112,8 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .tools{display:flex;flex-direction:column;gap:6px}
 .tools button{width:34px;height:34px;border:2px solid rgba(0,0,0,.25);border-radius:4px;background:#fff;color:#222;font:700 13px var(--mono);cursor:pointer;display:grid;place-items:center;padding:0}
 .tools button[aria-pressed=true]{background:#f2542d;color:#fff;border-color:#f2542d}
+.tools .tl{display:none}
+@media (max-width:820px){.tools button{height:52px!important;line-height:1!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px}.tools .ti{font-size:17px;line-height:1}.tools .tl{display:block;font:700 9.5px var(--body);letter-spacing:.02em;text-transform:uppercase;line-height:1}}
 .sunbox,.infobox{background:rgba(255,255,255,.92);color:#1f2a1f;border-radius:4px;padding:6px 9px;font:12px/1.45 var(--body);box-shadow:0 1px 4px rgba(0,0,0,.3);max-width:240px}
 .sunbox b,.infobox b{font:600 12px var(--display);letter-spacing:.06em;text-transform:uppercase}
 .sunbox .n{font-family:var(--mono)}
@@ -2116,10 +2118,10 @@ const toolsCtl = L.control({ position: "topleft" });
 let measuring = false, mPts = [], mLine = null, mLabel = null, locLayer = L.layerGroup().addTo(map);
 toolsCtl.onAdd = () => {
   const d = L.DomUtil.create("div", "tools");
-  d.innerHTML = `<button id="btnLocate" title="Show my location" aria-label="Show my location">◎</button>
-    <button id="btnMeasure" title="Measure distance: click points, double-click to finish" aria-label="Measure distance" aria-pressed="false">↔</button>
-    <button id="btnWpt" title="Drop a waypoint: click the map" aria-label="Drop a waypoint" aria-pressed="false">⚑</button>
-    <button id="btnRoute" title="Plan a walking route: tap start, then destination" aria-label="Plan a walking route" aria-pressed="false">⤳</button>`;
+  d.innerHTML = `<button id="btnLocate" title="Show my location" aria-label="Show my location"><span class="ti">◎</span><small class="tl">Me</small></button>
+    <button id="btnMeasure" title="Measure distance: click points, double-click to finish" aria-label="Measure distance" aria-pressed="false"><span class="ti">↔</span><small class="tl">Measure</small></button>
+    <button id="btnWpt" title="Drop a waypoint: click the map" aria-label="Drop a waypoint" aria-pressed="false"><span class="ti">⚑</span><small class="tl">Pin</small></button>
+    <button id="btnRoute" title="Plan a walking route: tap start, then destination" aria-label="Plan a walking route" aria-pressed="false"><span class="ti">⤳</span><small class="tl">Route</small></button>`;
   L.DomEvent.disableClickPropagation(d);
   return d;
 };
@@ -3950,7 +3952,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "14.9 (Nov 2, 2026)";
+const APP_VERSION = "15.0 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
