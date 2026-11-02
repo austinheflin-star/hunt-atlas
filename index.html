@@ -90,6 +90,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 #map{height:100%;width:100%;background:#cfd3c4}
 .leaflet-popup-content{font:14px/1.45 var(--body);margin:10px 12px}
 .placeui{position:absolute;inset:0;pointer-events:none;z-index:1100}
+.leaflet-container.placing .infobox{position:fixed;top:calc(118px + env(safe-area-inset-top,0px));left:10px;bottom:auto;max-height:30dvh;z-index:1101}
 .xhair{position:absolute;left:50%;top:42%;width:46px;height:46px;margin:-23px 0 0 -23px}
 .xhair:before,.xhair:after{content:"";position:absolute;background:#f2542d;box-shadow:0 0 0 1.5px #fff}
 .xhair:before{left:50%;top:0;bottom:0;width:3px;margin-left:-1.5px}.xhair:after{top:50%;left:0;right:0;height:3px;margin-top:-1.5px}
@@ -2178,7 +2179,7 @@ function placeStart(label, onPick, extra){
   wrap.innerHTML = `<div class="xhair" aria-hidden="true"><span></span></div>
     <div class="placebar"><div class="pbt">Move the map so the crosshair is on the spot</div>
       <div class="pbr"><button class="pbgo">${label}</button><button class="pbx" aria-label="Cancel">Cancel</button></div>${extra ? `<div class="pbr pbx2">${extra}</div>` : ""}</div>`;
-  map.getContainer().appendChild(wrap); PLACE.el = wrap; L.DomEvent.disableClickPropagation(wrap.querySelector(".placebar"));
+  map.getContainer().appendChild(wrap); PLACE.el = wrap; map.getContainer().classList.add("placing"); L.DomEvent.disableClickPropagation(wrap.querySelector(".placebar"));
   const pt = () => { const sz = map.getSize(), r = wrap.querySelector(".xhair").getBoundingClientRect(), m = map.getContainer().getBoundingClientRect();
     return map.containerPointToLatLng([r.left + r.width / 2 - m.left, r.top + r.height / 2 - m.top]); };
   wrap.querySelector(".pbgo").onclick = () => { const f = PLACE.pick; f && f(pt()); };
@@ -2188,7 +2189,7 @@ function placeStart(label, onPick, extra){
 }
 function setPeek(){ const sh = document.getElementById("sheet"), c = map.getContainer(); const f = () => { const t = sh ? sh.getBoundingClientRect().top : innerHeight; c.style.setProperty("--sheetpeek", Math.max(0, innerHeight - t) + "px"); }; f(); setTimeout(f, 350); }
 function placeLabel(label, hint){ if (!PLACE.el) return; PLACE.el.querySelector(".pbgo").textContent = label; if (hint) PLACE.el.querySelector(".pbt").textContent = hint; }
-function placeStop(){ PLACE.on = false; PLACE.pick = null; if (PLACE.el) PLACE.el.remove(); PLACE.el = null; }
+function placeStop(){ map.getContainer().classList.remove("placing"); PLACE.on = false; PLACE.pick = null; if (PLACE.el) PLACE.el.remove(); PLACE.el = null; }
 
 /* ---------- Phone land card: docked at the bottom instead of a popup that covers the map ---------- */
 let landCardEl = null, landMark = null;
@@ -3942,7 +3943,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "14.7 (Nov 2, 2026)";
+const APP_VERSION = "14.8 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
