@@ -969,6 +969,11 @@ function renderCost(){
 
 /* ---------- Map ---------- */
 L.TileLayer.prototype.options.keepBuffer = 4; L.TileLayer.prototype.options.updateWhenZooming = false;
+// Patchy imagery fix: a tile that fails (server hiccup, phone dropping a request) is retried twice before it's left blank
+{ const orig = L.TileLayer.prototype._tileOnError;
+  L.TileLayer.prototype._tileOnError = function(done, tile, e){ const n = +(tile.dataset.retry || 0), src = tile.src;
+    if (n < 2 && src && !src.startsWith("data:")){ tile.dataset.retry = n + 1; setTimeout(() => { if (tile.isConnected || this._tiles) tile.src = src + (src.includes("?") ? "&" : "?") + "r=" + (n + 1); }, 600 * (n + 1)); return; }
+    return orig.call(this, done, tile, e); }; }
 L.Polyline.prototype.options.smoothFactor = 1.5;
 const map = L.map("map", { zoomControl: true, preferCanvas: true, maxZoom: 20, renderer: L.canvas({ padding: .6, tolerance: isPhone() ? 6 : 0 }),
   inertiaDeceleration: 2600, wheelPxPerZoomLevel: 90, bounceAtZoomLimits: false, tapTolerance: 18 }).setView(PREF.c || [32.5, -98], PREF.z || 5);
@@ -4009,7 +4014,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.4 (Nov 2, 2026)";
+const APP_VERSION = "15.5 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
