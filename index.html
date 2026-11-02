@@ -108,6 +108,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
+.lca.lcs{flex:0 0 46px;font-size:18px}
 #btnLocate[aria-pressed=true]{color:#2a7fff}#btnLocate.follow{background:#2a7fff;color:#fff}#btnLocate.follow .tl{color:#fff}
 .wdist{margin-left:auto;font-size:12px;opacity:.8;white-space:nowrap;padding-left:8px}
 .wcard .lchd{align-items:center}.wct{flex:1;display:flex;align-items:center;gap:8px;font:700 15px var(--body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.wct .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:12px;flex:none}
@@ -987,10 +988,12 @@ L.Polyline.prototype.options.smoothFactor = 1.5;
 const map = L.map("map", { zoomControl: true, preferCanvas: true, minZoom: 3, maxZoom: 20, // explicit minZoom: otherwise a layer with minZoom 17 (topoHi) makes Leaflet force the whole map to zoom 17 renderer: L.canvas({ padding: .6, tolerance: isPhone() ? 6 : 0 }),
   inertiaDeceleration: 2600, wheelPxPerZoomLevel: 90, bounceAtZoomLimits: false, tapTolerance: 18 }).setView(PREF.c || [32.5, -98], PREF.z || 5);
 // Shareable view links: #zoom/lat/lng opens there; the address bar keeps the current view so it can be copied or bookmarked
-function hashView(){ const m = location.hash.match(/^#(\d{1,2}(?:\.\d+)?)\/(-?\d{1,2}(?:\.\d+)?)\/(-?\d{1,3}(?:\.\d+)?)/); if (!m) return false;
+function hashView(){ const m = location.hash.match(/^#(\d{1,2}(?:\.\d+)?)\/(-?\d{1,2}(?:\.\d+)?)\/(-?\d{1,3}(?:\.\d+)?)(\/p)?/); if (!m) return false;
   const z = Math.min(20, Math.max(3, Math.round(+m[1]))), la = +m[2], ln = +m[3]; if (Math.abs(la) > 85 || Math.abs(ln) > 180) return false;
-  map.setView([la, ln], z, { animate: false }); return true; }
-hashView(); addEventListener("hashchange", hashView);
+  map.setView([la, ln], z, { animate: false });
+  if (m[4]) window.__sharedPin = [la, ln]; // a shared spot: pinned and inspected once the app has loaded
+  return true; }
+hashView(); addEventListener("hashchange", () => { hashView(); if (typeof sharedPin === "function") sharedPin(); });
 { let ht; map.on("moveend", () => { clearTimeout(ht); ht = setTimeout(() => { const c = map.getCenter(), z = map.getZoom(), d = z >= 15 ? 5 : z >= 10 ? 4 : 3;
   try { history.replaceState(null, "", location.pathname + location.search + `#${z}/${c.lat.toFixed(d)}/${c.lng.toFixed(d)}`); } catch {} }, 500); }); }
 // Phones have 2-3x sharper screens: satellite asks for the next zoom's imagery so it stays crisp (Esri imagery goes to zoom 19)
@@ -2263,7 +2266,7 @@ function landCard(ll){
   const el = document.createElement("div"); el.className = "landcard"; map.getContainer().appendChild(el); landCardEl = el;
   L.DomEvent.disableClickPropagation(el); L.DomEvent.disableScrollPropagation(el);
   landMark = L.circleMarker(ll, { radius: 8, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1, interactive: false }).addTo(map);
-  const card = { open: true, setContent(html){ if (!card.open) return; el.innerHTML = `<div class="lchd"><button class="lca" data-a="wpt">⚑ Waypoint here</button><button class="lca" data-a="route">⤳ Route here</button><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${html}</div>`;
+  const card = { open: true, setContent(html){ if (!card.open) return; el.innerHTML = `<div class="lchd"><button class="lca" data-a="wpt">⚑ Waypoint here</button><button class="lca" data-a="route">⤳ Route here</button><button class="lca lcs" data-a="share" aria-label="Share this spot">⇪</button><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${html}</div>`;
       el.querySelector(".lcx").onclick = closeLandCard; wireLandActs(el, ll, closeLandCard);
       const b = el.querySelector(".askland"), h4 = el.querySelector("h4"), cat = el.querySelector(".lpcat");
       clearTimeout(card._kt); card._kt = setTimeout(() => keepAbove(ll, el), 120);
@@ -2279,7 +2282,7 @@ function keepAbove(ll, el, zoom){ if (landCardEl !== el) return; const z = zoom 
 function closeLandCard(){ if (landCardEl){ if (landCardEl._card) landCardEl._card.open = false; landCardEl.remove(); landCardEl = null; } if (landMark){ map.removeLayer(landMark); landMark = null; } }
 function wireLandActs(el, ll, done){
   el.querySelectorAll("[data-a]").forEach(b => b.onclick = ev => { ev.stopPropagation(); done && done();
-    if (b.dataset.a === "wpt") addWaypoint(ll); else if (b.dataset.a === "route") routeTo(ll, "this spot"); });
+    if (b.dataset.a === "wpt") addWaypoint(ll); else if (b.dataset.a === "route") routeTo(ll, "this spot"); else if (b.dataset.a === "share") shareSpot(ll); });
 }
 if (isPhone()) Object.assign(L.Popup.prototype.options, { autoPanPaddingTopLeft: L.point(70, 120), autoPanPaddingBottomRight: L.point(12, 110), maxHeight: Math.round(innerHeight * .55) });
 function toolActive(){ return !!((typeof routing !== "undefined" && routing.on) || measuring || dropping || PLACE.on); }
@@ -2314,6 +2317,14 @@ function ownerHtml(c, ll){ if (!c) return "";
   const cty = /county|parish|borough/i.test(c.county) ? c.county : c.county + (c.st === "LA" ? " Parish" : " County");
   const q = encodeURIComponent(`${cty} ${c.state} ${c.st === "TX" ? "appraisal district" : "assessor"} property search owner`);
   return `<div class="ownr"><b>Who owns it?</b> ${OWNER_LAYER_STATES[c.st] && ll ? `<button class="ownbtn" data-lyr="${OWNER_LAYER_STATES[c.st]}" data-lat="${ll.lat}" data-lng="${ll.lng}">Show property lines &amp; owners</button> or ` : OWNER_LAYER_STATES[c.st] ? `Turn on <i>Property lines</i> in Layers and tap the parcel, or ` : ""}<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">search the ${esc(cty)} ${c.st === "TX" ? "appraisal district" : "assessor"} ↗</a> by parcel or map.</div>`; }
+function shareSpot(ll){ const z = Math.max(map.getZoom(), 15), url = location.origin + location.pathname + `#${z}/${ll.lat.toFixed(5)}/${ll.lng.toFixed(5)}/p`;
+  const done = how => setInfo(`<b>${how}</b><br><span class="n" style="word-break:break-all">${esc(url)}</span><br><small>Anyone who opens it sees this spot pinned, with its land rules.</small>`);
+  if (navigator.share && isPhone()) navigator.share({ title: "Spot on PublicScout", url }).then(() => done("Shared")).catch(() => {});
+  else { try { navigator.clipboard.writeText(url).then(() => done("Link copied"), () => done("Copy this link")); } catch { done("Copy this link"); } } }
+function sharedPin(){ const at = window.__sharedPin; if (!at) return; window.__sharedPin = null;
+  const mk = L.circleMarker(at, { radius: 9, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1 }).addTo(searchLayer).bindTooltip("Shared spot");
+  mk.on("click", ev => { L.DomEvent.stop(ev); if (!toolActive()) inspectAt(L.latLng(at)); });
+  setTimeout(() => { if (map.getBounds().contains(at)) inspectAt(L.latLng(at)); }, 2500); }
 // What's here? Public land -> land card/popup with rules; otherwise the private-land card (phone) or point info (desktop)
 function inspectAt(ll){ const fs = featsAt(ll); if (fs.length) return openLandPopup(ll, fs); if (isPhone()) return privateCard(ll); return pointInfo(ll); }
 async function privateCard(ll){
@@ -2749,6 +2760,7 @@ map.on("contextmenu", e => {
     ["☾", "Sun & moon here", () => sunMoonPopup(ll)],
     ["↔", "Measure from here", () => { if (!measuring) $("#btnMeasure").click(); mPts = [ll]; updateMeasure(); }],
     ["?", "Ask Claude about this spot", () => askClaude(`What should I know about hunting near ${c}${hereState ? " in " + D[hereState].name : ""}? Who manages the land there, what can I hunt, and what licenses or permits do I need?`)],
+    ["⇪", "Share a link to this spot", () => shareSpot(ll)],
     ["⧉", "Copy coordinates", () => { try { navigator.clipboard.writeText(c); } catch {} setInfo(`<b>Copied</b><br><span class="n">${c}</span>`); }]
   ];
   ctxEl.innerHTML = `<div class="hd">${c}</div>` + items.map((it, i) => `<button data-i="${i}"><span>${it[0]}</span>${it[1]}</button>`).join("");
@@ -3729,7 +3741,7 @@ function padPopup(p, ctx){
   if (area && area.verdict){ hc = area.verdict[0]; V = [VGLYPH[hc] + area.verdict[1], area.verdict[2]]; }
   const sn = hc === "no" ? null : seasonsNow(st);
   const li = a => a.map(x => `<li>${esc(x)}</li>`).join("");
-  return `<div class="lp">${ctx.ll ? `<div class="lpacts" data-ll="${ctx.ll.lat},${ctx.ll.lng}"><button class="btn sm" data-a="wpt">⚑ Waypoint here</button><button class="btn sm ghost" data-a="route">⤳ Route here</button></div>` : ""}<div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
+  return `<div class="lp">${ctx.ll ? `<div class="lpacts" data-ll="${ctx.ll.lat},${ctx.ll.lng}"><button class="btn sm" data-a="wpt">⚑ Waypoint here</button><button class="btn sm ghost" data-a="route">⤳ Route here</button><button class="btn sm ghost" data-a="share" title="Copy a link to this spot">⇪ Share</button></div>` : ""}<div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
     <h4>${esc(tp && tp.kind === "aph" ? tp.name : p.Unit_Nm || "Unnamed area")}</h4>
     <div class="lpcat">${tp && tp.kind === "aph" ? `<b>TPWD Public Hunting Land</b> · Texas Parks and Wildlife${tp.unit ? " · unit " + esc(tp.unit) : ""}` : `<b>${esc(cat)}</b> · ${esc(MGR[m] || p.Mang_Name || "")}${p.GIS_Acres ? ` · <span class="n">${Math.round(p.GIS_Acres).toLocaleString()} ac</span>` : ""}`}${st && D[st] ? " · " + esc(D[st].name) : ""}</div>
     ${areaHtml(area)}${ctx.areaPending ? `<p class="meta"><span class="spin"></span> Loading this area's own rules…</p>` : ""}
@@ -4076,10 +4088,10 @@ function liveScent(on){
 }
 setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5){ liveT = Date.now(); windCheck({ id: null, lat: liveAt.lat, lng: liveAt.lng, name: "You" }, null, true); } }, 60000);
 
-function v9Start(){ if (PREF.liveScent) liveScent(true); }
+function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "16.5 (Nov 2, 2026)";
+const APP_VERSION = "16.6 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
