@@ -107,6 +107,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
+.ownr{margin-top:8px;padding:8px 10px;border-radius:8px;background:#f1efe3;font-size:13px;line-height:1.45}.ownr a{color:#c2410c;font-weight:700}
 .leaflet-popup-content h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .pin{background:var(--blaze);color:#fff;border:2px solid #fff;border-radius:50%;width:26px!important;height:26px!important;display:grid;place-items:center;font:700 13px var(--mono);box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .tools{display:flex;flex-direction:column;gap:6px}
@@ -2230,11 +2231,35 @@ map.on("click", e => {
   if (landCardEl){ closeLandCard(); return; }
   if (Date.now() - lastPopupClose < 400 || (ctxEl && !ctxEl.hidden)) return; // that tap just closed a popup or menu
   if (typeof overlayAnyOpen === "function" && isPhone() && overlayAnyOpen()){ overlayCloseAll(); return; }
+  if (isPhone() && !PREF.tapInfo && map.getZoom() >= 11 && map.hasLayer(publicGroup)){ clearTimeout(clickTimer);
+    clickTimer = setTimeout(() => { if (Date.now() - lastPopupOpen < 700 || landCardEl) return; privateCard(e.latlng); }, 260); return; }
   if (!(PREF.tapInfo ?? !isPhone())) return;
   clearTimeout(clickTimer);
   clickTimer = setTimeout(() => { if (Date.now() - lastPopupOpen < 700) return; pointInfo(e.latlng); }, 250);
 });
 let lastPopupOpen = 0; map.on("popupopen", () => { lastPopupOpen = Date.now(); });
+/* ---------- Who owns this? County lookup + assessor link (and the free statewide parcel layers where we have them) ---------- */
+const OWNER_LAYER_STATES = { TX: "Texas", AR: "Arkansas" };
+const cntyCache = new Map();
+async function countyAt(ll){ const k = ll.lat.toFixed(3) + "," + ll.lng.toFixed(3); if (cntyCache.has(k)) return cntyCache.get(k);
+  let r = null; try { const j = await (await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?location=${ll.lng},${ll.lat}&f=json&langCode=en&forStorage=false`)).json();
+    const ad = j.address || {}; if (ad.Subregion || ad.Region) r = { county: ad.Subregion || "", state: ad.Region || "", st: STATE_TO[ad.Region] || null }; } catch {}
+  cntyCache.set(k, r); return r; }
+function ownerHtml(c){ if (!c) return "";
+  const cty = /county|parish|borough/i.test(c.county) ? c.county : c.county + (c.st === "LA" ? " Parish" : " County");
+  const q = encodeURIComponent(`${cty} ${c.state} ${c.st === "TX" ? "appraisal district" : "assessor"} property search owner`);
+  return `<div class="ownr"><b>Who owns it?</b> ${OWNER_LAYER_STATES[c.st] ? `Turn on <i>Property lines</i> in Layers and tap the parcel for the owner's name, or ` : ""}<a href="https://www.google.com/search?q=${q}" target="_blank" rel="noopener">search the ${esc(cty)} ${c.st === "TX" ? "appraisal district" : "assessor"} ↗</a> by parcel or map.</div>`; }
+async function privateCard(ll){
+  if (featsAt(ll).length){ openLandPopup(ll, featsAt(ll)); return; }
+  if (!padHave || !padHave.contains(ll)){ pointInfo(ll); return; } // public-land outlines not loaded here yet; don't claim it's private
+  const card = landCard(ll);
+  const head = `<div class="lpv lp-no"><b>✕ Not mapped as public land</b><span>Treat it as private: you need the landowner's permission to hunt or cross it.</span></div>`;
+  card.setContent(head + `<p class="meta"><span class="spin"></span> Looking up the county…</p>`);
+  const [c, ft] = await Promise.all([countyAt(ll), fetch(`https://epqs.nationalmap.gov/v1/json?x=${ll.lng}&y=${ll.lat}&units=Feet&wkid=4326`).then(r => r.json()).then(j => Math.round(+j.value)).catch(() => NaN)]);
+  card.setContent(head + `<h4>${c ? esc(c.county + ", " + c.state) : "Private or unmapped land"}</h4>
+    <div class="lpcat"><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span>${isFinite(ft) ? ` · ${ft.toLocaleString()} ft` : ""}</div>${ownerHtml(c)}
+    <p class="meta" style="margin-top:6px">PAD-US doesn't show public land here. Small public tracts and recent purchases can be missing; check posted signs.</p>`);
+}
 async function pointInfo(ll){
   {
     const { lat, lng } = ll;
@@ -2244,6 +2269,7 @@ async function pointInfo(ll){
       const r = await fetch(`https://epqs.nationalmap.gov/v1/json?x=${lng}&y=${lat}&units=Feet&wkid=4326`);
       const j = await r.json(); const ft = Math.round(+j.value);
       setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span><br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${hint}`);
+      const c = await countyAt(ll); if (c && !$("#infobox").hidden && $("#infobox").textContent.includes(lat.toFixed(5))) setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span> · ${esc(c.county)}<br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${ownerHtml(c)}${hint}`);
     } catch { setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span>`); }
   }
 }
@@ -2623,6 +2649,7 @@ map.on("contextmenu", e => {
     ["⚑", "Drop a waypoint here", () => addWaypoint(ll)],
     ["⌖", "Scan for spots around here", () => { showTab("scan"); map.setView(ll, Math.max(13, map.getZoom())); map.once("moveend", () => setTimeout(scan, 200)); }],
     ["⤳", "Route here", () => routeTo(ll, "this spot")],
+    ["⌂", "Find the landowner", async () => { const c = await countyAt(ll); setInfo(`<b>Landowner lookup</b><br>${c ? esc(c.county + ", " + c.state) : ""}${ownerHtml(c) || "<br>Couldn't find the county here."}`); }],
     ["≋", "Wind check here", () => windCheck({ id: null, lat: ll.lat, lng: ll.lng, name: "This spot" })],
     ["☁", "Weather here", () => { wxPin = ll; showTab("wx"); renderWx(); }],
     ["☾", "Sun & moon here", () => sunMoonPopup(ll)],
@@ -3958,7 +3985,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.1 (Nov 2, 2026)";
+const APP_VERSION = "15.2 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
