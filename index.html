@@ -108,7 +108,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
-.lca.lcs{flex:0 0 46px;font-size:18px}
+.lca{white-space:nowrap}.landcard .lpv{margin-bottom:10px}.lca.lcs{flex:0 0 auto;padding-left:12px;padding-right:12px}
 #btnLocate[aria-pressed=true]{color:#2a7fff}#btnLocate.follow{background:#2a7fff;color:#fff}#btnLocate.follow .tl{color:#fff}
 .wdist{margin-left:auto;font-size:12px;opacity:.8;white-space:nowrap;padding-left:8px}
 .wcard .lchd{align-items:center}.wct{flex:1;display:flex;align-items:center;gap:8px;font:700 15px var(--body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.wct .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:12px;flex:none}
@@ -2266,7 +2266,7 @@ function landCard(ll){
   const el = document.createElement("div"); el.className = "landcard"; map.getContainer().appendChild(el); landCardEl = el;
   L.DomEvent.disableClickPropagation(el); L.DomEvent.disableScrollPropagation(el);
   landMark = L.circleMarker(ll, { radius: 8, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1, interactive: false }).addTo(map);
-  const card = { open: true, setContent(html){ if (!card.open) return; el.innerHTML = `<div class="lchd"><button class="lca" data-a="wpt">⚑ Waypoint here</button><button class="lca" data-a="route">⤳ Route here</button><button class="lca lcs" data-a="share" aria-label="Share this spot">⇪</button><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${html}</div>`;
+  const card = { open: true, setContent(html){ if (!card.open) return; el.innerHTML = `<div class="lchd"><button class="lca" data-a="wpt">⚑ Waypoint</button><button class="lca" data-a="route">⤳ Route</button><button class="lca lcs" data-a="share" aria-label="Share a link to this spot">Share</button><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${html}</div>`;
       el.querySelector(".lcx").onclick = closeLandCard; wireLandActs(el, ll, closeLandCard);
       const b = el.querySelector(".askland"), h4 = el.querySelector("h4"), cat = el.querySelector(".lpcat");
       clearTimeout(card._kt); card._kt = setTimeout(() => keepAbove(ll, el), 120);
@@ -2760,7 +2760,7 @@ map.on("contextmenu", e => {
     ["☾", "Sun & moon here", () => sunMoonPopup(ll)],
     ["↔", "Measure from here", () => { if (!measuring) $("#btnMeasure").click(); mPts = [ll]; updateMeasure(); }],
     ["?", "Ask Claude about this spot", () => askClaude(`What should I know about hunting near ${c}${hereState ? " in " + D[hereState].name : ""}? Who manages the land there, what can I hunt, and what licenses or permits do I need?`)],
-    ["⇪", "Share a link to this spot", () => shareSpot(ll)],
+    ["↗", "Share a link to this spot", () => shareSpot(ll)],
     ["⧉", "Copy coordinates", () => { try { navigator.clipboard.writeText(c); } catch {} setInfo(`<b>Copied</b><br><span class="n">${c}</span>`); }]
   ];
   ctxEl.innerHTML = `<div class="hd">${c}</div>` + items.map((it, i) => `<button data-i="${i}"><span>${it[0]}</span>${it[1]}</button>`).join("");
@@ -3741,7 +3741,7 @@ function padPopup(p, ctx){
   if (area && area.verdict){ hc = area.verdict[0]; V = [VGLYPH[hc] + area.verdict[1], area.verdict[2]]; }
   const sn = hc === "no" ? null : seasonsNow(st);
   const li = a => a.map(x => `<li>${esc(x)}</li>`).join("");
-  return `<div class="lp">${ctx.ll ? `<div class="lpacts" data-ll="${ctx.ll.lat},${ctx.ll.lng}"><button class="btn sm" data-a="wpt">⚑ Waypoint here</button><button class="btn sm ghost" data-a="route">⤳ Route here</button><button class="btn sm ghost" data-a="share" title="Copy a link to this spot">⇪ Share</button></div>` : ""}<div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
+  return `<div class="lp">${ctx.ll ? `<div class="lpacts" data-ll="${ctx.ll.lat},${ctx.ll.lng}"><button class="btn sm" data-a="wpt">⚑ Waypoint here</button><button class="btn sm ghost" data-a="route">⤳ Route here</button><button class="btn sm ghost" data-a="share" title="Copy a link to this spot">Share</button></div>` : ""}<div class="lpv lp-${hc}"><b>${esc(V[0])}</b><span>${esc(V[1])}</span></div>
     <h4>${esc(tp && tp.kind === "aph" ? tp.name : p.Unit_Nm || "Unnamed area")}</h4>
     <div class="lpcat">${tp && tp.kind === "aph" ? `<b>TPWD Public Hunting Land</b> · Texas Parks and Wildlife${tp.unit ? " · unit " + esc(tp.unit) : ""}` : `<b>${esc(cat)}</b> · ${esc(MGR[m] || p.Mang_Name || "")}${p.GIS_Acres ? ` · <span class="n">${Math.round(p.GIS_Acres).toLocaleString()} ac</span>` : ""}`}${st && D[st] ? " · " + esc(D[st].name) : ""}</div>
     ${areaHtml(area)}${ctx.areaPending ? `<p class="meta"><span class="spin"></span> Loading this area's own rules…</p>` : ""}
@@ -4091,7 +4091,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "16.6 (Nov 2, 2026)";
+const APP_VERSION = "16.7 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
