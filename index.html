@@ -108,7 +108,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
 .wcard .lchd{align-items:center}.wct{flex:1;display:flex;align-items:center;gap:8px;font:700 15px var(--body);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.wct .dot{width:24px;height:24px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font-size:12px;flex:none}
-.wcard .wform input,.wcard .wform select,.wcard .wform textarea{font-size:16px;padding:8px;border-radius:8px}.wcard .wform label{font-size:13px;font-weight:600;margin-top:8px}
+.wform input,.wform select,.wform textarea{background:#fff;color:#1f2a1f;color-scheme:light}.wcard .wform input,.wcard .wform select,.wcard .wform textarea{font-size:16px;padding:8px;border-radius:8px}.wcard .wform label{font-size:13px;font-weight:600;margin-top:8px}
 .leaflet-container.placing .sunbox{display:none}
 .ownr{margin-top:8px;padding:8px 10px;border-radius:8px;background:#f1efe3;font-size:13px;line-height:1.45}.ownr a{color:#c2410c;font-weight:700}
 .leaflet-popup-content h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
@@ -2375,8 +2375,8 @@ function wptCard(w){
   wireWForm(el, w, closeLandCard);
   el.querySelectorAll("input,textarea,select").forEach(i => i.addEventListener("focus", () => setTimeout(() => i.scrollIntoView({ block: "center" }), 300)));
   if (typeof sheetTo === "function") sheetTo(0); setPeek();
-  const pt = map.latLngToContainerPoint([w.lat, w.lng]), sz = map.getSize();
-  if (pt.y > sz.y * .38 || pt.x < 60 || pt.x > sz.x - 20) map.panBy([pt.x - sz.x / 2, pt.y - sz.y * .28], { animate: true });
+  setTimeout(() => { if (landCardEl !== el) return; const pt = map.latLngToContainerPoint([w.lat, w.lng]), sz = map.getSize(), top = el.getBoundingClientRect().top - map.getContainer().getBoundingClientRect().top;
+    const want = Math.max(90, top / 2); if (pt.y > top - 30 || pt.y < 70 || pt.x < 70 || pt.x > sz.x - 20) map.panBy([pt.x - sz.x / 2 - 20, pt.y - want], { animate: true }); }, 60);
 }
 function wireWForm(el, w, close){
   const m = w._m;
@@ -4009,7 +4009,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.3 (Nov 2, 2026)";
+const APP_VERSION = "15.4 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
