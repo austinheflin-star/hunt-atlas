@@ -1680,7 +1680,7 @@ const Cluster = L.LayerGroup.extend({
         .on("click", () => m.fitBounds(b.pad(.6), { maxZoom: Math.max(z + 2, this.opts.off || 14) })).addTo(this); } }
 });
 // open a marker's popup even if it is currently grouped into a bubble
-function openMarker(mk, ll, zoom){ if (mk && mk._wpt && isPhone()){ map.setView(ll, Math.max(map.getZoom(), zoom || 15)); setTimeout(() => wptCard(mk._wpt), 250); return; } map.setView(ll, Math.max(map.getZoom(), zoom || 15)); const go = () => { if (mk._map) mk.openPopup(); }; map.once("moveend", () => setTimeout(go, 60)); setTimeout(go, 400); }
+function openMarker(mk, ll, zoom){ if (mk && mk._wpt && isPhone()){ wptCard(mk._wpt, Math.max(map.getZoom(), zoom || 15)); return; } map.setView(ll, Math.max(map.getZoom(), zoom || 15)); const go = () => { if (mk._map) mk.openPopup(); }; map.once("moveend", () => setTimeout(go, 60)); setTimeout(go, 400); }
 let heat = null, pins = new Cluster({ off: 13, color: "#f2542d" }).addTo(map), lastSpots = [];
 const proj = (lat, lng, z) => { const n = 256 * 2 ** z, s = Math.sin(lat * Math.PI / 180);
   return { x: (lng + 180) / 360 * n, y: (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n }; };
@@ -2218,10 +2218,16 @@ function landCard(ll){
   const card = { open: true, setContent(html){ if (!card.open) return; el.innerHTML = `<div class="lchd"><button class="lca" data-a="wpt">⚑ Waypoint here</button><button class="lca" data-a="route">⤳ Route here</button><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${html}</div>`;
       el.querySelector(".lcx").onclick = closeLandCard; wireLandActs(el, ll, closeLandCard);
       const b = el.querySelector(".askland"), h4 = el.querySelector("h4"), cat = el.querySelector(".lpcat");
+      clearTimeout(card._kt); card._kt = setTimeout(() => keepAbove(ll, el), 120);
       if (b) b.onclick = () => askClaude(`Can I hunt on ${h4 ? h4.textContent : "this public land"} (${cat ? cat.textContent : ""})? What licenses and permits do I need, what seasons are open, and what special rules apply there?`); } };
   el._card = card; if (typeof sheetTo === "function") sheetTo(0); setPeek();
   return card;
 }
+// Keep the tapped spot / marker visible in the strip of map above a docked card
+function keepAbove(ll, el, zoom){ if (landCardEl !== el) return; const z = zoom || map.getZoom(), sz = map.getSize(), top = el.getBoundingClientRect().top - map.getContainer().getBoundingClientRect().top;
+  const pt = map.latLngToContainerPoint(ll), want = Math.max(100, (top + 60) / 2);
+  if (z === map.getZoom() && pt.y <= top - 30 && pt.y >= 80 && pt.x >= 70 && pt.x <= sz.x - 20) return;
+  map.setView(map.unproject(map.project(ll, z).add([-20, sz.y / 2 - want]), z), z, { animate: true }); }
 function closeLandCard(){ if (landCardEl){ if (landCardEl._card) landCardEl._card.open = false; landCardEl.remove(); landCardEl = null; } if (landMark){ map.removeLayer(landMark); landMark = null; } }
 function wireLandActs(el, ll, done){
   el.querySelectorAll("[data-a]").forEach(b => b.onclick = ev => { ev.stopPropagation(); done && done();
@@ -2370,7 +2376,7 @@ function drawWpts(){
   }
 }
 /* Phone: the waypoint editor docks at the bottom (like the land card) instead of a tall popup over the marker */
-function wptCard(w){
+function wptCard(w, zoom){
   closeLandCard();
   const el = document.createElement("div"); el.className = "landcard wcard"; map.getContainer().appendChild(el); landCardEl = el;
   L.DomEvent.disableClickPropagation(el); L.DomEvent.disableScrollPropagation(el);
@@ -2380,8 +2386,7 @@ function wptCard(w){
   wireWForm(el, w, closeLandCard);
   el.querySelectorAll("input,textarea,select").forEach(i => i.addEventListener("focus", () => setTimeout(() => i.scrollIntoView({ block: "center" }), 300)));
   if (typeof sheetTo === "function") sheetTo(0); setPeek();
-  setTimeout(() => { if (landCardEl !== el) return; const pt = map.latLngToContainerPoint([w.lat, w.lng]), sz = map.getSize(), top = el.getBoundingClientRect().top - map.getContainer().getBoundingClientRect().top;
-    const want = Math.max(90, top / 2); if (pt.y > top - 30 || pt.y < 70 || pt.x < 70 || pt.x > sz.x - 20) map.panBy([pt.x - sz.x / 2 - 20, pt.y - want], { animate: true }); }, 60);
+  requestAnimationFrame(() => keepAbove(L.latLng(w.lat, w.lng), el, zoom));
 }
 function wireWForm(el, w, close){
   const m = w._m;
@@ -4014,7 +4019,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "15.5 (Nov 2, 2026)";
+const APP_VERSION = "15.6 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
