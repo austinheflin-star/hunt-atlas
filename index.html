@@ -3575,6 +3575,23 @@ async function areaFor(main, others, tp){
       sections: [["Permits and check-in", u.permits], ["Legal game", u.game], ["Weapons", u.weapons], ["Access, camping and vehicles", u.access], ["Special rules and closures", u.special], ["Contacts", u.contact]].filter(s => s[1] && s[1].length) };
   }
   // State wildlife areas (OK, AR, LA, NM, ...): each area's own page from the state agency, one file per state
+  // Colorado: CPW's own property layer at the tap point + Chapter W-9 rules
+  if (tp && (tp.kind === "cpw" || tp.kind === "cpwnone")){
+    if (tp.kind === "cpwnone"){
+      if (m === "SLB") return { title: main.Unit_Nm || "State Trust land", verdict: ["no", "Not in CPW's access program", "Colorado State Trust land is closed to the public unless CPW leases it for hunting and fishing. This spot isn't in CPW's Public Access Program, so stay off."], sections: [], src: [["CPW State Trust Lands Public Access Program", "https://cpw.state.co.us/state-trust-lands"]] };
+    } else {
+      const db = await areaJSON("CO-areas.json"); const nm = s => String(s || "").toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9#]+/g, " ").trim();
+      if (tp.type === "STL"){
+        const key = nm(tp.name.replace(/\s+STL$/i, "")), hit = db && db.stl[key];
+        return { title: tp.name.replace(/\s+STL$/i, "") + " State Trust Land", verdict: ["permit", "Open seasonally with a hunting license", "CPW-leased State Trust land: hunting and fishing only, with a current license; closed Mar 1 - Aug 31 unless this property's rules say otherwise."],
+          sections: [["This property's rules (W-9 #903)", hit ? hit.rules : ["No property-specific rules beyond the general ones below."]], ["All CPW-leased State Trust Lands (W-9 #902)", db ? db.stlGeneral : []]],
+          src: [["CPW page: " + tp.name, tp.url], ["CPW Chapter W-9, 07/16/2026", db && db.w9]].filter(x => x[1]), compiled: db && db.compiled };
+      }
+      if (/SWA|SAA|WWA|Hunting Access/i.test(tp.type)) return { title: tp.name, verdict: ["permit", "License or SWA pass required", "Everyone 16+ needs a hunting or fishing license or a State Wildlife Area pass. Each SWA has its own access dates and restrictions."],
+        sections: [["State Wildlife Areas", db ? db.swaGeneral : []]], note: "This SWA's specific W-9 restrictions are on its CPW page (they're being added to PublicScout next).",
+        src: [["CPW page: " + tp.name, tp.url], ["CPW Chapter W-9, 07/16/2026", db && db.w9]].filter(x => x[1]) };
+    }
+  }
   const isPark = /\b(park|recreation area|campground|golf)\b/i.test(main.Unit_Nm || "") && !/wildlife|wma|hunting|preserve/i.test(main.Unit_Nm || "");
   if (WMA_FILES[st] && !isPark){
     const db = await areaJSON(WMA_FILES[st]);
@@ -3652,12 +3669,20 @@ async function tpwdAt(ll){
   if (pa) return { kind: "aph", name: pa.LoName || pa.LocName, unit: pa.Unit_Num || pa.PH_UnitNum, pdf: pa.MAPBOOK_PG };
   return null;
 }
+async function cpwAt(ll){
+  const q = new URLSearchParams({ geometry: `${ll.lng},${ll.lat}`, geometryType: "esriGeometryPoint", inSR: "4326", spatialRel: "esriSpatialRelIntersects", returnGeometry: "false", f: "json", where: "1=1", outFields: "PropName,PropType,Acres,CPW_URL" });
+  const j = await fetch("https://services5.arcgis.com/ttNGmDvKQA7oeDQ3/ArcGIS/rest/services/CPWAdminData/FeatureServer/5/query?" + q).then(r => r.json());
+  const f = (j.features || []).map(x => x.attributes).sort((a, b) => (a.Acres || 0) - (b.Acres || 0))[0];
+  return f ? { kind: "cpw", name: f.PropName, type: f.PropType, url: (f.CPW_URL || "").trim(), acres: f.Acres } : { kind: "cpwnone" };
+}
 async function openLandPopup(ll, fs){
   if (!fs || !fs.length) return;
   const { main, others } = pickLand(fs), st = main.State_Nm, isTX = st === "TX" || st === "Texas";
   const opts = { minWidth: 260, maxHeight: Math.round(innerHeight * (isPhone() ? .55 : .7)), autoPanPadding: [10, 10] };
   const pop = L.popup(opts).setLatLng(ll).setContent(padPopup(main, { others, tpPending: isTX, areaPending: true })).openOn(map);
+  const isCO = st === "CO" || st === "Colorado";
   let tp = null; if (isTX) try { tp = await tpwdAt(ll); } catch {}
+  if (isCO) try { tp = await cpwAt(ll); } catch {}
   if (!map.hasLayer(pop)) return;
   pop.setContent(padPopup(main, { others, tp, areaPending: true }));
   let area = null; try { area = await areaFor(main, others, tp); } catch {}
@@ -3815,7 +3840,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "14.2 (Nov 2, 2026)";
+const APP_VERSION = "14.3 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
