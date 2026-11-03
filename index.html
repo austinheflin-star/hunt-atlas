@@ -4110,7 +4110,7 @@ async function renderGuide(force){
     ${R ? `<div class="callout gregion"><b>${esc(R.key)}</b> ${esc(R.note)}${R[sp] ? `<br><b>${esc(S.name)} here:</b> ${esc(R[sp])}` : ""}</div>` : GUIDE.eco ? `<div class="callout">Regional notes for the ${esc(GUIDE.eco)} aren't written yet; the general guide below still applies.</div>` : ""}
     ${sec.intro.map(p => `<p>${esc(p)}</p>`).join("")}
     ${sec.seasons ? `<table class="gseas">${sec.seasons.map(r => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>` : ""}
-    ${ids.length ? `<h3>${secK === "food" ? "Foods to know" : "Cover and places to know"}${st ? " in " + esc(GUIDE.stName || st) : ""}</h3>` : ""}
+    ${ids.length ? `<h3>${({ food: "Foods to know", water: "Water to look for", movement: "Places that shape movement" })[secK] || "Cover and places to know"}${st ? " in " + esc(GUIDE.stName || st) : ""}</h3>` : ""}
     <div class="gcards">${ids.map(i => { const it = db.items[i]; return `<div class="gcard" data-it="${i}">
       <div class="gph"></div><div class="gbody"><b>${esc(it.name)}</b>${regional.has(i) ? ' <span class="gtag">Common here</span>' : ""}
       ${it.use && it.use[sp] ? `<p class="guse">${esc(it.use[sp])}</p>` : ""}
@@ -4228,7 +4228,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.7 (Nov 3, 2026)";
+const APP_VERSION = "17.8 (Nov 3, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
