@@ -2330,8 +2330,14 @@ document.addEventListener("click", ev => { const b = ev.target.closest && ev.tar
   layerOn(b.dataset.lyr, true); closeLandCard(); map.closePopup(); const ll = L.latLng(+b.dataset.lat, +b.dataset.lng);
   map.setView(ll, Math.max(map.getZoom(), 16)); setInfo("<b>Property lines on</b><br>Tap the parcel to see who owns it."); }, true);
 const cntyCache = new Map();
+const FIPS_ST = {"01":"AL","02":"AK","04":"AZ","05":"AR","06":"CA","08":"CO","09":"CT","10":"DE","11":"DC","12":"FL","13":"GA","15":"HI","16":"ID","17":"IL","18":"IN","19":"IA","20":"KS","21":"KY","22":"LA","23":"ME","24":"MD","25":"MA","26":"MI","27":"MN","28":"MS","29":"MO","30":"MT","31":"NE","32":"NV","33":"NH","34":"NJ","35":"NM","36":"NY","37":"NC","38":"ND","39":"OH","40":"OK","41":"OR","42":"PA","44":"RI","45":"SC","46":"SD","47":"TN","48":"TX","49":"UT","50":"VT","51":"VA","53":"WA","54":"WV","55":"WI","56":"WY","72":"PR"};
 async function countyAt(ll){ const k = ll.lat.toFixed(3) + "," + ll.lng.toFixed(3); if (cntyCache.has(k)) return cntyCache.get(k);
-  let r = null; try { const j = await (await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?location=${ll.lng},${ll.lat}&f=json&langCode=en&forStorage=false`)).json();
+  let r = null;
+  // Census TIGERweb county polygons give the county the point is actually in (the address geocoder snaps to the nearest road, which can be across a county line)
+  try { const j = await (await fetch(`https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query?geometry=${ll.lng},${ll.lat}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=NAME,STATE&returnGeometry=false&f=json`)).json();
+    const a = j.features && j.features[0] && j.features[0].attributes, st = a && FIPS_ST[a.STATE];
+    if (a && st) r = { county: a.NAME, state: Object.keys(STATE_TO).find(n => STATE_TO[n] === st) || st, st }; } catch {}
+  if (!r) try { const j = await (await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?location=${ll.lng},${ll.lat}&f=json&langCode=en&forStorage=false`)).json();
     const ad = j.address || {}; if (ad.Subregion || ad.Region) r = { county: ad.Subregion || "", state: ad.Region || "", st: STATE_TO[ad.Region] || null }; } catch {}
   cntyCache.set(k, r); return r; }
 function ownerHtml(c, ll){ if (!c) return "";
@@ -2762,8 +2768,7 @@ async function updateWhere(){
   if (map.getZoom() < 6){ $("#where").textContent = ""; return; }
   const c = map.getCenter(); if (whereAt && map.distance(c, whereAt) < 3000) return; whereAt = c;
   const s = ++whereSeq; let st = null, label = "";
-  try { const j = await (await fetch(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?location=${c.lng},${c.lat}&f=json&langCode=en&forStorage=false`)).json();
-    const ad = j.address || {}; st = STATE_TO[ad.Region] || null; label = [ad.Subregion, ad.Region].filter(Boolean).join(", "); } catch {}
+  try { const cty = await countyAt(c); if (cty){ st = cty.st; label = [cty.county, cty.state].filter(Boolean).join(", "); } } catch {}
   if (s !== whereSeq) return;
   if (!label){ st = Object.keys(ROUGH).find(k => L.latLngBounds(ROUGH[k]).contains(c)) || null; label = st ? D[st].name : ""; }
   $("#where").textContent = label ? "📍 " + label : "";
@@ -4235,7 +4240,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.9 (Nov 3, 2026)";
+const APP_VERSION = "17.9.1 (Nov 3, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
