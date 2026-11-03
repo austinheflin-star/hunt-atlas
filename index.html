@@ -2162,7 +2162,10 @@ toolsCtl.addTo(map);
 const TRACK = { id: null, follow: false, first: true, land: null };
 async function landHere(ll){ const fs = featsAt(ll); if (!fs.length) return padHave && padHave.contains(ll) ? { k: "none" } : null;
   const { main, others } = pickLand(fs); let k = huntClass(main), name = main.Unit_Nm || "Public land", word = null;
-  try { const a = await areaFor(main, others); if (a && a.verdict){ k = a.verdict[0]; word = a.verdict[1]; } if (a && a.title) name = a.title; } catch {}
+  try { const st = main.State_Nm; let tp = null;
+    if (st === "CO" || st === "Colorado") tp = await cpwAt(ll).catch(() => null);
+    else if (st === "MO" || st === "Missouri") tp = await mdcAt(ll).catch(() => null);
+    const a = await areaFor(main, others, tp); if (a && a.verdict){ k = a.verdict[0]; word = a.verdict[1]; } if (a && a.title) name = a.title; } catch {}
   return { k, name, word }; }
 const LAND_WORD = { yes: "✓ Open to hunting", permit: "Permit or check-in needed", check: "Check the rules", no: "✕ No hunting" };
 async function trackInfo(ll, acc){ const h = await landHere(ll), k = h ? h.k + (h.name || "") : "?";
@@ -3821,6 +3824,14 @@ async function areaFor(main, others, tp){
       sections: [["Permits and check-in", u.permits], ["Legal game", u.game], ["Weapons", u.weapons], ["Access, camping and vehicles", u.access], ["Special rules and closures", u.special], ["Contacts", u.contact]].filter(s => s[1] && s[1].length) };
   }
   // State wildlife areas (OK, AR, LA, NM, ...): each area's own page from the state agency, one file per state
+  // Missouri: MDC conservation areas, each area's own regulations page (3 CSR 10-11, as MDC applies it to that area)
+  if (tp && tp.kind === "mdc"){
+    const db = await areaJSON("MO-areas.json"), a = db && db.areas[String(tp.id)];
+    const src = [["MDC area page: " + tp.name, tp.url], ["MDC area regulations (3 CSR 10-11) for this area", tp.regs], ["Area brochure (PDF)", tp.brochure]].filter(x => x[1]);
+    if (!a) return { title: tp.name, verdict: ["check", "Check this area's MDC regulations", "This MDC area isn't in PublicScout's copy yet. Its own regulations page (linked below) lists what's allowed."], sections: [], src };
+    const secs = (a.a && a.a.length ? [["What MDC lists for this area", a.a]] : []).concat(a.s.map(i => db.secs[i]).filter(x => x && x[1] && x[1].length));
+    return { title: tp.name, verdict: a.v, sections: secs, src, compiled: db.compiled, note: db.note };
+  }
   // Colorado: CPW's own property layer at the tap point + Chapter W-9 rules
   if (tp && (tp.kind === "cpw" || tp.kind === "cpwnone")){
     if (tp.kind === "cpwnone"){
@@ -3928,6 +3939,13 @@ async function cpwAt(ll){
   const f = (j.features || []).map(x => x.attributes).sort((a, b) => (a.Acres || 0) - (b.Acres || 0))[0];
   return f ? { kind: "cpw", name: f.PropName, type: f.PropType, url: (f.CPW_URL || "").trim(), acres: f.Acres } : { kind: "cpwnone" };
 }
+// Missouri: MDC's own conservation-area boundaries at the tap point (Area_ID links to that area's regulations)
+async function mdcAt(ll){
+  const q = new URLSearchParams({ geometry: `${ll.lng},${ll.lat}`, geometryType: "esriGeometryPoint", inSR: "4326", spatialRel: "esriSpatialRelIntersects", returnGeometry: "false", f: "json", where: "1=1", outFields: "Area_ID,OFF_Name,Acreage,Sum_Link,Reg_Link,Brochure_Link" });
+  const j = await fetch("https://gisblue.mdc.mo.gov/arcgis/rest/services/Discover_Nature/MDC_Administrative_Areas/FeatureServer/5/query?" + q).then(r => r.json());
+  const f = (j.features || []).map(x => x.attributes).sort((a, b) => (a.Acreage || 0) - (b.Acreage || 0))[0];
+  return f ? { kind: "mdc", id: f.Area_ID, name: f.OFF_Name, url: f.Sum_Link, regs: f.Reg_Link, brochure: f.Brochure_Link } : { kind: "mdcnone" };
+}
 async function openLandPopup(ll, fs){
   if (!fs || !fs.length) return;
   const { main, others } = pickLand(fs), st = main.State_Nm, isTX = st === "TX" || st === "Texas";
@@ -3939,6 +3957,7 @@ async function openLandPopup(ll, fs){
   const isCO = st === "CO" || st === "Colorado";
   let tp = null; if (isTX) try { tp = await tpwdAt(ll); } catch {}
   if (isCO) try { tp = await cpwAt(ll); } catch {}
+  if (st === "MO" || st === "Missouri") try { tp = await mdcAt(ll); } catch {}
   if (!live()) return;
   put(padPopup(main, { others, tp, areaPending: true, ll: phone ? null : ll }));
   let area = null; try { area = await areaFor(main, others, tp); } catch {}
@@ -3964,7 +3983,7 @@ map.on("click", async e => {
 
 /* ===================== All 50 states: every state is listed; full guides load from data/states/XX.json when needed ===================== */
 const ALLST = {"AL":["Alabama","Alabama DCNR Wildlife and Freshwater Fisheries","https://www.outdooralabama.com"],"AK":["Alaska","Alaska Department of Fish and Game","https://www.adfg.alaska.gov"],"AZ":["Arizona","Arizona Game and Fish Department","https://www.azgfd.com"],"AR":["Arkansas","Arkansas Game and Fish Commission","https://www.agfc.com"],"CA":["California","California Department of Fish and Wildlife","https://wildlife.ca.gov"],"CO":["Colorado","Colorado Parks and Wildlife","https://cpw.state.co.us"],"CT":["Connecticut","CT DEEP Wildlife Division","https://portal.ct.gov/deep"],"DE":["Delaware","DNREC Division of Fish and Wildlife","https://dnrec.delaware.gov/fish-wildlife/"],"FL":["Florida","Florida Fish and Wildlife Conservation Commission","https://myfwc.com"],"GA":["Georgia","Georgia DNR Wildlife Resources Division","https://georgiawildlife.com"],"HI":["Hawaii","DLNR Division of Forestry and Wildlife","https://dlnr.hawaii.gov/dofaw/"],"ID":["Idaho","Idaho Department of Fish and Game","https://idfg.idaho.gov"],"IL":["Illinois","Illinois DNR","https://dnr.illinois.gov"],"IN":["Indiana","Indiana DNR Fish and Wildlife","https://www.in.gov/dnr/fish-and-wildlife/"],"IA":["Iowa","Iowa DNR","https://www.iowadnr.gov"],"KS":["Kansas","Kansas Dept of Wildlife and Parks","https://ksoutdoors.com"],"KY":["Kentucky","Kentucky Dept of Fish and Wildlife Resources","https://fw.ky.gov"],"LA":["Louisiana","Louisiana Dept of Wildlife and Fisheries","https://www.wlf.louisiana.gov"],"ME":["Maine","Maine Dept of Inland Fisheries and Wildlife","https://www.maine.gov/ifw/"],"MD":["Maryland","Maryland DNR Wildlife and Heritage","https://dnr.maryland.gov/wildlife/"],"MA":["Massachusetts","MassWildlife","https://www.mass.gov/orgs/division-of-fisheries-and-wildlife"],"MI":["Michigan","Michigan DNR","https://www.michigan.gov/dnr"],"MN":["Minnesota","Minnesota DNR","https://www.dnr.state.mn.us"],"MS":["Mississippi","Mississippi Dept of Wildlife, Fisheries and Parks","https://www.mdwfp.com"],"MO":["Missouri","Missouri Department of Conservation","https://mdc.mo.gov"],"MT":["Montana","Montana Fish, Wildlife and Parks","https://fwp.mt.gov"],"NE":["Nebraska","Nebraska Game and Parks Commission","https://outdoornebraska.gov"],"NV":["Nevada","Nevada Department of Wildlife","https://www.ndow.org"],"NH":["New Hampshire","New Hampshire Fish and Game","https://www.wildlife.nh.gov"],"NJ":["New Jersey","NJ Division of Fish and Wildlife","https://dep.nj.gov/njfw/"],"NM":["New Mexico","New Mexico Department of Game and Fish","https://wildlife.dgf.nm.gov"],"NY":["New York","NYS DEC","https://dec.ny.gov"],"NC":["North Carolina","NC Wildlife Resources Commission","https://www.ncwildlife.org"],"ND":["North Dakota","North Dakota Game and Fish","https://gf.nd.gov"],"OH":["Ohio","Ohio DNR Division of Wildlife","https://ohiodnr.gov"],"OK":["Oklahoma","Oklahoma Dept of Wildlife Conservation","https://www.wildlifedepartment.com"],"OR":["Oregon","Oregon Dept of Fish and Wildlife","https://myodfw.com"],"PA":["Pennsylvania","Pennsylvania Game Commission","https://www.pgc.pa.gov"],"RI":["Rhode Island","RI DEM Fish and Wildlife","https://dem.ri.gov"],"SC":["South Carolina","SC Department of Natural Resources","https://www.dnr.sc.gov"],"SD":["South Dakota","South Dakota Game, Fish and Parks","https://gfp.sd.gov"],"TN":["Tennessee","Tennessee Wildlife Resources Agency","https://www.tn.gov/twra"],"TX":["Texas","Texas Parks and Wildlife Department","https://tpwd.texas.gov"],"UT":["Utah","Utah Division of Wildlife Resources","https://wildlife.utah.gov"],"VT":["Vermont","Vermont Fish and Wildlife","https://vtfishandwildlife.com"],"VA":["Virginia","Virginia Dept of Wildlife Resources","https://dwr.virginia.gov"],"WA":["Washington","Washington Dept of Fish and Wildlife","https://wdfw.wa.gov"],"WV":["West Virginia","West Virginia DNR","https://wvdnr.gov"],"WI":["Wisconsin","Wisconsin DNR","https://dnr.wisconsin.gov"],"WY":["Wyoming","Wyoming Game and Fish Department","https://wgfd.wyo.gov"]};
-const STATE_FILES = new Set(["CO", "KS", "AZ"]);              // states with a full guide file (grows with each update)
+const STATE_FILES = new Set(["CO", "KS", "AZ", "MO"]);              // states with a full guide file (grows with each update)
 Object.entries(ALLST).forEach(([k, v]) => { STATE_TO[v[0]] = k; STATE_ABBR[v[0]] = k; });
 const stLoads = {};
 function loadStateData(code){
@@ -4098,7 +4117,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.2 (Nov 2, 2026)";
+const APP_VERSION = "17.3 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
