@@ -108,6 +108,12 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
+.landstat{border:1px solid var(--line,#d9d6c7);border-radius:12px;padding:12px;margin:8px 0 12px;background:rgba(127,127,100,.06)}
+.landstat .lsr{display:flex;gap:12px;align-items:center}.lsscore{flex:none;width:58px;height:58px;border-radius:50%;background:#2f6b3f;color:#fff;display:grid;place-items:center;line-height:1}
+.lsscore b{font:700 22px var(--display,inherit)}.lsscore small{font-size:11px;opacity:.85;margin-top:-10px}
+.lsbar{height:8px;border-radius:99px;background:rgba(127,127,127,.25);margin-top:6px;overflow:hidden;width:min(220px,55vw)}.lsbar i{display:block;height:100%;background:linear-gradient(90deg,#c2410c,#e0a526,#2f6b3f)}
+.lsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.lsgrid div{display:flex;flex-direction:column}.lsgrid b{font:700 18px var(--display,inherit)}.lsgrid span{font-size:12px;opacity:.8;line-height:1.3}
+.lsmore{margin-top:8px;font-size:12.5px}.lsmore summary{cursor:pointer;opacity:.85}.lsmore p{margin:6px 0 0;line-height:1.45}
 .lca{white-space:nowrap}.landcard .lpv{margin-bottom:10px}.lca.lcs{flex:0 0 auto;padding-left:12px;padding-right:12px}
 #btnLocate[aria-pressed=true]{color:#2a7fff}#btnLocate.follow{background:#2a7fff;color:#fff}#btnLocate.follow .tl{color:#fff}
 .wdist{margin-left:auto;font-size:12px;opacity:.8;white-space:nowrap;padding-left:8px}
@@ -4008,7 +4014,7 @@ function statePicker(code){
 function renderStateBasic(code, fly, loading){
   current = code; savePref({ state: code }); const a = ALLST[code];
   $("#pane-rules").innerHTML = statePicker(code) + `<h2>${esc(a[0])}</h2><div class="meta">${esc(a[1])}</div>
-    ${loading ? `<p><span class="spin"></span> Loading the ${esc(a[0])} guide…</p>` : `
+    ${loading ? `<p><span class="spin"></span> Loading the ${esc(a[0])} guide…</p>` : `${landStatHtml(code)}
     <div class="callout"><b>Full ${esc(a[0])} guide coming soon.</b> Seasons, license prices, rules and hunt units for every state are being added a few states at a time.</div>
     <h3>Works here already</h3><ul>
       <li>Public land on the map: tap any tract to see if you can hunt it, what category it is and the federal rules</li>
@@ -4036,6 +4042,21 @@ const STATE_VIEW = { AL:[[32.8,-86.8],7], AK:[[63.5,-150],4], AZ:[[34.3,-111.7],
 new MutationObserver(() => document.body.classList.toggle("lyr-open", layersOpen())).observe($("#lyrPanel"), { attributes: true, attributeFilter: ["hidden"] });
 
 // States tab: one short section at a time instead of three pages of scrolling
+// Public land by state: PAD-US 4.1 fee lands owned by federal, state and local government (tribal excluded), summed by state (Nov 2, 2026).
+// [public acres, acres open or restricted-open to the public, state land acres (Census), % public, rating 1-10]
+const LANDSTAT = {"AK":[401892564,321561476,365210240,100,10.0],"AL":[1353494,1344232,32412800,4.2,3.0],"AR":[3976678,3976678,33302400,11.9,5.0],"AZ":[39697848,39496065,72700160,54.6,10.0],"CA":[49717278,49317530,99698560,49.9,10.0],"CO":[27788388,25549990,66330880,41.9,9.5],"CT":[394846,46616,3098880,12.7,2.0],"DE":[209012,115703,1247360,16.8,2.5],"FL":[11189395,10249987,34320000,32.6,8.0],"GA":[3204772,3130309,36808320,8.7,4.5],"HI":[2296330,2259755,4110720,55.9,7.0],"IA":[896129,896066,35748480,2.5,2.5],"ID":[35747685,35622968,52891520,67.6,10.0],"IL":[1079843,1067468,35532160,3.0,2.5],"IN":[725732,725519,22928640,3.2,2.0],"KS":[474261,473930,52325760,0.9,1.5],"KY":[1653247,1618420,25271040,6.5,3.5],"LA":[3187918,3096365,27650560,11.5,4.5],"MA":[1023222,874330,4992000,20.5,4.0],"MD":[829529,290703,6212480,13.4,2.0],"ME":[2008722,632942,19739520,10.2,2.5],"MI":[6633655,6626753,36184960,18.3,6.0],"MN":[8825906,8825279,50961280,17.3,6.5],"MO":[2702192,2700463,43994880,6.1,4.0],"MS":[2695498,2641662,30030720,9.0,4.0],"MT":[33260626,33060408,93149440,35.7,9.5],"NC":[5080276,4040859,31115520,16.3,5.5],"ND":[3271575,3270639,44160640,7.4,4.5],"NE":[1084837,1072871,49167360,2.2,2.5],"NH":[1164519,856389,5729920,20.3,4.0],"NJ":[1718248,1712252,4706560,36.5,6.0],"NM":[33119738,33058959,77630720,42.7,10.0],"NV":[58735277,58573647,70259840,83.6,10.0],"NY":[5092694,4804020,30160640,16.9,5.5],"OH":[1070953,1033094,26151040,4.1,2.5],"OK":[4476998,4468825,43900800,10.2,5.0],"OR":[34662751,34530167,61432320,56.4,10.0],"PA":[5690091,5647297,28635520,19.9,6.0],"RI":[91693,19116,661760,13.9,2.0],"SC":[1545529,1499239,19239040,8.0,3.5],"SD":[4026673,4023331,48519040,8.3,4.5],"TN":[2126816,2122516,26390400,8.1,4.0],"TX":[7269641,4925245,167188480,4.3,4.5],"UT":[38776092,37323689,52588800,73.7,10.0],"VA":[3511874,3351531,25273600,13.9,5.0],"VT":[856059,799378,5898880,14.5,3.5],"WA":[16609557,16519546,42531840,39.1,9.0],"WI":[6057945,6049933,34661120,17.5,6.0],"WV":[1896139,1894658,15384320,12.3,4.0],"WY":[34090041,33340864,62139520,54.9,10.0]};
+const WALKIN = {"KS": "Walk-In Hunting Access (WIHA)", "SD": "Walk-In Areas", "ND": "PLOTS", "NE": "Open Fields and Waters", "MT": "Block Management", "WY": "Walk-In Areas", "OK": "Oklahoma Land Access Program (OLAP)", "IA": "IHAP", "MO": "MRAP"};
+function landStatHtml(code){ const d = LANDSTAT[code]; if (!d) return "";
+  const [pub, open, land, pct, r] = d, ak = code === "AK", M = n => n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + " million" : Math.round(n / 1000).toLocaleString() + ",000";
+  const word = r >= 9 ? "Excellent" : r >= 7 ? "Very good" : r >= 5 ? "Good" : r >= 3.5 ? "Fair" : "Limited";
+  const rank = Object.keys(LANDSTAT).sort((a, b) => LANDSTAT[b][1] - LANDSTAT[a][1]).indexOf(code) + 1;
+  return `<div class="landstat">
+    <div class="lsr"><div class="lsscore"><b>${r % 1 ? r.toFixed(1) : r}</b><small>/10</small></div><div><b>Public-land value: ${word}</b><div class="lsbar"><i style="width:${r * 10}%"></i></div></div></div>
+    <div class="lsgrid"><div><b>${ak ? "Most" : pct.toFixed(pct < 10 ? 1 : 0) + "%"}</b><span>of the state is public land</span></div>
+      <div><b>${M(pub)}</b><span>acres of public land</span></div>
+      <div><b>${M(open)}</b><span>acres open to the public (#${rank} of 50)</span></div></div>
+    <details class="lsmore"><summary>How this is figured</summary><p>Acres are PAD-US 4.1 lands owned by federal, state and local government (tribal land excluded), as of Nov 2026; "open to the public" counts PAD-US open and restricted access. The share is public acres over the state's land area (U.S. Census). Some government-owned lakes and coastal waters are included, so lake and coastal states read a little high.${ak ? " Alaska is overstated: refuge and park boundaries in PAD-US include Native corporation land inside them." : ""}${WALKIN[code] ? ` Private land open through ${WALKIN[code]} isn't in PAD-US, so it isn't counted here.` : ""}</p>
+    <p>The value score is 60% how many acres are open to the public (on a log scale, 300,000 acres = 0 and 40 million = full marks) and 40% how much of the state is public (40% or more = full marks). It measures room to hunt, not game quality, tag odds or cost.</p></details></div>`; }
 const ST_SECS = [["over", "Overview"], ["seasons", "Seasons"], ["lic", "Licenses"], ["rules", "Rules"], ["places", "Places"], ["ask", "Ask"], ["terms", "Terms"]];
 const spOf = r => String(r[0]).split(/\s[(–-]|,|:/)[0].trim();
 function renderState(code, fly){
@@ -4050,7 +4071,7 @@ function renderState(code, fly){
   let body = "";
   if (sec === "over"){
     const nr = NR && NR[code], nrT = nr ? nr.parts.reduce((a, p) => a + p[1], 0) : null;
-    body = `<p>${esc(s.summary)}</p>${seasonClock(code)}
+    body = `${landStatHtml(code)}<p>${esc(s.summary)}</p>${seasonClock(code)}
       <div class="callout"><b>Hunting public land here:</b> ${esc(s.publicNote)}</div>
       <div class="facts">
         <button data-go="seasons"><b>${s.seasons.length}</b><span>season dates</span></button>
@@ -4125,7 +4146,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.5 (Nov 2, 2026)";
+const APP_VERSION = "17.6 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
