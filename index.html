@@ -1820,7 +1820,12 @@ function huntPlan(i){
   if (i.roadDir != null) out.push(`<b>Walk in</b> from the ${d16(i.roadDir)} (road side)${i.deer == null ? "" : angDiff(i.roadDir, i.deer) < 60 ? ". That side is also where deer likely bed, so loop wide and come in from downwind" : ", away from the bedding side"}.`);
   const k = i.keys, has = arr => k.some(x => arr.includes(x));
   const bed = has(["cover", "bench", "leeward", "ridge"]), feed = has(["food", "edge", "corner"]), travel = has(["saddle", "pinch", "drain", "crossing"]);
+  const an = { elk: "elk", mule: "deer", hog: "hogs" }[i.species] || "deer";
+  const walkTxt = `<b>Walk in</b> from the ${d16(i.roadDir)} (road side)${i.deer == null ? "" : angDiff(i.roadDir, i.deer) < 60 ? `. That side is also where ${an} likely bed, so loop wide and come in from downwind` : ", away from the bedding side"}.`;
+  if (i.roadDir != null && an !== "deer") out[out.length - 1] = walkTxt;
   out.push("<b>When:</b> " + (i.species === "turkey" ? "mornings off the roost; strut zones mid-morning." : i.species === "duck" ? "first light; set up with the wind at your back so birds land into it toward you." :
+    i.species === "hog" ? (bed ? "this looks like bedding. Stalk the edges into the wind at midday on cool days, or wait 100–200 yd downwind for them to leave at dusk." : "first and last light, and cool, cloudy days; hogs on pressured land move mostly at night.") :
+    i.species === "elk" ? (travel ? "first and last light as elk move between timber and meadows; all day in the September rut." : bed ? "this looks like bedding. Don't push it; hunt the edges downwind at first and last light." : "first and last light.") :
     travel ? "all day during the rut; otherwise first and last light as deer move between bedding and food." : bed ? "this looks like bedding. Hunt 100–200 yd off it on the downwind side, and don't walk through it." : feed ? "evenings, as deer leave cover for food." : "first and last light."));
   if (i.asp != null && i.slope >= 5) out.push(`<b>Thermals:</b> the slope faces ${d16(i.asp)}. Once the sun warms it, air flows uphill; in the evening it sinks downhill. Pick the time when that carries your scent away from the bedding side.`);
   return out.map(s => `<p>${s}</p>`).join("");
@@ -4244,7 +4249,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.9.2 (Nov 3, 2026)";
+const APP_VERSION = "17.9.3 (Nov 3, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
