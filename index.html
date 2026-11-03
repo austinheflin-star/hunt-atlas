@@ -108,6 +108,15 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .lcb{overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 12px;font:14px/1.45 var(--body)}
 .lcb h4{font:700 16px var(--display);text-transform:uppercase;margin:0 0 4px;letter-spacing:.03em}
 .lpacts{display:flex;gap:6px;margin:0 0 8px}
+.gwhere{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 10px;font-size:14px}
+.gchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.gchips .chip{font:600 13px var(--body);border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer}.gchips .chip.on{background:#2f6b3f;color:#fff;border-color:#2f6b3f}
+.gtabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-bottom:10px;border-bottom:1px solid rgba(127,127,127,.3)}.gtabs button{flex:none;border:0;background:none;color:inherit;opacity:.7;padding:8px 10px;font:600 14px var(--body);border-bottom:3px solid transparent;cursor:pointer}.gtabs button.on{opacity:1;border-bottom-color:#f2542d}
+.gseas{width:100%;border-collapse:collapse;margin:6px 0 10px;font-size:14px}.gseas th{text-align:left;vertical-align:top;padding:6px 8px 6px 0;white-space:nowrap;width:1%}.gseas td{padding:6px 0;border-bottom:1px solid rgba(127,127,127,.2)}
+.gcards{display:grid;gap:10px}.gcard{display:grid;grid-template-columns:110px 1fr;gap:10px;border:1px solid rgba(127,127,127,.3);border-radius:12px;padding:10px;overflow:hidden}
+.gph{width:110px;height:110px;border-radius:8px;background:rgba(127,127,127,.15);overflow:hidden}.gph img{width:100%;height:100%;object-fit:cover;display:block}
+.gbody{min-width:0;font-size:13.5px;line-height:1.45}.gbody p{margin:4px 0}.guse{font-weight:600;color:#2f6b3f}.gtag{font-size:11px;background:#e0a526;color:#1f2a1f;border-radius:99px;padding:1px 7px;vertical-align:1px}
+@media (max-width:420px){.gcard{grid-template-columns:1fr}.gph{width:100%;height:160px}}
+.nlcdleg{display:flex;flex-wrap:wrap;gap:4px 10px;margin:4px 0}.nlcdleg span{display:inline-flex;align-items:center;gap:4px;font-size:12px}.nlcdleg i{width:12px;height:12px;border-radius:2px;display:inline-block;border:1px solid rgba(0,0,0,.2)}
 .landstat{border:1px solid var(--line,#d9d6c7);border-radius:12px;padding:12px;margin:8px 0 12px;background:rgba(127,127,100,.06)}
 .landstat .lsr{display:flex;gap:12px;align-items:center}.lsscore{flex:none;width:58px;height:58px;border-radius:50%;background:#2f6b3f;color:#fff;display:grid;place-items:center;line-height:1}
 .lsscore b{font:700 22px var(--display,inherit)}.lsscore small{font-size:11px;opacity:.85;margin-top:-10px}
@@ -477,6 +486,7 @@ h1 span{color:var(--blaze)}
     <nav role="tablist">
       <button role="tab" aria-selected="true" data-tab="rules" id="tab-rules">States</button>
       <button role="tab" aria-selected="false" data-tab="scan" id="tab-scan"><span class="tl">Spot finder</span><span class="ts">Spots</span></button>
+      <button role="tab" aria-selected="false" data-tab="guide" id="tab-guide">Guide</button>
       <button role="tab" aria-selected="false" data-tab="mine" id="tab-mine">My map</button>
       <button role="tab" aria-selected="false" data-tab="wx" id="tab-wx">Weather</button>
       <button role="tab" aria-selected="false" data-tab="trip" id="tab-trip">Trip</button>
@@ -500,6 +510,7 @@ h1 span{color:var(--blaze)}
       <h3>Lines</h3><div id="lineList"></div>
     </div>
     <div class="pane" id="pane-trip" hidden></div>
+    <div class="pane" id="pane-guide" hidden></div>
     <div class="pane" id="pane-acct" hidden></div>
     <div class="pane" id="pane-wx" hidden>
       <h2>Weather</h2>
@@ -909,8 +920,9 @@ const envStr = b => [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].map(v
 function showTab(t){
   if (!$("#pane-" + t)) t = "rules";
   document.querySelectorAll("nav button").forEach(x => x.setAttribute("aria-selected", x.dataset.tab === t));
-  ["rules","scan","mine","wx","trip","acct"].forEach(k => $("#pane-" + k).hidden = k !== t);
+  ["rules","scan","guide","mine","wx","trip","acct"].forEach(k => $("#pane-" + k).hidden = k !== t);
   if (window.__v8){ if (t === "acct") renderAcct(); drawDlBoxes(); }
+  if (t === "guide" && typeof renderGuide === "function") renderGuide();
   savePref({ tab: t });
   if (isPhone() && typeof sheetTo === "function" && sheetState === 0) sheetTo(1);
 }
@@ -4042,6 +4054,76 @@ const STATE_VIEW = { AL:[[32.8,-86.8],7], AK:[[63.5,-150],4], AZ:[[34.3,-111.7],
 new MutationObserver(() => document.body.classList.toggle("lyr-open", layersOpen())).observe($("#lyrPanel"), { attributes: true, attributeFilter: ["hidden"] });
 
 // States tab: one short section at a time instead of three pages of scrolling
+
+/* ===================== Field guide: species, cover and food, by ecoregion ===================== */
+const GUIDE = { db: null, region: null, regionKey: "", st: null, photos: new Map() };
+const guideDB = () => GUIDE.db || (GUIDE.db = fetch("data/guide.json?v=" + encodeURIComponent(APP_VERSION)).then(r => r.json()).catch(() => { GUIDE.db = null; return null; }));
+async function ecoAt(ll){
+  const q = new URLSearchParams({ geometry: `${ll.lng},${ll.lat}`, geometryType: "esriGeometryPoint", inSR: "4326", spatialRel: "esriSpatialRelIntersects", outFields: "NA_L3NAME,NA_L3CODE", returnGeometry: "false", f: "json" });
+  const j = await fetch("https://services2.arcgis.com/FiaPA4ga0iQKduv3/ArcGIS/rest/services/EPA_Level_III_Ecoregions/FeatureServer/0/query?" + q).then(r => r.json());
+  const a = j.features && j.features[0] && j.features[0].attributes; return a ? a.NA_L3NAME : null; }
+function guideRegion(db, name){ if (!name) return null; const n = name.toLowerCase();
+  const k = Object.keys(db.regions).find(k => n.includes(k.toLowerCase()) || k.toLowerCase().includes(n)); return k ? Object.assign({ key: k }, db.regions[k]) : null; }
+// NLCD land cover overlay (USGS NLCD 2021 via USDA FAS map service; ArcGIS export per tile)
+const NLCDLayer = L.TileLayer.extend({ getTileUrl(c){ const s = 20037508.342789244, n = 2 ** c.z, w = s * 2 / n;
+  const x0 = -s + c.x * w, y1 = s - c.y * w; const bb = [x0, y1 - w, x0 + w, y1].map(v => v.toFixed(2)).join(",");
+  return `https://geo.fas.usda.gov/arcgis2/rest/services/G_Land_Cover/NLCD/MapServer/export?bbox=${bb}&bboxSR=3857&imageSR=3857&size=256,256&format=png32&transparent=true&layers=show:2&f=image`; } });
+let nlcdLayer = new NLCDLayer("", { opacity: .55, maxZoom: 20, minZoom: 9, attribution: "Land cover: USGS NLCD 2021", zIndex: 6 });
+// If the USDA map service fails, fall back to MRLC's own GeoServer WMS for the same NLCD 2021 layer
+{ let errs = 0; nlcdLayer.on("tileerror", () => { if (++errs !== 4 || !map.hasLayer(nlcdLayer)) return;
+    const wms = L.tileLayer.wms("https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2021_Land_Cover_L48/wms", { layers: "NLCD_2021_Land_Cover_L48", format: "image/png", transparent: true, opacity: .55, minZoom: 9, maxZoom: 20, zIndex: 6, attribution: "Land cover: USGS NLCD 2021 (MRLC)" });
+    map.removeLayer(nlcdLayer); nlcdLayer = wms; wms.addTo(map); }); }
+function showCover(it){
+  if (!map.hasLayer(nlcdLayer)) nlcdLayer.addTo(map);
+  if (map.getZoom() < 12) map.setZoom(13);
+  const N = GUIDE.dbData.nlcd, cls = (it && it.nlcd) || [];
+  setInfo(`<b>Land cover: ${it ? esc(it.name) : "all classes"}</b><br>${cls.length ? "Look for these colors:" : "Colors on the map:"}
+    <div class="nlcdleg">${(cls.length ? cls : Object.keys(N)).map(k => N[k] ? `<span><i style="background:${N[k][1]}"></i>${esc(N[k][0])}</span>` : "").join("")}</div>
+    ${it && it.sat ? `<small>${esc(it.sat)}</small><br>` : ""}<button class="btn sm ghost" id="nlcdOff" style="margin-top:6px">Hide land cover</button>`);
+  const b = $("#nlcdOff"); if (b) b.onclick = () => { map.removeLayer(nlcdLayer); $("#infobox").hidden = true; };
+  if (isPhone()) sheetTo(0); }
+async function guidePhoto(el, title){
+  if (!title) return; let p = GUIDE.photos.get(title);
+  if (!p){ p = fetch("https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_"))).then(r => r.ok ? r.json() : null).catch(() => null); GUIDE.photos.set(title, p); }
+  const j = await p; if (!j || !el.isConnected) return;
+  const src = j.thumbnail && j.thumbnail.source, page = j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page;
+  el.innerHTML = src ? `<img src="${esc(src)}" alt="${esc(j.title || title)}" loading="lazy">` : "";
+  const cr = el.parentElement.querySelector(".gcred"); if (cr && page) cr.innerHTML = `Photo &amp; more: <a href="${esc(page)}" target="_blank" rel="noopener">Wikipedia ↗</a>`; }
+async function renderGuide(force){
+  const P = $("#pane-guide"); if (!P) return;
+  const db = await guideDB(); if (!db){ P.innerHTML = "<p class='meta'>Couldn't load the field guide (offline?).</p>"; return; }
+  GUIDE.dbData = db;
+  const c = map.getCenter(), key = c.lat.toFixed(2) + "," + c.lng.toFixed(2);
+  if (force || key !== GUIDE.regionKey){ GUIDE.regionKey = key;
+    P.innerHTML = `<h2>Field guide</h2><p class="meta"><span class="spin"></span> Finding your region…</p>`;
+    const [eco, cty] = await Promise.all([ecoAt(c).catch(() => null), countyAt(c).catch(() => null)]);
+    GUIDE.eco = eco; GUIDE.st = cty && cty.st; GUIDE.stName = cty && cty.state; GUIDE.region = guideRegion(db, eco); }
+  const sp = db.species[PREF.gSp] ? PREF.gSp : "deer", S = db.species[sp], secK = S.sections[PREF.gSec] ? PREF.gSec : "food", sec = S.sections[secK];
+  const st = GUIDE.st, R = GUIDE.region, rel = it => it.states === "*" || !st || (it.states || []).includes(st);
+  const regional = new Set(R ? R.items : []);
+  const ids = sec.items.filter(i => db.items[i] && rel(db.items[i])).sort((a, b) => regional.has(b) - regional.has(a));
+  const SEC = [["food","Food"],["water","Water"],["cover","Cover & bedding"],["movement","Movement"],["behavior","Behavior"]];
+  P.innerHTML = `<h2>Field guide</h2>
+    <div class="gwhere">📍 ${GUIDE.eco ? `<b>${esc(GUIDE.eco)}</b> ecoregion` : "Region unknown"}${GUIDE.stName ? " · " + esc(GUIDE.stName) : ""} <button class="btn sm ghost" id="gRefresh">Use map center</button></div>
+    <div class="gchips">${Object.entries(db.species).map(([k, v]) => `<button class="chip${k === sp ? " on" : ""}" data-sp="${k}">${esc(v.name)}</button>`).join("")}</div>
+    <div class="gtabs">${SEC.map(([k, l]) => `<button class="${k === secK ? "on" : ""}" data-sec="${k}">${l}</button>`).join("")}</div>
+    ${R ? `<div class="callout gregion"><b>${esc(R.key)}</b> ${esc(R.note)}${R[sp] ? `<br><b>${esc(S.name)} here:</b> ${esc(R[sp])}` : ""}</div>` : GUIDE.eco ? `<div class="callout">Regional notes for the ${esc(GUIDE.eco)} aren't written yet; the general guide below still applies.</div>` : ""}
+    ${sec.intro.map(p => `<p>${esc(p)}</p>`).join("")}
+    ${sec.seasons ? `<table class="gseas">${sec.seasons.map(r => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>` : ""}
+    ${ids.length ? `<h3>${secK === "food" ? "Foods to know" : "Cover and places to know"}${st ? " in " + esc(GUIDE.stName || st) : ""}</h3>` : ""}
+    <div class="gcards">${ids.map(i => { const it = db.items[i]; return `<div class="gcard" data-it="${i}">
+      <div class="gph"></div><div class="gbody"><b>${esc(it.name)}</b>${regional.has(i) ? ' <span class="gtag">Common here</span>' : ""}
+      ${it.use && it.use[sp] ? `<p class="guse">${esc(it.use[sp])}</p>` : ""}
+      <p><b>In the woods:</b> ${esc(it.ground)}</p><p><b>From satellite:</b> ${esc(it.sat)}</p>
+      <div class="row">${it.nlcd && it.nlcd.length ? `<button class="btn sm" data-show="${i}">Show on my map</button>` : ""}</div>
+      <div class="gcred meta"></div></div></div>`; }).join("")}</div>
+    <p class="meta" style="margin-top:12px">Sources: ${db.sources.map(([t, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`).join(" · ")}. Guide compiled ${esc(db.compiled)}.</p>`;
+  P.querySelectorAll("[data-sp]").forEach(b => b.onclick = () => { savePref({ gSp: b.dataset.sp }); renderGuide(); });
+  P.querySelectorAll("[data-sec]").forEach(b => b.onclick = () => { savePref({ gSec: b.dataset.sec }); renderGuide(); });
+  $("#gRefresh").onclick = () => renderGuide(true);
+  P.querySelectorAll("[data-show]").forEach(b => b.onclick = () => showCover(db.items[b.dataset.show]));
+  P.querySelectorAll(".gcard").forEach(c => guidePhoto(c.querySelector(".gph"), db.items[c.dataset.it].wiki));
+}
 // Public land by state: PAD-US 4.1 fee lands owned by federal, state and local government (tribal excluded), summed by state (Nov 2, 2026).
 // [public acres, acres open or restricted-open to the public, state land acres (Census), % public, rating 1-10]
 const LANDSTAT = {"AK":[401892564,321561476,365210240,100,10.0],"AL":[1353494,1344232,32412800,4.2,3.0],"AR":[3976678,3976678,33302400,11.9,5.0],"AZ":[39697848,39496065,72700160,54.6,10.0],"CA":[49717278,49317530,99698560,49.9,10.0],"CO":[27788388,25549990,66330880,41.9,9.5],"CT":[394846,46616,3098880,12.7,2.0],"DE":[209012,115703,1247360,16.8,2.5],"FL":[11189395,10249987,34320000,32.6,8.0],"GA":[3204772,3130309,36808320,8.7,4.5],"HI":[2296330,2259755,4110720,55.9,7.0],"IA":[896129,896066,35748480,2.5,2.5],"ID":[35747685,35622968,52891520,67.6,10.0],"IL":[1079843,1067468,35532160,3.0,2.5],"IN":[725732,725519,22928640,3.2,2.0],"KS":[474261,473930,52325760,0.9,1.5],"KY":[1653247,1618420,25271040,6.5,3.5],"LA":[3187918,3096365,27650560,11.5,4.5],"MA":[1023222,874330,4992000,20.5,4.0],"MD":[829529,290703,6212480,13.4,2.0],"ME":[2008722,632942,19739520,10.2,2.5],"MI":[6633655,6626753,36184960,18.3,6.0],"MN":[8825906,8825279,50961280,17.3,6.5],"MO":[2702192,2700463,43994880,6.1,4.0],"MS":[2695498,2641662,30030720,9.0,4.0],"MT":[33260626,33060408,93149440,35.7,9.5],"NC":[5080276,4040859,31115520,16.3,5.5],"ND":[3271575,3270639,44160640,7.4,4.5],"NE":[1084837,1072871,49167360,2.2,2.5],"NH":[1164519,856389,5729920,20.3,4.0],"NJ":[1718248,1712252,4706560,36.5,6.0],"NM":[33119738,33058959,77630720,42.7,10.0],"NV":[58735277,58573647,70259840,83.6,10.0],"NY":[5092694,4804020,30160640,16.9,5.5],"OH":[1070953,1033094,26151040,4.1,2.5],"OK":[4476998,4468825,43900800,10.2,5.0],"OR":[34662751,34530167,61432320,56.4,10.0],"PA":[5690091,5647297,28635520,19.9,6.0],"RI":[91693,19116,661760,13.9,2.0],"SC":[1545529,1499239,19239040,8.0,3.5],"SD":[4026673,4023331,48519040,8.3,4.5],"TN":[2126816,2122516,26390400,8.1,4.0],"TX":[7269641,4925245,167188480,4.3,4.5],"UT":[38776092,37323689,52588800,73.7,10.0],"VA":[3511874,3351531,25273600,13.9,5.0],"VT":[856059,799378,5898880,14.5,3.5],"WA":[16609557,16519546,42531840,39.1,9.0],"WI":[6057945,6049933,34661120,17.5,6.0],"WV":[1896139,1894658,15384320,12.3,4.0],"WY":[34090041,33340864,62139520,54.9,10.0]};
@@ -4146,7 +4228,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.6 (Nov 2, 2026)";
+const APP_VERSION = "17.7 (Nov 3, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
