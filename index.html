@@ -2269,7 +2269,7 @@ function landCard(ll){
   const el = document.createElement("div"); el.className = "landcard"; map.getContainer().appendChild(el); landCardEl = el;
   L.DomEvent.disableClickPropagation(el); L.DomEvent.disableScrollPropagation(el);
   landMark = L.circleMarker(ll, { radius: 8, color: "#fff", weight: 3, fillColor: "#f2542d", fillOpacity: 1, interactive: false }).addTo(map);
-  const card = { open: true, setContent(html){ if (!card.open) return; el.innerHTML = `<div class="lchd"><button class="lca" data-a="wpt">⚑ Waypoint</button><button class="lca" data-a="route">⤳ Route</button><button class="lca lcs" data-a="share" aria-label="Share a link to this spot">Share</button><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${html}</div>`;
+  const card = { open: true, _el: el, setContent(html){ if (!card.open) return; el.innerHTML = `<div class="lchd"><button class="lca" data-a="wpt">⚑ Waypoint</button><button class="lca" data-a="route">⤳ Route</button><button class="lca lcs" data-a="share" aria-label="Share a link to this spot">Share</button><button class="lcx" aria-label="Close">×</button></div><div class="lcb">${html}</div>`;
       el.querySelector(".lcx").onclick = closeLandCard; wireLandActs(el, ll, closeLandCard);
       const b = el.querySelector(".askland"), h4 = el.querySelector("h4"), cat = el.querySelector(".lpcat");
       clearTimeout(card._kt); card._kt = setTimeout(() => keepAbove(ll, el), 120);
@@ -2341,7 +2341,15 @@ async function privateCard(ll){
     <div class="lpcat"><span class="n">${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}</span>${isFinite(ft) ? ` · ${ft.toLocaleString()} ft` : ""}</div>${ownerHtml(c, ll)}
     <p class="meta" style="margin-top:6px">PAD-US doesn't show public land here. Small public tracts and recent purchases can be missing; check posted signs.</p>`);
   fetch(`https://epqs.nationalmap.gov/v1/json?x=${ll.lng}&y=${ll.lat}&units=Feet&wkid=4326`).then(r => r.json()).then(j => { ft = Math.round(+j.value); if (isFinite(ft) && c !== undefined) draw(); }).catch(() => {});
-  c = await countyAt(ll); draw();
+  c = await countyAt(ll);
+  // PAD-US can miss state lands; ask the state agency's own map before calling it private
+  if (c && (c.st === "MO" || c.st === "CO")){
+    let tp = null; try { tp = c.st === "MO" ? await mdcAt(ll) : await cpwAt(ll); } catch {}
+    if (tp && (tp.kind === "mdc" || tp.kind === "cpw") && landCardEl === card._el){
+      const fake = { Unit_Nm: tp.name, Mang_Name: c.st === "MO" ? "SDC" : "SFW", Mang_Type: "STAT", Own_Type: "STAT", Des_Tp: "SCA", State_Nm: c.st, GIS_Acres: tp.acres || 0, Pub_Access: "OA", _agency: true };
+      closeLandCard(); openLandPopup(ll, [fake]); return; }
+  }
+  draw();
 }
 async function pointInfo(ll){
   {
@@ -4117,7 +4125,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.4 (Nov 2, 2026)";
+const APP_VERSION = "17.5 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
