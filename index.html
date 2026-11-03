@@ -3833,8 +3833,15 @@ async function areaFor(main, others, tp){
           sections: [["This property's rules (W-9 #903)", hit ? hit.rules : ["No property-specific rules beyond the general ones below."]], ["All CPW-leased State Trust Lands (W-9 #902)", db ? db.stlGeneral : []]],
           src: [["CPW page: " + tp.name, tp.url], ["CPW Chapter W-9, 07/16/2026", db && db.w9]].filter(x => x[1]), compiled: db && db.compiled };
       }
+      // Per-property rules from W-9 #901 (287 properties), matched on the CPW layer's property name
+      const swaKey = n => nm(String(n || "").replace(/\s+[–-]\s+[^–-]*$/, "").replace(/\s*\([^)]*\)/g, "")
+        .replace(/\b(State Wildlife Areas?|State Wildlife Fishing Easement|State Wildlife|Watchable Wildlife Area|Wildlife Area|Conservation Easement|Hunting Easement|SWA|SFU|STL|SAA|WWA|Shooting Range|Access Road|Fishing Easement|Fishing Lease|Easement|Lease)\b/gi, ""));
+      const k1 = swaKey(tp.name), k0 = (db && db.swaAlias && db.swaAlias[k1]) || k1, sw = db && db.swa ? (db.swa[k0] || Object.entries(db.swa).filter(([k]) => k0 && (k.startsWith(k0 + " ") || k0.startsWith(k + " "))).map(x => x[1])[0]) : null;
+      if (sw) return { title: sw.name.replace(/\s+[–-]\s+[^–-]*$/, ""), verdict: sw.verdict,
+        sections: [["This property's rules (CPW W-9 #901)", sw.rules], ["All State Wildlife Areas", db.swaGeneral]],
+        src: [["CPW page: " + tp.name, tp.url], ["CPW Chapter W-9 #901, 07/16/2026 (PDF)", db.w9]].filter(x => x[1]), compiled: db.compiled };
       if (/SWA|SAA|WWA|Hunting Access/i.test(tp.type)) return { title: tp.name, verdict: ["permit", "License or SWA pass required", "Everyone 16+ needs a hunting or fishing license or a State Wildlife Area pass. Each SWA has its own access dates and restrictions."],
-        sections: [["State Wildlife Areas", db ? db.swaGeneral : []]], note: "This SWA's specific W-9 restrictions are on its CPW page (they're being added to PublicScout next).",
+        sections: [["State Wildlife Areas", db ? db.swaGeneral : []]], note: "This property isn't listed with its own rules in CPW Chapter W-9 #901, so only the general State Wildlife Area rules (#900) apply. Check its CPW page for posted closures.",
         src: [["CPW page: " + tp.name, tp.url], ["CPW Chapter W-9, 07/16/2026", db && db.w9]].filter(x => x[1]) };
     }
   }
@@ -4091,7 +4098,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "16.8 (Nov 2, 2026)";
+const APP_VERSION = "16.9 (Nov 2, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
