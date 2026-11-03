@@ -106,5 +106,113 @@
  },
  "Post Oak Savannah": {
   "missing": true
+ },
+ "Callicarpa americana": {
+  "slug": "Callicarpa_americana",
+  "page": "https://en.wikipedia.org/wiki/Callicarpa_americana",
+  "file": "https://commons.wikimedia.org/wiki/File:Callicarpa_americana_infructescence.jpg",
+  "artist": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.inaturalist.org/users/alex_abair\">Alex Abair</a>",
+  "license": "CC BY 4.0"
+ },
+ "Diospyros virginiana": {
+  "slug": "Diospyros_virginiana",
+  "page": "https://en.wikipedia.org/wiki/Diospyros_virginiana",
+  "file": "https://commons.wikimedia.org/wiki/File:Diospyros_virginiana-fruit.jpg",
+  "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Peterwchen\" title=\"User:Peterwchen\">Peterwchen</a>",
+  "license": "CC BY-SA 4.0"
+ },
+ "Gleditsia triacanthos": {
+  "slug": "Gleditsia_triacanthos",
+  "page": "https://en.wikipedia.org/wiki/Honey_locust",
+  "file": "https://commons.wikimedia.org/wiki/File:Gleditsia_triacanthos_(Honeylocust)_(38246396371).jpg",
+  "artist": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/138014579@N08\">Plant Image Library</a> from Boston, USA",
+  "license": "CC BY-SA 2.0"
+ },
+ "Schizachyrium scoparium": {
+  "slug": "Schizachyrium_scoparium",
+  "page": "https://en.wikipedia.org/wiki/Schizachyrium_scoparium",
+  "file": "https://commons.wikimedia.org/wiki/File:Andropogon_scoparius.jpg",
+  "artist": "",
+  "license": "Public domain"
+ },
+ "Bromus catharticus": {
+  "slug": "Bromus_catharticus",
+  "page": "https://en.wikipedia.org/wiki/Bromus_catharticus",
+  "file": "https://commons.wikimedia.org/wiki/File:Starr_080418-4233_Bromus_catharticus.jpg",
+  "artist": "<a rel=\"nofollow\" class=\"external text\" href=\"http://www.hear.org/starr/\">Forest &amp; Kim Starr</a>",
+  "license": "CC BY 3.0"
+ },
+ "Ilex decidua": {
+  "slug": "Ilex_decidua",
+  "page": "https://en.wikipedia.org/wiki/Ilex_decidua",
+  "file": "https://commons.wikimedia.org/wiki/File:Ilex_decidua_4.jpg",
+  "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Eric_in_SF\" title=\"User:Eric in SF\">Eric Hunt</a>",
+  "license": "CC BY-SA 4.0"
+ },
+ "Juniperus virginiana": {
+  "slug": "Juniperus_virginiana",
+  "page": "https://en.wikipedia.org/wiki/Juniperus_virginiana",
+  "file": "https://commons.wikimedia.org/wiki/File:2014-05-13_08_32_55_Eastern_Red_Cedar_at_South_Riding_Golf_Club_in_South_Riding,_Virginia.JPG",
+  "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Famartin\" title=\"User:Famartin\">Famartin</a>",
+  "license": "CC BY-SA 3.0"
+ },
+ "Vitis mustangensis": {
+  "slug": "Vitis_mustangensis",
+  "page": "https://en.wikipedia.org/wiki/Vitis_mustangensis",
+  "file": "https://commons.wikimedia.org/wiki/File:Vitis_mustangensis.jpg",
+  "artist": "<a href=\"https://en.wikipedia.org/wiki/User:Ddal\" class=\"extiw\" title=\"en:User:Ddal\">Ddal</a>",
+  "license": "CC BY-SA 3.0"
+ },
+ "Oak savanna": {
+  "slug": "Oak_savanna",
+  "page": "https://en.wikipedia.org/wiki/Oak_savanna",
+  "file": "https://commons.wikimedia.org/wiki/File:North_Slope_Santa_Ynez_Mtns.jpg",
+  "artist": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Clyde_frogg&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:Clyde frogg (page does not exist)\">Clyde frogg</a>",
+  "license": "Public domain"
+ },
+ "Old field (ecology)": {
+  "missing": true
+ },
+ "Wallow": {
+  "slug": "Wallow",
+  "page": "https://en.wikipedia.org/wiki/Wallowing",
+  "file": "https://commons.wikimedia.org/wiki/File:Mud_buffalo.jpg",
+  "artist": "Dror Feitelson",
+  "license": "CC BY-SA 3.0"
+ },
+ "Ambrosia trifida": {
+  "slug": "Ambrosia_trifida",
+  "page": "https://en.wikipedia.org/wiki/Ambrosia_trifida",
+  "file": "https://commons.wikimedia.org/wiki/File:Ambrosia_trifida_(inflorescences).jpg",
+  "artist": "<a href=\"//commons.wikimedia.org/wiki/User:Le.Loup.Gris\" title=\"User:Le.Loup.Gris\">Le.Loup.Gris</a>",
+  "license": "CC BY-SA 3.0"
+ },
+ "Wild boar": {
+  "slug": "Wild_boar",
+  "page": "https://en.wikipedia.org/wiki/Wild_boar",
+  "file": "https://commons.wikimedia.org/wiki/File:Wildschwein,_N%C3%A4he_Pulverstampftor_(cropped).jpg",
+  "artist": "<a href=\"//commons.wikimedia.org/w/index.php?title=User:Valelantin&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:Valelantin (page does not exist)\">Valentin Panzirsch</a>",
+  "license": "CC BY-SA 3.0 at"
+ },
+ "White-tailed deer": {
+  "slug": "White_tailed_deer",
+  "page": "https://en.wikipedia.org/wiki/White-tailed_deer",
+  "file": "https://commons.wikimedia.org/wiki/File:White-tailed_deer.jpg",
+  "artist": "USDA photo by Scott Bauer",
+  "license": "Public domain"
+ },
+ "Persimmon": {
+  "slug": "Persimmon",
+  "page": "https://en.wikipedia.org/wiki/Persimmon",
+  "file": "https://commons.wikimedia.org/wiki/File:Fuyu_persimmon_fruits,_one_cut_open.jpg",
+  "artist": "<bdi><a href=\"https://www.wikidata.org/wiki/Q57175365\" class=\"extiw\" title=\"d:Q57175365\"><span title=\"German-American photographer, Wikipedian, and Executive Director of the Wiki Education Foundation\">Frank Schulenburg</span></a></bdi>",
+  "license": "CC BY-SA 4.0"
+ },
+ "Honey locust": {
+  "slug": "Honey_locust",
+  "page": "https://en.wikipedia.org/wiki/Honey_locust",
+  "file": "https://commons.wikimedia.org/wiki/File:Gleditsia_triacanthos_(Honeylocust)_(38246396371).jpg",
+  "artist": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/138014579@N08\">Plant Image Library</a> from Boston, USA",
+  "license": "CC BY-SA 2.0"
  }
 }
