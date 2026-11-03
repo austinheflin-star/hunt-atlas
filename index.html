@@ -2367,14 +2367,16 @@ async function privateCard(ll){
   fetch(`https://epqs.nationalmap.gov/v1/json?x=${ll.lng}&y=${ll.lat}&units=Feet&wkid=4326`).then(r => r.json()).then(j => { ft = Math.round(+j.value); if (isFinite(ft) && c !== undefined) draw(); }).catch(() => {});
   c = await countyAt(ll);
   // PAD-US can miss state lands; ask the state agency's own map before calling it private
-  if (c && (c.st === "MO" || c.st === "CO")){
-    let tp = null; try { tp = c.st === "MO" ? await mdcAt(ll) : await cpwAt(ll); } catch {}
-    if (tp && (tp.kind === "mdc" || tp.kind === "cpw") && landCardEl === card._el){
-      const fake = { Unit_Nm: tp.name, Mang_Name: c.st === "MO" ? "SDC" : "SFW", Mang_Type: "STAT", Own_Type: "STAT", Des_Tp: "SCA", State_Nm: c.st, GIS_Acres: tp.acres || 0, Pub_Access: "OA", _agency: true };
-      closeLandCard(); openLandPopup(ll, [fake]); return; }
-  }
+  const ag = await agencyFeat(ll, c);
+  if (ag && landCardEl === card._el){ closeLandCard(); openLandPopup(ll, [ag]); return; }
   draw();
 }
+// PAD-US can miss state lands: ask the state agency's own map (Missouri MDC, Colorado CPW) before treating a spot as unmapped
+async function agencyFeat(ll, c){
+  if (!c || (c.st !== "MO" && c.st !== "CO")) return null;
+  let tp = null; try { tp = c.st === "MO" ? await mdcAt(ll) : await cpwAt(ll); } catch {}
+  if (!tp || (tp.kind !== "mdc" && tp.kind !== "cpw")) return null;
+  return { Unit_Nm: tp.name, Mang_Name: c.st === "MO" ? "SDC" : "SFW", Mang_Type: "STAT", Own_Type: "STAT", Des_Tp: "SCA", State_Nm: c.st, GIS_Acres: tp.acres || 0, Pub_Access: "OA", _agency: true }; }
 async function pointInfo(ll){
   {
     const { lat, lng } = ll;
@@ -2384,7 +2386,9 @@ async function pointInfo(ll){
       const r = await fetch(`https://epqs.nationalmap.gov/v1/json?x=${lng}&y=${lat}&units=Feet&wkid=4326`);
       const j = await r.json(); const ft = Math.round(+j.value);
       setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span><br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${hint}`);
-      const c = await countyAt(ll); if (c && !$("#infobox").hidden && $("#infobox").textContent.includes(lat.toFixed(5))) setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span> · ${esc(c.county)}<br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${ownerHtml(c, ll)}${hint}`);
+      const c = await countyAt(ll);
+      if (!featsAt(ll).length){ const ag = await agencyFeat(ll, c); if (ag && $("#infobox").textContent.includes(lat.toFixed(5))){ $("#infobox").hidden = true; openLandPopup(ll, [ag]); return; } }
+      if (c && !$("#infobox").hidden && $("#infobox").textContent.includes(lat.toFixed(5))) setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span> · ${esc(c.county)}<br>Elevation: <span class="n">${isFinite(ft) ? ft.toLocaleString() + " ft" : "n/a"}</span>${ownerHtml(c, ll)}${hint}`);
     } catch { setInfo(`<b>Point</b><br><span class="n">${lat.toFixed(5)}, ${lng.toFixed(5)}</span>`); }
   }
 }
@@ -4240,7 +4244,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.9.1 (Nov 3, 2026)";
+const APP_VERSION = "17.9.2 (Nov 3, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
