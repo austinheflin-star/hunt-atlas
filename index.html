@@ -4084,11 +4084,18 @@ function showCover(it){
   if (isPhone()) sheetTo(0); }
 async function guidePhoto(el, title){
   if (!title) return; let p = GUIDE.photos.get(title);
-  if (!p){ p = fetch("https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_"))).then(r => r.ok ? r.json() : null).catch(() => null); GUIDE.photos.set(title, p); }
+  if (!p){ p = /^File:/.test(title)
+      // A specific Wikimedia Commons photo (used where no Wikipedia article has a good picture, e.g. deer rubs or hog rooting)
+      ? fetch("https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&prop=imageinfo&iiprop=url|extmetadata&iiextmetadatafilter=Artist|LicenseShortName&iiurlwidth=480&titles=" + encodeURIComponent(title))
+          .then(r => r.ok ? r.json() : null).then(j => { const pg = j && Object.values(j.query.pages)[0], ii = pg && pg.imageinfo && pg.imageinfo[0]; if (!ii) return null;
+            const m = ii.extmetadata || {}, who = ((m.Artist && m.Artist.value) || "").replace(/<[^>]+>/g, "").trim();
+            return { title: title.slice(5), thumbnail: { source: ii.thumburl || ii.url }, content_urls: { desktop: { page: ii.descriptionurl } }, credit: [who, m.LicenseShortName && m.LicenseShortName.value].filter(Boolean).join(", ") }; }).catch(() => null)
+      : fetch("https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_"))).then(r => r.ok ? r.json() : null).catch(() => null);
+    GUIDE.photos.set(title, p); }
   const j = await p; if (!j || !el.isConnected) return;
   const src = j.thumbnail && j.thumbnail.source, page = j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page;
   el.innerHTML = src ? `<img src="${esc(src)}" alt="${esc(j.title || title)}" loading="lazy">` : "";
-  const cr = el.parentElement.querySelector(".gcred"); if (cr && page) cr.innerHTML = `Photo &amp; more: <a href="${esc(page)}" target="_blank" rel="noopener">Wikipedia ↗</a>`; }
+  const cr = el.parentElement.querySelector(".gcred"); if (cr && page) cr.innerHTML = j.credit !== undefined ? `Photo${j.credit ? ": " + esc(j.credit.slice(0, 80)) : ""} · <a href="${esc(page)}" target="_blank" rel="noopener">Wikimedia Commons ↗</a>` : `Photo &amp; more: <a href="${esc(page)}" target="_blank" rel="noopener">Wikipedia ↗</a>`; }
 async function renderGuide(force){
   const P = $("#pane-guide"); if (!P) return;
   const db = await guideDB(); if (!db){ P.innerHTML = "<p class='meta'>Couldn't load the field guide (offline?).</p>"; return; }
@@ -4110,11 +4117,11 @@ async function renderGuide(force){
     ${R ? `<div class="callout gregion"><b>${esc(R.key)}</b> ${esc(R.note)}${R[sp] ? `<br><b>${esc(S.name)} here:</b> ${esc(R[sp])}` : ""}</div>` : GUIDE.eco ? `<div class="callout">Regional notes for the ${esc(GUIDE.eco)} aren't written yet; the general guide below still applies.</div>` : ""}
     ${sec.intro.map(p => `<p>${esc(p)}</p>`).join("")}
     ${sec.seasons ? `<table class="gseas">${sec.seasons.map(r => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>` : ""}
-    ${ids.length ? `<h3>${({ food: "Foods to know", water: "Water to look for", movement: "Places that shape movement" })[secK] || "Cover and places to know"}${st ? " in " + esc(GUIDE.stName || st) : ""}</h3>` : ""}
+    ${ids.length ? `<h3>${({ food: "Foods to know", water: "Water to look for", movement: "Places that shape movement", behavior: "Sign to look for" })[secK] || "Cover and places to know"}${st ? " in " + esc(GUIDE.stName || st) : ""}</h3>` : ""}
     <div class="gcards">${ids.map(i => { const it = db.items[i]; return `<div class="gcard" data-it="${i}">
       <div class="gph"></div><div class="gbody"><b>${esc(it.name)}</b>${regional.has(i) ? ' <span class="gtag">Common here</span>' : ""}
       ${it.use && it.use[sp] ? `<p class="guse">${esc(it.use[sp])}</p>` : ""}
-      <p><b>In the woods:</b> ${esc(it.ground)}</p><p><b>From satellite:</b> ${esc(it.sat)}</p>
+      <p><b>In the woods:</b> ${esc(it.ground)}</p>${it.sat ? `<p><b>From satellite:</b> ${esc(it.sat)}</p>` : ""}
       <div class="row">${it.nlcd && it.nlcd.length ? `<button class="btn sm" data-show="${i}">Show on my map</button>` : ""}</div>
       <div class="gcred meta"></div></div></div>`; }).join("")}</div>
     <p class="meta" style="margin-top:12px">Sources: ${db.sources.map(([t, u]) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`).join(" · ")}. Guide compiled ${esc(db.compiled)}.</p>`;
@@ -4228,7 +4235,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "17.8 (Nov 3, 2026)";
+const APP_VERSION = "17.9 (Nov 3, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
