@@ -5,7 +5,9 @@ def get(u, tries=5):
         try:
             with urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=60) as r: return r.read()
         except Exception as e:
-            print("retry", u[:120], e); time.sleep(8)
+            ra = getattr(e, "headers", None) and e.headers.get("Retry-After")
+            w = int(ra) if ra and ra.isdigit() else 30 * (i + 1)
+            print("retry", u[:120], e, "wait", w); time.sleep(min(w, 120))
     return None
 os.makedirs("out/sat", exist_ok=True); os.makedirs("out/photo", exist_ok=True)
 # Nails Creek compartment boundary (TPWD unit 711, simplified)
@@ -58,7 +60,8 @@ for t in TITLES:
             ii = list(json.loads(d2)["query"]["pages"].values())[0].get("imageinfo", [{}])[0]
             em = ii.get("extmetadata", {})
             lic = {"artist": em.get("Artist", {}).get("value", ""), "license": em.get("LicenseShortName", {}).get("value", ""), "file": ii.get("descriptionurl", "")}
+    json.dump(meta, open("out/photo/meta.json", "w"), indent=1)
     meta[t] = {"slug": slug, "page": pg.get("fullurl"), "file": fn, **lic}
-    time.sleep(2)
+    time.sleep(6)
 json.dump(meta, open("out/photo/meta.json", "w"), indent=1)
-print("done", len(chips), "chips", len(meta), "photos")
+print("done", len(meta), "photos")
