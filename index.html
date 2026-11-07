@@ -3705,7 +3705,7 @@ function signPrompt(S, F, st){
 }
 $("#btnSign").onclick = readSign;
 $("#btnSignClear").onclick = () => { signLayer.clearLayers(); $("#signReport").innerHTML = ""; };
-renderLearn(); renderTrip(); renderThick();
+renderLearn(); renderTrip(); setTimeout(renderThick, 0);
 
 
 /* ---------- Help: quick start + every source the app relies on ---------- */
