@@ -154,6 +154,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .item .dot{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 10px var(--mono);flex:none}
 .item .t{flex:1;min-width:0}.item .t small{display:block;color:var(--muted);font-size:12px}
 .item .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px}
+.thick{border:1px solid #c9d8c0;background:#f3f8ef;border-radius:10px;padding:8px 12px;margin:8px 0 12px;color:#1f2a1f}.thick summary{font-weight:800;cursor:pointer;font-size:15px}.thick ol{padding-left:20px;margin:8px 0}.thick li{margin:6px 0;line-height:1.4}.thb p{line-height:1.45}.thbtn{flex-wrap:wrap;gap:6px}
 .wmk{overflow:visible}.wpt2{width:30px;height:30px;box-sizing:border-box;border-radius:50%;border:3px solid #7a5ea8;background:#fff;display:grid;place-items:center;font:16px/1 system-ui,"Apple Color Emoji","Segoe UI Emoji",sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.55)}
 .wlbl{position:absolute;left:50%;top:32px;transform:translateX(-50%);white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis;font:700 12px/1.2 var(--body);color:#fff;text-shadow:0 0 3px #000,0 0 3px #000,0 0 2px #000;pointer-events:none}
 .wlbl-off .wlbl{display:none}
@@ -534,9 +535,11 @@ h1 span{color:var(--blaze)}
     <div class="pane" id="pane-scan" hidden>
       <h2>Spot finder</h2>
       <p>Zoom into an area (county scale or closer), then scan. It reads the USGS elevation model, roads, trails and water for everything in view, scores each 25–35 m cell for your species, and pins the best spots on public land.</p>
+      <div id="thickTips"></div>
       <label for="species">Species</label>
       <select id="species">
         <option value="whitetail">Whitetail deer</option>
+        <option value="thick">Whitetail: thick woods, no bait</option>
         <option value="mule">Mule deer</option>
         <option value="elk">Elk</option>
         <option value="turkey">Turkey</option>
@@ -1786,6 +1789,8 @@ map.on("moveend", refreshPad);
 /* ---------- Spot finder ---------- */
 const SPECIES = {
   whitetail: { saddle:1.0, bench:.9, ridge:.5, drain:.7, north:.2, water:.5, remote:1.0, flat:.3, edge:.7, corner:.8, pinch:1.0, food:.6, cover:.8, crossing:.6, leeward:.6, young:.7, remoteFar:1400, label:"whitetail" },
+  // Thick pine-hardwood public land with no bait (East Texas, Louisiana, Arkansas, the Southeast): creek bottoms, crossings, cut and burn edges, funnels and distance from roads matter most; ridges and slopes barely exist
+  thick:     { saddle:.4, bench:.4, ridge:.3, drain:1.1, north:0, water:.6, remote:1.3, flat:.4, edge:1.0, corner:.9, pinch:1.1, food:.4, cover:1.0, crossing:1.1, leeward:.2, young:1.2, remoteFar:800, label:"whitetail" },
   mule:      { saddle:.7, bench:.8, ridge:1.0, drain:.3, north:.6, water:.4, remote:1.0, flat:0, edge:.3, corner:.2, pinch:.4, food:.5, cover:.5, crossing:.2, leeward:.8, young:.7, remoteFar:1800 },
   elk:       { saddle:1.0, bench:1.0, ridge:.4, drain:.5, north:1.0, water:.9, remote:1.5, flat:0, edge:.4, corner:.2, pinch:.5, food:.7, cover:.9, crossing:.3, leeward:.5, young:.8, remoteFar:2500 },
   turkey:    { saddle:.3, bench:.8, ridge:.7, drain:.3, north:0, water:.8, remote:.7, flat:.6, edge:.9, corner:.5, pinch:.3, food:.9, cover:.2, crossing:.3, leeward:.1, young:.6, remoteFar:1000 },
@@ -1874,7 +1879,7 @@ async function overpass(b, only){
 
 function setStatus(t){ $("#scanStatus").textContent = t; }
 
-const SP_NAME = { whitetail: "whitetail deer", mule: "mule deer", elk: "elk", turkey: "turkeys", hog: "feral hogs", duck: "ducks" };
+const SP_NAME = { thick: "whitetail deer in thick woods", whitetail: "whitetail deer", mule: "mule deer", elk: "elk", turkey: "turkeys", hog: "feral hogs", duck: "ducks" };
 const WHY = {
   saddle: s => `<b>Saddle.</b> This is a low dip in a ridge. ${s === "elk" || s === "mule" ? "Elk and mule deer" : "Deer"} cross ridges through saddles because it's the easiest climb, so trails from both sides funnel through here.`,
   bench: s => `<b>Bench.</b> A flat shelf on a steep slope. ${s === "turkey" ? "Turkeys strut and feed on flat ground near roosts." : "Animals bed and travel along benches because the walking is easy and they can watch downhill."}`,
@@ -3162,7 +3167,7 @@ const dest = (a, br, d) => { const r = 6371e3, dd = d / r, b = br * Math.PI / 18
   const f2 = Math.asin(Math.sin(f1) * Math.cos(dd) + Math.cos(f1) * Math.sin(dd) * Math.cos(b)); const l2 = l1 + Math.atan2(Math.sin(b) * Math.sin(dd) * Math.cos(f1), Math.cos(dd) - Math.sin(f1) * Math.sin(f2)); return L.latLng(f2 * 180 / Math.PI, l2 * 180 / Math.PI); };
 // No study has measured how far a deer can smell a person. These ranges follow hunter field reports (deer winding
 // hunters at roughly 300–600+ yd, elk at a mile or more), scaled for wind and humidity. Treat them as estimates.
-const NOSE = { whitetail: 400, mule: 450, elk: 750, hog: 350, turkey: 0, duck: 0 };
+const NOSE = { thick: 400, whitetail: 400, mule: 450, elk: 750, hog: 350, turkey: 0, duck: 0 };
 function scentModel(mph, rh, rain, spKey){
   const base = NOSE[spKey] ?? 400;
   const wf = mph < 2 ? .45 : mph < 5 ? 1 : mph < 10 ? 1.1 : mph < 15 ? .9 : .65;
@@ -3323,7 +3328,7 @@ $("#btnLogCsv").onclick = () => {
 
 /* ---------- Remember the setup ---------- */
 map.on("moveend", () => { const c = map.getCenter(); savePref({ c: [+c.lat.toFixed(5), +c.lng.toFixed(5)], z: map.getZoom() }); });
-$("#species").onchange = () => savePref({ species: $("#species").value });
+$("#species").onchange = () => { savePref({ species: $("#species").value }); renderThick(); };
 if (PREF.species && SPECIES[PREF.species]) $("#species").value = PREF.species;
 applyTheme(PREF.theme || "auto");
 
@@ -3699,7 +3704,7 @@ function signPrompt(S, F, st){
 }
 $("#btnSign").onclick = readSign;
 $("#btnSignClear").onclick = () => { signLayer.clearLayers(); $("#signReport").innerHTML = ""; };
-renderLearn(); renderTrip();
+renderLearn(); renderTrip(); renderThick();
 
 
 /* ---------- Help: quick start + every source the app relies on ---------- */
@@ -4279,6 +4284,28 @@ async function guidePhoto(el, title){
   const src = j.thumbnail && j.thumbnail.source, page = j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page;
   el.innerHTML = src ? `<img src="${esc(src)}" alt="${esc(j.title || title)}" loading="lazy">` : "";
   const cr = el.parentElement.querySelector(".gcred"); if (cr && page) cr.innerHTML = j.credit !== undefined ? `Photo${j.credit ? ": " + esc(j.credit.slice(0, 80)) : ""} · <a href="${esc(page)}" target="_blank" rel="noopener">Wikimedia Commons ↗</a>` : `Photo &amp; more: <a href="${esc(page)}" target="_blank" rel="noopener">Wikipedia ↗</a>`; }
+/* ---------- Thick woods, no bait: how to find deer when there are no clearings to watch ---------- */
+function thickTipsHtml(open){ return `<details class="thick"${open ? " open" : ""}><summary>🌲 Thick woods, no bait: how to find deer</summary><div class="thb">
+  <p>Most public land in East Texas and the Southeast (Sam Houston, Davy Crockett, Angelina and Sabine national forests, Kisatchie, the Ouachita) is pine and hardwood thicket with no feeders and few clearings. Deer there don't come to an opening. You find them where the woods change, where they have to cross, and where hunters don't go.</p>
+  <ol>
+  <li><b>Stop hunting for clearings; hunt where the woods change.</b> The edge where a young clearcut or a 1–3-year-old burn meets older timber, the strip of hardwoods along a creek running through pine plantation, and a thinned stand next to an unthinned one. Deer bed in the thick side and feed along the edge.</li>
+  <li><b>Find the food that's dropping now.</b> Without bait, the oak that's dropping acorns <i>is</i> your feeder. White oaks and post oaks drop first; red oaks (water, willow, southern red) later and last longer. Also yaupon, greenbrier, beautyberry, honeysuckle and persimmon. Walk the creek bottoms and look for caps and chewed acorns, then look for the trails coming to them.</li>
+  <li><b>Hardwood bottoms show on the map.</b> Turn on the land cover overlay: in the pine woods, the light-green "deciduous" strips winding through dark-green "evergreen" are the hardwood creek bottoms with the acorns.</li>
+  <li><b>Burns and timber cuts are deer magnets.</b> Fresh green browse grows on a burn for a few years, and a clearcut turns into bedding thicket at 3–8 years. Turn on Recent burns and Timber harvest; national forests burn a lot of land every year.</li>
+  <li><b>Funnels in flat woods.</b> With no hills, travel is shaped by water and thickets: creek crossings (shallow spots and fallen-log crossings), the narrow neck where two drainages head close together, the tip of a thicket, and the one or two spots where trails cross a pipeline, power line or firebreak. Those crossings get used again and again.</li>
+  <li><b>Get away from the roads, or hunt where others skip.</b> GPS studies of public-land hunters found most stay close to roads and trails. Walk farther than everyone else, use a creek or a cut line to slip in quietly, or hunt the ugly thicket right by the road that hunters walk past.</li>
+  <li><b>Set up for 20 yards, not 200.</b> In thick woods you sit where several trails meet, not where you can see far. Use natural gaps for shooting lanes: cutting or damaging live trees and plants is prohibited on national forests, and many state areas ban it too. Check the area's rules for screw-in steps and leaving stands overnight.</li>
+  <li><b>Stalking in the thick.</b> Move only when the wind is in your face, on damp leaves or windy days. Take a few steps, then stop longer than you walk. Look for pieces of a deer (a flat back line, a leg, an ear flick, the white of a throat patch) with binoculars, even at 40 yards.</li>
+  <li><b>Read the sign, then let the app read it too.</b> Rub lines and scrapes along thicket edges and old logging roads, tracks in the mud at crossings, beds on the high spots in the bottoms. Drop a waypoint at each one, set its type, and tap <i>Read my sign</i> in My map.</li>
+  </ol>
+  <div class="row thbtn"><button class="btn sm" data-thick="scan">Scan this view for thick-woods spots</button><button class="btn sm ghost" data-thick="cover">Show hardwood bottoms</button><button class="btn sm ghost" data-thick="young">Show burns &amp; cuts</button></div>
+  <p class="meta">Sources: Mississippi State GPS bedding study; Penn State hunter-distribution study; U.S. Forest Service rules (36 CFR 261.6, damaging trees and plants).</p></div></details>`; }
+function renderThick(){ const el = $("#thickTips"); if (el) el.innerHTML = thickTipsHtml($("#species").value === "thick"); }
+document.addEventListener("click", ev => { const b = ev.target.closest && ev.target.closest("[data-thick]"); if (!b) return; ev.preventDefault();
+  const a = b.dataset.thick;
+  if (a === "scan"){ $("#species").value = "thick"; savePref({ species: "thick" }); showTab("scan"); renderThick(); if (map.getZoom() < 12){ setStatus("Zoom to level 12 or closer (a few miles across), then tap Scan this view."); return; } scan(); }
+  else if (a === "cover"){ if (typeof showCover === "function") showCover({ nlcd: ["41", "42", "43", "52", "90"], sat: "Light green strips (deciduous) inside dark green (evergreen) are hardwood bottoms. Tan (shrub/scrub) patches are young cuts and burns: bedding thickets." }); if (isPhone()) sheetTo(0); }
+  else if (a === "young"){ layerOn("burns", true); layerOn("harvest", true); if (map.getZoom() < 10) map.setZoom(11); setInfo("<b>Recent burns and timber cuts are on</b><br>Burns 1–3 years old grow fresh browse; cuts 3–8 years old become thick bedding cover. Hunt their edges."); if (isPhone()) sheetTo(0); } }, true);
 async function renderGuide(force){
   const P = $("#pane-guide"); if (!P) return;
   const db = await guideDB(); if (!db){ P.innerHTML = "<p class='meta'>Couldn't load the field guide (offline?).</p>"; return; }
@@ -4298,6 +4325,7 @@ async function renderGuide(force){
     <div class="gchips">${Object.entries(db.species).map(([k, v]) => `<button class="chip${k === sp ? " on" : ""}" data-sp="${k}">${esc(v.name)}</button>`).join("")}</div>
     <div class="gtabs">${SEC.map(([k, l]) => `<button class="${k === secK ? "on" : ""}" data-sec="${k}">${l}</button>`).join("")}</div>
     ${R ? `<div class="callout gregion"><b>${esc(R.key)}</b> ${esc(R.note)}${R[sp] ? `<br><b>${esc(S.name)} here:</b> ${esc(R[sp])}` : ""}</div>` : GUIDE.eco ? `<div class="callout">Regional notes for the ${esc(GUIDE.eco)} aren't written yet; the general guide below still applies.</div>` : ""}
+    ${sp === "deer" ? thickTipsHtml(false) : ""}
     ${sec.intro.map(p => `<p>${esc(p)}</p>`).join("")}
     ${sec.seasons ? `<table class="gseas">${sec.seasons.map(r => `<tr><th>${esc(r[0])}</th><td>${esc(r[1])}</td></tr>`).join("")}</table>` : ""}
     ${ids.length ? `<h3>${({ food: "Foods to know", water: "Water to look for", movement: "Places that shape movement", behavior: "Sign to look for" })[secK] || "Cover and places to know"}${st ? " in " + esc(GUIDE.stName || st) : ""}</h3>` : ""}
