@@ -17,13 +17,8 @@ for k, w in units.items():
     g = q(1, where=w)
     if not g or not g.get("features"): print("no unit", k, g and str(g)[:300]); continue
     json.dump(g, open(O + k + "_unit.json", "w")); print(k, [f["properties"].get("LoName") for f in g["features"]])
-    xs, ys = [], []
-    for f in g["features"]:
-        geo = f["geometry"]; polys = geo["coordinates"] if geo["type"] == "MultiPolygon" else [geo["coordinates"]]
-        for p in polys:
-            for r in p:
-                for x, y in r: xs.append(x); ys.append(y)
-    pad = .01; B = (min(xs) - pad, min(ys) - pad, max(xs) + pad, max(ys) + pad); json.dump(B, open(O + k + "_bbox.json", "w"))
+    x, y = g["features"][0]["geometry"]["coordinates"]; h = {"lum": .035, "ala": .11}[k]
+    B = (x - h, y - h * .85, x + h, y + h * .85); json.dump([x, y], open(O + k + "_pt.json", "w")); json.dump(B, open(O + k + "_bbox.json", "w"))
     env = dict(geometry=",".join(map(str, B)), geometryType="esriGeometryEnvelope", inSR="4326", spatialRel="esriSpatialRelIntersects")
     for L in (7, 8, 9): 
         r = q(L, **env); 
@@ -37,7 +32,7 @@ for k, w in units.items():
     for nm, url, extra in (("harv", "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_TimberHarvest_01/MapServer/0", {}), ("rx", "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_HazardousFuelsTreatments_01/MapServer/3", {})):
         d = get(url + "/query?" + urllib.parse.urlencode(dict(env, where="1=1", outFields="*", returnGeometry="true", outSR="4326", f="geojson")))
         if d: save(f"{k}_{nm}.json", d)
-    c = ((B[0] + B[2]) / 2, (B[1] + B[3]) / 2)
+    c = (x, y)
     for o, (lo, la) in {"tomball": (-95.6161, 30.0972), "cstat": (-96.3344, 30.6280)}.items():
         d = get(f"https://router.project-osrm.org/route/v1/driving/{lo},{la};{c[0]},{c[1]}?overview=false")
         if d: save(f"{k}_route_{o}.json", d)
