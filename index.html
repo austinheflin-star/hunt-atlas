@@ -2362,7 +2362,6 @@ function spotReadHtml(c, F){
   // 1. Where it is
   let s1 = `Spot ${c.n + 1}${unit ? " is on " + esc(unit) : ""}`;
   if (F.pubRoad) s1 += `${unit ? ". The" : ": the"} nearest public road${F.pubRoad.name ? ", " + esc(F.pubRoad.name) + "," : ""} is ${srYd(F.pubRoad.d)} to the ${srD16(F.pubRoad.brg)} (${(RSTY[F.pubRoad.cls] || RSTY.local)[3].toLowerCase()})`;
-  else if (!unit) s1 += " has no public road mapped within 2 miles";
   if (F.park && F.park.d < 4000) s1 += `. The closest ${/Info|Registration/.test(F.park.cls) ? "sign-in station" : /Gate/.test(F.park.cls) ? "gate" : "parking spot"} on TPWD's map is ${srYd(F.park.d)} to the ${srD16(F.park.brg)}`;
   P.push(s1 + "."); P.unshift('<b class="srh">Spot read</b>');
   // 2. What the ground is like
