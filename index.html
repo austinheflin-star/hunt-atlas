@@ -189,7 +189,8 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .gloss dt{font-weight:700;margin-top:8px}.gloss dt small{font:11px var(--mono);color:var(--muted);margin-left:6px;font-weight:400}.gloss dd{margin:2px 0 0;font-size:13px}
 .spot details{margin-top:6px}.spot summary{cursor:pointer;color:var(--olive);font-weight:600;font-size:13px}
 .spot .exp{font-size:13px;margin:6px 0}.spot .exp p{margin:4px 0}
-.spot .askspot{font:600 12px var(--body);border:1px solid var(--blaze);color:var(--blaze);background:none;border-radius:4px;padding:3px 8px;cursor:pointer}
+.spot .srh{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:4px}.spot .sread{font-size:14px;line-height:1.45;margin:6px 0}.spot .sread p{margin:5px 0}.spot details.hp summary{font-size:13px;color:var(--muted);cursor:pointer}
+.spot .askspot{margin:2px 0 6px;font:600 12px var(--body);border:1px solid var(--blaze);color:var(--blaze);background:none;border-radius:4px;padding:3px 8px;cursor:pointer}
 .disclaim{font-size:12px;color:var(--muted);margin-top:24px;border-top:1px solid var(--rule);padding-top:8px}
 /* ---------- v3: header tools, themes, loading bar ---------- */
 header{position:relative}
@@ -1962,7 +1963,8 @@ function explainSpot(i){
   out.push(`<p class="meta">Scored from elevation, land cover, roads and water. It can't see acorns, food plots or how thick the brush is, so check the satellite view and scout it.</p>`);
   return out.join("");
 }
-function spotQuestion(c){
+function spotQuestion(c){ return spotQuestion0(c) + (c._facts ? " What the map shows around it: " + spotReadHtml(c, c._facts).replace(/<p class="meta">.*$/s, "").replace(/<[^>]+>/g, " ").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim() + " Give me a specific plan for this exact spot: where to set up, how to walk in, what time, and what sign to look for." : ""); }
+function spotQuestion0(c){
   const i = c.info, f = c.facts.join(", "), d16 = x => x == null ? "unknown" : DIRS16[Math.round(x / 22.5) % 16];
   const lcf = i.lcf ? `Land cover within 300 m: ${Math.round(i.lcf.tree * 100)}% timber, ${Math.round(i.lcf.open * 100)}% open (${Math.round(i.lcf.crop * 100)}% crops), ${Math.round(i.lcf.water * 100)}% water.` : "";
   return `Check this spot for ${SP_NAME[i.species] || "deer"} and tell me how to hunt it. Spot finder grade ${c.gr} (${c.sc}/100). Strongest features: ${c.contrib.join(", ") || "terrain"}. ${f}. ${lcf} Slope faces ${d16(i.asp)}. Likely bedding side: ${d16(i.deer)}. Nearest road is to the ${d16(i.roadDir)}. Coordinates ${c.ll[0].toFixed(5)}, ${c.ll[1].toFixed(5)}${hereState ? " in " + D[hereState].name : ""}. Today is ${new Date().toDateString()}. Explain why it is or isn't good, the best wind and thermal setup, how to walk in, and what sign to look for when I scout it.`;
@@ -2309,18 +2311,131 @@ function makeSpot(d){
   pins.addMarker(mk);
   return c;
 }
+
+/* ---------- Spot read: a write-up built from what is actually around each pin ----------
+   Looks up the named creek, the nearest roads and their names, burns, timber cuts, power lines, pipelines,
+   TPWD parking and zones, the public-land unit, today's wind and the other spots, then writes about this spot only. */
+const SR_CACHE = new Map();
+const srQ = async (url, ll, dist, fields, extra) => { try {
+  const p = new URLSearchParams(Object.assign({ geometry: `${ll[1]},${ll[0]}`, geometryType: "esriGeometryPoint", inSR: "4326", spatialRel: "esriSpatialRelIntersects", distance: String(dist), units: "esriSRUnit_Meter",
+    outFields: fields, returnGeometry: "true", outSR: "4326", f: "json" }, extra || {}));
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 12000);
+  const j = await (await fetch(url + "/query?" + p, { signal: ctl.signal })).json(); clearTimeout(t); return j.features || []; } catch { return []; } };
+function srDist(ll, geom){ // metres from the point to a line or polygon edge (0 if inside a polygon), and the bearing to the closest point
+  const kx = 111320 * Math.cos(ll[0] * Math.PI / 180), ky = 110570; let best = 1e9, bx = 0, by = 0;
+  const parts = geom.paths || geom.rings || (geom.x != null ? [[[geom.x, geom.y]]] : []);
+  for (const pth of parts) for (let i = 0; i < pth.length; i++){ const a1 = pth[i], b1 = pth[i + 1] || pth[i];
+    const ax = (a1[0] - ll[1]) * kx, ay = (a1[1] - ll[0]) * ky, bx1 = (b1[0] - ll[1]) * kx, by1 = (b1[1] - ll[0]) * ky, dx = bx1 - ax, dy = by1 - ay, L2 = dx * dx + dy * dy;
+    const t = L2 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / L2)) : 0, px = ax + t * dx, py = ay + t * dy, d = Math.hypot(px, py); if (d < best){ best = d; bx = px; by = py; } }
+  const inside = geom.rings && geom.rings.length && inRing(ll, geom.rings[0]);
+  return { d: inside ? 0 : best, brg: (Math.atan2(bx, by) * 180 / Math.PI + 360) % 360, inside }; }
+const srD16 = x => DIRS16[Math.round(((x % 360) + 360) % 360 / 22.5) % 16];
+const srYd = m => m < 1609 * .6 ? Math.round(m * 1.0936 / 10) * 10 + " yd" : (m / 1609.34).toFixed(1) + " mi";
+async function spotFacts(c){
+  const key = c.ll.map(v => v.toFixed(5)).join(","); if (SR_CACHE.has(key)) return SR_CACHE.get(key);
+  const ll = c.ll, LL = L.latLng(ll[0], ll[1]), TIG = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Transportation/MapServer/";
+  const inTX = ll[0] > 25.8 && ll[0] < 36.6 && ll[1] > -106.7 && ll[1] < -93.5;
+  const [creeks, r2, r6, r8, rx, hv, pw, pp, tp, tpPts, tpLines] = await Promise.all([
+    srQ("https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/6", ll, 800, "gnis_name,ftype"),
+    srQ(TIG + "2", ll, 4000, "NAME,MTFCC"), srQ(TIG + "6", ll, 3000, "NAME,MTFCC"), srQ(TIG + "8", ll, 2000, "NAME,MTFCC"),
+    srQ(HAZ, ll, 600, "date_completed,treatment_type,gis_acres", { where: `date_completed >= DATE '${rxSince}'` }),
+    srQ("https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_TimberHarvest_01/MapServer/0", ll, 400, "activity_name,fy_completed", { where: "fy_completed >= '2010'" }),
+    srQ("https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Power_Transmission_Lines/FeatureServer/0", ll, 500, "VOLTAGE"),
+    srQ("https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Natural_Gas_Interstate_and_Intrastate_Pipelines_1/FeatureServer/0", ll, 500, "Operator"),
+    inTX ? tpwdAt(LL).catch(() => null) : null,
+    inTX ? srQ(TPWD + "TPWD_PublicHuntLocatorMap/MapServer/7", ll, 4000, "Class") : [], inTX ? srQ(TPWD + "TPWD_PublicHuntLocatorMap/MapServer/8", ll, 600, "Class") : []]);
+  const near = (fs, fn) => fs.map(f => Object.assign({ p: f.attributes }, srDist(ll, f.geometry))).filter(fn || (() => true)).sort((x, y) => x.d - y.d);
+  const ck = near(creeks), named = ck.find(x => x.p.gnis_name), anyCk = ck[0];
+  const roads = near([...r2, ...r6, ...r8]).map(x => Object.assign(x, { cls: RCLS(x.p.MTFCC), name: x.p.NAME }));
+  const pubRoad = roads.find(x => !["priv", "trail"].includes(x.cls)), trail = roads.find(x => x.cls === "trail");
+  const now = Date.now(), burns = near(rx).map(x => Object.assign(x, { age: x.p.date_completed ? (now - x.p.date_completed) / 31557600000 : null, yr: x.p.date_completed ? new Date(x.p.date_completed).getFullYear() : null }));
+  const cuts = near(hv), pwr = near(pw)[0], pipe = near(pp)[0];
+  const tpp = near(tpPts || []).map(x => Object.assign(x, { cls: x.p.Class || "" })), park = tpp.find(x => /Access|Parking|Gate|Info|Registration/i.test(x.cls)), camp = tpp.find(x => /Camp/i.test(x.cls));
+  const tpl = near(tpLines || [])[0];
+  const pad = (typeof featsAt === "function" ? featsAt(LL) : []).find(p => p && p.Unit_Nm) || null;
+  const others = (lastSpots || []).filter(o => o !== c && o.ll).map(o => ({ n: o.n, d: srDist(ll, { x: o.ll[1], y: o.ll[0] }).d, brg: srDist(ll, { x: o.ll[1], y: o.ll[0] }).brg })).sort((x, y) => x.d - y.d);
+  const out = { named, anyCk, pubRoad, trail, burns, cuts, pwr, pipe, park, camp, tpl, tp, pad, others };
+  SR_CACHE.set(key, out); return out; }
+function spotReadHtml(c, F){
+  const i = c.info, sp = i.species, an = { elk: "elk", hog: "hogs", turkey: "turkeys", duck: "ducks", mule: "mule deer" }[sp] || "deer", P = [], chk = [];
+  const unit = F.tp && F.tp.kind === "aph" ? (F.tp.name || "") + (F.tp.unit ? " (TPWD unit " + F.tp.unit + ")" : "") : F.pad ? F.pad.Unit_Nm : "";
+  // 1. Where it is
+  let s1 = `Spot ${c.n + 1}${unit ? " is on " + esc(unit) : ""}`;
+  if (F.pubRoad) s1 += `${unit ? ". The" : ": the"} nearest public road${F.pubRoad.name ? ", " + esc(F.pubRoad.name) + "," : ""} is ${srYd(F.pubRoad.d)} to the ${srD16(F.pubRoad.brg)} (${(RSTY[F.pubRoad.cls] || RSTY.local)[3].toLowerCase()})`;
+  else if (!unit) s1 += " has no public road mapped within 2 miles";
+  if (F.park && F.park.d < 4000) s1 += `. The closest ${/Info|Registration/.test(F.park.cls) ? "sign-in station" : /Gate/.test(F.park.cls) ? "gate" : "parking spot"} on TPWD's map is ${srYd(F.park.d)} to the ${srD16(F.park.brg)}`;
+  P.push(s1 + "."); P.unshift('<b class="srh">Spot read</b>');
+  // 2. What the ground is like
+  const lc = i.lcf, g = [];
+  if (lc){ const tr = Math.round(lc.tree * 100), op = Math.round(lc.open * 100);
+    g.push(tr >= 80 ? `It's deep in timber (${tr}% woods within 300 m)` : tr >= 45 ? `It's on a woods-and-openings mix (${tr}% woods, ${op}% open within 300 m)` : `It's mostly open ground (${op}% open within 300 m), so the cover that is here matters`);
+    if (lc.crop > .1) g.push(`with crops nearby (${Math.round(lc.crop * 100)}%)`); }
+  const b0 = F.burns[0];
+  if (b0 && b0.d < 600){ const yr = b0.yr ? b0.yr : "recently";
+    g.push(b0.inside ? `inside a prescribed burn from ${yr}${b0.age != null && b0.age <= 3 ? ", young enough that fresh green browse should be coming up" : b0.age != null ? ", old enough that the brush is thickening back into cover" : ""}` : `${srYd(b0.d)} from the edge of a ${yr} burn (${srD16(b0.brg)}), so you're near a burned/unburned edge`);
+    if (b0.age != null && b0.age <= 3) chk.push("how much green browse is on the burn and whether trails cross its edge"); }
+  const c0 = F.cuts[0];
+  if (c0) g.push(`${c0.inside ? "in" : srYd(c0.d) + " from"} a Forest Service ${/thin/i.test(c0.p.activity_name || "") ? "thinning" : "timber cut"} (${esc(c0.p.fy_completed || "")})${/thin/i.test(c0.p.activity_name || "") ? ", where sunlight lets brush grow back under the pines" : ""}`);
+  if (g.length) P.push(g.join(", ") + ".");
+  // 3. Water and travel
+  const w = [];
+  if (F.named && F.named.d < 800) w.push(`${esc(F.named.p.gnis_name)} runs ${srYd(F.named.d)} to the ${srD16(F.named.brg)}${F.named.d < 150 ? ": you're in or at the edge of its bottom, where the hardwoods and acorns usually are" : ". Its bottom is the obvious travel line and acorn strip to check"}`);
+  else if (F.anyCk && F.anyCk.d < 400) w.push(`an unnamed drainage is ${srYd(F.anyCk.d)} to the ${srD16(F.anyCk.brg)}. Small drainages like this are where trails cross in flat woods`);
+  if (F.pipe && F.pipe.d < 500) w.push(`a gas pipeline clearing is ${srYd(F.pipe.d)} ${srD16(F.pipe.brg)}${F.pipe.d < 120 ? ". Sit back 20–30 yards in the trees and watch where trails cross it" : ", worth walking for crossing trails"}`);
+  if (F.pwr && F.pwr.d < 500) w.push(`a power line clearing is ${srYd(F.pwr.d)} ${srD16(F.pwr.brg)}`);
+  if (F.tpl && F.tpl.d < 300) w.push(`a ${esc((F.tpl.p.Class || "unit road").toLowerCase())} on TPWD's map passes ${srYd(F.tpl.d)} ${srD16(F.tpl.brg)}`);
+  if (w.length) P.push(w.map((x, k) => k ? x : x[0].toUpperCase() + x.slice(1)).join("; ") + ".");
+  // 4. Why the scanner liked it, in this spot's terms
+  const k = i.keys || [], has = arr => k.some(x => arr.includes(x));
+  const why = [];
+  if (has(["crossing", "drain"])) why.push("travel squeezes through here along the low ground");
+  if (has(["pinch", "corner", "saddle"])) why.push("the cover narrows here, so deer moving through pass close");
+  if (has(["edge"])) why.push("two kinds of cover meet here");
+  if (has(["young"])) why.push("young regrowth or an old burn is close, which is food and bedding at once");
+  if (has(["cover", "bench", "leeward", "north"])) why.push("it scores as bedding cover");
+  if (has(["remote"])) why.push("it's farther from roads than most of this view, so fewer hunters reach it");
+  if (has(["water"])) why.push("water is close");
+  if (why.length) P.push(`The scanner ranked it ${c.gr} (${c.sc}/100) mainly because ${why.slice(0, 3).join(", and ")}.`);
+  // 5. Pressure
+  const rd = F.pubRoad ? F.pubRoad.d : i.road, pk = F.park ? F.park.d : null;
+  if (rd != null){ const walk = Math.min(rd, pk == null ? 1e9 : pk);
+    P.push(walk < 300 ? `Expect pressure: it's only ${srYd(walk)} from where people park or drive. ${an[0].toUpperCase() + an.slice(1)} here often move at night, so hunt it on weekdays, or sit it on busy weekends when hunters walking in push ${an} toward you.`
+      : walk < 1000 ? `It's ${srYd(walk)} from the road: past the people who sit in sight of their truck, but not far. Weekdays will be quieter.`
+      : `At ${srYd(walk)} from the nearest road or parking, this is farther than most hunters walk. Start in the dark and give yourself time; a headlamp and a saved route back matter here.`); }
+  // 6. Today's wind and approach
+  const W = typeof wx !== "undefined" && wx && wx.current;
+  if (W){ const from = W.wind_direction_10m, bad = i.deer != null && angDiff((from + 180) % 360, i.deer) < 50;
+    P.push(`Today's wind is from the ${srD16(from)} at ${Math.round(W.wind_speed_10m)} mph${bad ? `, which pushes your scent toward the side ${an} likely bed on (${srD16(i.deer)}). Pick another spot today, or come back when the wind is from the ${srD16(i.deer)}.` : i.deer != null ? `. That keeps your scent off the likely bedding side (${srD16(i.deer)}); come in from the ${srD16((from + 180) % 360)} side.` : `; walk in from the ${srD16((from + 180) % 360)} so your scent blows away from where you'll sit.`}`); }
+  // 7. Rules that change things here
+  if (F.tp && F.tp.zone) P.push(`TPWD zone here: ${esc(F.tp.zone)}. Check that it allows what you're carrying.`);
+  if (F.camp && F.camp.d < 3000) P.push(`A designated camp site is ${srYd(F.camp.d)} ${srD16(F.camp.brg)}: camp, hunt the evening, and hunt again at first light.`);
+  // 8. Nearby spots
+  const o = F.others.filter(x => x.d < 800);
+  if (o.length) P.push(`Spot ${o.map(x => x.n + 1).join(" and spot ")} ${o.length > 1 ? "are" : "is"} within ${srYd(o[o.length - 1].d)}${o[0].brg != null ? " (" + srD16(o[0].brg) + ")" : ""}. Scout them together on one walk and hunt whichever has the freshest sign.`);
+  // 9. What to look for when you get there
+  if (F.named && F.named.d < 400) chk.push(`acorns dropping and fresh tracks along ${esc(F.named.p.gnis_name)}`);
+  if (has(["edge", "young"])) chk.push("trails entering and leaving the thicker side of the edge");
+  if (sp !== "duck" && sp !== "turkey") chk.push("fresh rubs and scrapes along any old road or edge within 200 yards");
+  if (chk.length) P.push(`When you get there, look for ${chk.slice(0, 3).join("; ")}. Drop a waypoint on each one.`);
+  return P.map((x, k) => k ? `<p>${x}</p>` : x).join("") + `<p class="meta">Built from USGS creeks, Census roads, Forest Service burns and cuts, HIFLD/EIA lines${F.tp ? ", TPWD's unit map" : ""} and today's weather for this exact spot. It can't see the brush or the acorns, so treat it as a plan to check on foot.</p>`; }
+async function fillSpotRead(c, el){ el.innerHTML = '<p class="meta">Reading the ground around this spot…</p>';
+  try { const F = await spotFacts(c); el.innerHTML = spotReadHtml(c, F); c._facts = F; } catch (e){ el.innerHTML = '<p class="meta">Couldn\'t look up details for this spot right now. Check your connection.</p>'; } }
+async function fillAllSpotReads(cards){ const els = cards.map(c => [c, document.querySelector(`#spots .spot[data-n="${c.n}"] .sread`)]).filter(x => x[1]);
+  for (let i = 0; i < els.length; i += 3) await Promise.all(els.slice(i, i + 3).map(([c, el]) => fillSpotRead(c, el))); }
 function paintCards(cards, note){
   $("#spots").innerHTML = (note ? `<p class="meta">${esc(note)}</p>` : "") + (cards.map(c => `<div class="spot" data-n="${c.n}" tabindex="0"><span class="grade ${c.gr}" title="Score ${c.sc} of 100">${c.gr}</span><span class="meta" style="float:right;margin:10px 4px 0 0">${c.sc}</span><b>Spot ${c.n+1}</b>
     <div class="fchips">${c.topKeys.map(k => `<span class="fchip">${fIcon(k)}${esc(FEAT_LABEL[k] || k)}</span>`).join("") || '<span class="fchip">Overall terrain</span>'}</div>
     ${c.info.road != null ? `<div class="walk">${walkText(c.info.road)}</div>` : ""}
     <div class="why">${esc(c.facts.join(" · "))}</div>
-    <div class="plan">${huntPlan(c.info)}</div>
+    <div class="sread"></div>
+    <details class="hp"><summary>Wind & timing basics</summary><div class="plan">${huntPlan(c.info)}</div></details>
     <div class="row" style="margin:6px 0 2px"><button class="btn sm ghost" data-a="route">Route in</button><button class="btn sm ghost" data-a="save">Save as waypoint</button><button class="btn sm ghost" data-a="wind">Wind check</button><button class="btn sm ghost" data-a="sun">Sun & moon</button></div>
-    <details><summary>Why this spot?</summary><div class="exp">${explainSpot(c.info)}</div><button class="askspot" data-n="${c.n}">Ask Claude about this spot</button></details></div>`).join("") || "<p>No strong spots in this view. Try another area or species.</p>");
+    <button class="askspot" data-n="${c.n}">Ask Claude about this spot</button><details><summary>The numbers</summary><div class="exp">${explainSpot(c.info)}</div></details></div>`).join("") || "<p>No strong spots in this view. Try another area or species.</p>");
   $("#spots").querySelectorAll(".spot").forEach(el => { const c = cards.find(x => x.n === +el.dataset.n); const go = () => { openMarker(c.mk, c.ll, 15); if (isPhone()) sheetTo(0); };
     el.onclick = ev => { if (ev.target.closest("details, button")) return; go(); }; el.onkeydown = ev => { if (ev.key === "Enter" && ev.target === el) go(); };
     el.querySelectorAll("[data-a]").forEach(bt => bt.onclick = ev => { ev.stopPropagation(); spotAction(c, bt.dataset.a); }); });
   $("#spots").querySelectorAll(".askspot").forEach(bt => bt.onclick = ev => { ev.stopPropagation(); askClaude(spotQuestion(cards.find(x => x.n === +bt.dataset.n))); });
+  fillAllSpotReads(cards);
 }
 // Bring back the last scan's pins after a reload
 function restoreScan(){
@@ -4525,7 +4640,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "18.0 (Nov 7, 2026)";
+const APP_VERSION = "18.1 (Nov 8, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
