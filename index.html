@@ -2431,8 +2431,9 @@ function spotReadHtml(c, F){
   if (lc && (lc.open > .25 || lc.crop > .1) && an === "deer") pro.push("does here likely feed in the openings at night and file back into the thick at dawn, so sit inside the tree line 50–100 yards back in the morning and on the field edge only in the last hour");
   if (rd != null && rd > 700) pro.push("stage-hunt in: stop 15–20 minutes at any fresh sign on the way instead of walking past it");
   const nowD = new Date(), se = an === "deer" ? proSeason(nowD, c.ll[0], c.ll[1]) : null, mw = moonWindow(nowD);
-  if (pro.length) P.push(`<b>What the pros would do here:</b> ${pro.slice(0, 3).join("; ")}.`);
-  if (se) P.push(`<b>${se.name} in East Texas:</b> ${se.tip}${mw.on ? ` The moon is ${mw.txt}, inside the window Charles Jacobs hunts all day.` : ""}`);
+  const seShort = se ? { early: "hunt it midday to evening, when the acorns are falling", prerut: "check it for fresh scrapes and try soft grunts and light rattling", rut: ckN ? "sit the crossing all day and move every 2–3 hours" : "sit it all day if you can; bucks cruise midday", post: "watch the trails between food and bedding", late: "focus on browse lines and the thickest cover" }[se.k] : "";
+  if (seShort) pro.push(`it's the ${se.name.toLowerCase()} in East Texas${mw.on ? " and inside the pros' moon window" : ""}, so ${seShort}`);
+  if (pro.length) P.push(`<b>What the pros would do here:</b> ${pro.slice(0, 4).join("; ")}.`);
   // 7. Rules that change things here
   if (F.tp && F.tp.kind === "aph") P.push("Check in and out of this unit in the Texas Hunt & Fish app (or at the sign-in box) every trip.");
   if (/big thicket/i.test(unit)) P.push("Big Thicket National Preserve bans every kind of tree stand, climber, saddle and blind starting with the 2025–26 season, so plan to hunt from the ground.");
@@ -2453,7 +2454,8 @@ async function fillSpotRead(c, el){ el.innerHTML = '<p class="meta">Reading the 
 async function fillAllSpotReads(cards){ const els = cards.map(c => [c, document.querySelector(`#spots .spot[data-n="${c.n}"] .sread`)]).filter(x => x[1]);
   for (let i = 0; i < els.length; i += 3) await Promise.all(els.slice(i, i + 3).map(([c, el]) => fillSpotRead(c, el))); }
 function paintCards(cards, note){
-  $("#spots").innerHTML = (note ? `<p class="meta">${esc(note)}</p>` : "") + (cards.map(c => `<div class="spot" data-n="${c.n}" tabindex="0"><span class="grade ${c.gr}" title="Score ${c.sc} of 100">${c.gr}</span><span class="meta" style="float:right;margin:10px 4px 0 0">${c.sc}</span><b>Spot ${c.n+1}</b>
+  const _se = typeof proSeason === "function" && $("#species") && /deer|thick|white/i.test($("#species").value) ? proSeason(new Date(), map.getCenter().lat, map.getCenter().lng) : null, _mw = _se ? moonWindow(new Date()) : null;
+  $("#spots").innerHTML = (note ? `<p class="meta">${esc(note)}</p>` : "") + (_se && cards.length ? `<div class="pros"><p class="now"><b>${_se.name} (East Texas timing):</b> ${_se.tip} <b>Moon:</b> ${_mw.txt}${_mw.on ? ", inside Charles Jacobs' hunt-all-day window" : ""}.</p></div>` : "") + (cards.map(c => `<div class="spot" data-n="${c.n}" tabindex="0"><span class="grade ${c.gr}" title="Score ${c.sc} of 100">${c.gr}</span><span class="meta" style="float:right;margin:10px 4px 0 0">${c.sc}</span><b>Spot ${c.n+1}</b>
     <div class="fchips">${c.topKeys.map(k => `<span class="fchip">${fIcon(k)}${esc(FEAT_LABEL[k] || k)}</span>`).join("") || '<span class="fchip">Overall terrain</span>'}</div>
     ${c.info.road != null ? `<div class="walk">${walkText(c.info.road)}</div>` : ""}
     <div class="why">${esc(c.facts.join(" · "))}</div>
@@ -3010,7 +3012,7 @@ function moonInfo(date, lat, lng){
 /* ---------- What the Texas public-land pros do (from their podcasts and videos, Nov 2026) ---------- */
 function moonWindow(date){ const p = moonInfo(date, 31, -95).phase, S = 29.53, dn = Math.min(p, 1 - p) * S, df = Math.abs(p - .5) * S;
   const which = dn <= df ? "new" : "full", d = Math.min(dn, df), after = which === "new" ? p < .5 : p > .5;
-  return { which, d, after, on: d <= 3.2, txt: d < .6 ? `${which} moon today` : `${Math.round(d)} day${Math.round(d) === 1 ? "" : "s"} ${after ? "after" : "before"} the ${which} moon` }; }
+  return { which, d, after, on: d <= 3.2, txt: d < 1 ? `${which} moon today` : `${Math.round(d)} day${Math.round(d) === 1 ? "" : "s"} ${after ? "after" : "before"} the ${which} moon` }; }
 function PRO_SEASONS(){ return [
   { k: "early", from: 915, to: 1019, name: "Early season", tip: "Feed trees and browse. Water oaks and white oaks drop first. Hunt them midday to evening, not at dawn (deer are already there in the dark and you'll bump them). Rain is your best day: deer get up early and stay up. Light rattling near fresh scrapes can work." },
   { k: "prerut", from: 1020, to: 1104, name: "Pre-rut", tip: "Bucks are aggressive but still careful. Hunt fresh scrape lines on the edge of doe bedding, not on feed trees or roads. Soft tending grunts and light rattling, then sit still 20–30 minutes. The first real cold front is the alarm clock: be in the woods for it." },
