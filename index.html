@@ -156,7 +156,8 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .item .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px}
 .thick{border:1px solid #c9d8c0;background:#f3f8ef;border-radius:10px;padding:8px 12px;margin:8px 0 12px;color:#1f2a1f}.thick summary{font-weight:800;cursor:pointer;font-size:15px}.thick ol{padding-left:20px;margin:8px 0}.thick li{margin:6px 0;line-height:1.4}.thb p{line-height:1.45}.thbtn{flex-wrap:wrap;gap:6px}
 .glimg{width:100%;max-width:560px;border-radius:8px;display:block;margin:6px 0}.glsvg{width:100%;max-width:420px;display:block;margin:6px 0;border-radius:8px}.glpic{font-size:12px}
-.glw{color:inherit;text-decoration:underline dotted #4a7a3a 2px;text-underline-offset:3px;cursor:help}.gloss{margin-top:12px;border-top:1px solid #c9d8c0;padding-top:8px}.gloss h4{margin:4px 0}.glt{border-bottom:1px solid #dde6d6;padding:6px 0}.glt summary{font-weight:700;cursor:pointer}.glt p{margin:6px 0}.glt.flash{background:#fff3b0;transition:background .3s}
+.glw{color:inherit;text-decoration:underline dotted #4a7a3a 2px;text-underline-offset:3px;cursor:help}.gloss{margin-top:12px;border-top:1px solid #c9d8c0;padding-top:8px}.gloss h4{margin:4px 0}.sh{padding-left:20px;margin:6px 0}.sh li{margin:5px 0}
+.glt{border-bottom:1px solid #dde6d6;padding:6px 0}.glt summary{font-weight:700;cursor:pointer}.glt p,.gld{margin:6px 0}.glt.flash{background:#fff3b0;transition:background .3s}
 .wmk{overflow:visible}.wpt2{width:30px;height:30px;box-sizing:border-box;border-radius:50%;border:3px solid #7a5ea8;background:#fff;display:grid;place-items:center;font:16px/1 system-ui,"Apple Color Emoji","Segoe UI Emoji",sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.55)}
 .wlbl{position:absolute;left:50%;top:32px;transform:translateX(-50%);white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis;font:700 12px/1.2 var(--body);color:#fff;text-shadow:0 0 3px #000,0 0 3px #000,0 0 2px #000;pointer-events:none}
 .wlbl-off .wlbl{display:none}
@@ -2415,6 +2416,7 @@ function spotReadHtml(c, F){
   if (F.named && F.named.d < 400) chk.push(`acorns dropping and fresh tracks along ${esc(F.named.p.gnis_name)}`);
   if (has(["edge", "young"])) chk.push("trails entering and leaving the thicker side of the edge");
   if (sp !== "duck" && sp !== "turkey") chk.push("fresh rubs and scrapes along any old road or edge within 200 yards");
+  if (sp === "thick" && (has(["young", "edge", "cover"]) )) P.push(`This is good still-hunting ground: work it slowly into the wind, and keep a grunt call ready in case a deer jumps (see "Still-hunting step by step" in the thick-woods tips).`);
   if (chk.length) P.push(`When you get there, look for ${chk.slice(0, 3).join("; ")}. Drop a waypoint on each one.`);
   return P.map((x, k) => k ? `<p>${x}</p>` : x).join("") + `<p class="meta">Built from USGS creeks, Census roads, Forest Service burns and cuts, HIFLD/EIA lines${F.tp ? ", TPWD's unit map" : ""} and today's weather for this exact spot. It can't see the brush or the acorns, so treat it as a plan to check on foot.</p>`; }
 async function fillSpotRead(c, el){ el.innerHTML = '<p class="meta">Reading the ground around this spot…</p>';
@@ -4443,6 +4445,16 @@ async function guidePhoto(el, title){
 /* ---------- Thick woods, no bait: how to find deer when there are no clearings to watch ---------- */
 // Plain-English meanings for the woods words hunters use (tap any underlined word in the tips)
 const GLOSS = [
+ ["stillhunt", "Still-hunting (walk-hunting) step by step", `<ol class="sh">
+  <li><b>Pick the day.</b> Wind in your face, damp leaves after rain, or a breezy day that covers your noise. Dry, crunchy, dead-calm days are for sitting.</li>
+  <li><b>Pick the route before you go.</b> Walk <i>into</i> or across the wind along an edge, a creek bottom or an old logging road, so you're looking into cover instead of crashing through it. Plan to cover maybe a half mile to a mile in 2–3 hours.</li>
+  <li><b>Move slower than feels right.</b> A few steps, then stand still longer than you walked. Stop where your outline breaks against a tree, never in the open.</li>
+  <li><b>Look more than you walk.</b> Each stop, scan with binoculars for pieces of a deer: a flat back line, a leg, an ear flick, the white throat patch, a nose. In thick woods most deer are spotted at 20–60 yards.</li>
+  <li><b>Keep a grunt call where you can reach it.</b> If a deer jumps at a noise you made, grunt right away (a short "brrap"). It often stops to look back, and if it hasn't smelled you it may circle back to check out the sound, the same way deer go investigate a bobcat or coyote. Be ready for that shot.</li>
+  <li><b>Watch your back trail and your wind.</b> If the wind swings to your back, change direction or quit. Deer that smell you won't come back.</li>
+  <li><b>Hunt the right hours.</b> Midday, when deer get up to stretch and browse in their bedding cover, and the first hour after other hunters walk out. Evenings, slip toward a food edge.</li>
+  <li><b>Wear orange where required, and know where other hunters sit.</b> Moving hunters are easy to mistake for game in thick cover. Avoid walking past someone's stand, and never take a shot you can't fully see.</li>
+</ol><span class="meta">From a bowhunter's walk-hunting reel you saved (@thesouthern_outdoorsmen) plus standard still-hunting practice. Good ground for it: thick-woods spot finder spots near young growth, edges and creek crossings.</span>`, ""],
  ["timber", "Timber / stand", "A <b>stand</b> is one patch of woods where the trees are about the same kind and age, like \"a 20-year-old pine stand.\" Foresters and hunters talk about woods in stands because each one looks and acts different to a deer.", "From above, a stand is a block of woods with one even texture and color, often with straight edges where it meets the next block."],
  ["clearcut", "Clearcut", "A patch where loggers cut down every tree at once. National forests and timber companies do this, then replant (usually pines).", "From satellite: a bare tan or light-green block with straight edges in the middle of dark woods.", "img/gloss/clearcut.jpg"],
  ["youngcut", "Young clearcut (regrowth)", "A clearcut a few years later. Weeds, briars, small pines and sprouts grow back so thick you can hardly walk through it. At about 1–3 years it's food (fresh leaves deer eat). At about 3–8 years it's waist-to-head-high and so thick deer bed in it. After about 10 years the pines get tall, shade it out, and it's not as useful.", "From satellite: a block that's lighter and more speckled than the woods around it, with straight edges.", "img/gloss/youngcut.jpg"],
@@ -4471,7 +4483,7 @@ const GLSVG = {
 };
 const GL = Object.fromEntries(GLOSS.map(g => [g[0], g]));
 const gw = (k, t) => `<a href="#" class="glw" data-gl="${k}">${t}</a>`;
-function glossHtml(){ return `<div class="gloss"><h4>What these words mean</h4><p class="meta">Tap a word in the tips above to jump to it here.</p>${GLOSS.map(([k, t, d, sat, img]) => `<details class="glt" id="gl-${k}"><summary>${t}${img ? ' <span class="glpic">📷</span>' : ""}</summary><p>${d}</p>${sat ? `<p class="meta"><b>How to spot it:</b> ${sat}</p>` : ""}${img ? `<img class="glimg" loading="lazy" src="${img}" alt="Satellite example: ${t}">` : GLSVG[k] || ""}</details>`).join("")}<p class="meta">Satellite pictures: Esri World Imagery (winter photos) of East Texas pine-hardwood woods near Sam Houston National Forest.</p></div>`; }
+function glossHtml(){ return `<div class="gloss"><h4>What these words mean</h4><p class="meta">Tap a word in the tips above to jump to it here.</p>${GLOSS.map(([k, t, d, sat, img]) => `<details class="glt" id="gl-${k}"><summary>${t}${img ? ' <span class="glpic">📷</span>' : ""}</summary><div class="gld">${d}</div>${sat ? `<p class="meta"><b>How to spot it:</b> ${sat}</p>` : ""}${img ? `<img class="glimg" loading="lazy" src="${img}" alt="Satellite example: ${t}">` : GLSVG[k] || ""}</details>`).join("")}<p class="meta">Satellite pictures: Esri World Imagery (winter photos) of East Texas pine-hardwood woods near Sam Houston National Forest.</p></div>`; }
 function thickTipsHtml(open){ return `<details class="thick"${open ? " open" : ""}><summary>🌲 Thick woods, no bait: how to find deer</summary><div class="thb">
   <p>Most public land in East Texas and the Southeast (Sam Houston, Davy Crockett, Angelina and Sabine national forests, Kisatchie, the Ouachita) is pine and oak woods so thick you can't see far, with no feeders and few open fields. Deer there don't walk out into a clearing for you. You find them where the woods change, where they're forced to cross, and where other hunters don't go. Tap any <a class="glw" href="#" data-gl="timber">underlined word</a> for what it means.</p>
   <ol>
@@ -4482,7 +4494,7 @@ function thickTipsHtml(open){ return `<details class="thick"${open ? " open" : "
   <li><b>Find the ${gw("funnel", "funnels")}.</b> With no hills, deer travel is shaped by water and thick brush. Look for ${gw("crossing", "creek crossings")} (shallow spots and fallen logs), the narrow neck of dry ground where ${gw("drainhead", "two drainages start close together")}, the tip of a ${gw("thicket", "thicket")}, and the one or two spots where trails cross a ${gw("row", "pipeline, power line or firebreak")}. Deer use those same spots over and over.</li>
   <li><b>Get away from the roads, or hunt where others skip.</b> GPS studies of public-land hunters found most stay close to roads and trails (${gw("pressure", "hunting pressure")}). Walk farther than everyone else, use a creek or a cut line to slip in quietly, or hunt the ugly thicket right by the road that hunters walk past.</li>
   <li><b>Set up for 20 yards, not 200.</b> In thick woods, sit where several trails meet, not where you can see far. Use natural gaps for shooting lanes: cutting or damaging live trees and plants is illegal on national forests, and many state areas ban it too. Check the area's rules for screw-in steps and leaving stands overnight.</li>
-  <li><b>Stalking in the thick.</b> Move only when the wind is in your face, on damp leaves or windy days. Take a few steps, then stand still longer than you walked. Look for pieces of a deer (a flat back line, a leg, an ear flick, the white throat patch) with binoculars, even at 40 yards.</li>
+  <li><b>Still-hunt (walk-hunt) the thick.</b> Covering ground slowly is how you find deer that don't come to a stand. ${gw("stillhunt", "How to do it, step by step")}, below.</li>
   <li><b>Read the sign, then let the app read it too.</b> Rubs (trees with bark scraped off by antlers) and scrapes (pawed-up bare dirt under a low branch) along thicket edges and old logging roads, tracks in the mud at crossings, and beds (flattened ovals in leaves or grass). Drop a waypoint at each one, set its type, and tap <i>Read my sign</i> in My map.</li>
   </ol>
   <div class="row thbtn"><button class="btn sm" data-thick="scan">Scan this view for thick-woods spots</button><button class="btn sm ghost" data-thick="cover">Show deer food</button><button class="btn sm ghost" data-thick="young">Show thick cover, burns &amp; cuts</button><button class="btn sm ghost" data-thick="lanes">Show creeks, power lines &amp; pipelines</button></div>
@@ -4639,7 +4651,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "18.1 (Nov 8, 2026)";
+const APP_VERSION = "18.2 (Nov 9, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
