@@ -154,7 +154,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .item .dot{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 10px var(--mono);flex:none}
 .item .t{flex:1;min-width:0}.item .t small{display:block;color:var(--muted);font-size:12px}
 .item .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px}
-.thick{border:1px solid #c9d8c0;background:#f3f8ef;border-radius:10px;padding:8px 12px;margin:8px 0 12px;color:#1f2a1f}.thick summary{font-weight:800;cursor:pointer;font-size:15px}.thick ol{padding-left:20px;margin:8px 0}.thick li{margin:6px 0;line-height:1.4}.thb p{line-height:1.45}.thbtn{flex-wrap:wrap;gap:6px}
+.pros{border:1px solid #d9cfb4;background:#fbf7ec;border-radius:8px;padding:6px 10px;margin:10px 0}.pros summary{font-weight:800;cursor:pointer}.pros .now{background:#fff3c4;border-radius:6px;padding:6px 8px;margin:6px 0}.thick{border:1px solid #c9d8c0;background:#f3f8ef;border-radius:10px;padding:8px 12px;margin:8px 0 12px;color:#1f2a1f}.thick summary{font-weight:800;cursor:pointer;font-size:15px}.thick ol{padding-left:20px;margin:8px 0}.thick li{margin:6px 0;line-height:1.4}.thb p{line-height:1.45}.thbtn{flex-wrap:wrap;gap:6px}
 .glimg{width:100%;max-width:560px;border-radius:8px;display:block;margin:6px 0}.glsvg{width:100%;max-width:420px;display:block;margin:6px 0;border-radius:8px}.glpic{font-size:12px}
 .glw{color:inherit;text-decoration:underline dotted #4a7a3a 2px;text-underline-offset:3px;cursor:help}.gloss{margin-top:12px;border-top:1px solid #c9d8c0;padding-top:8px}.gloss h4{margin:4px 0}.sh{padding-left:20px;margin:6px 0}.sh li{margin:5px 0}
 .glt{border-bottom:1px solid #dde6d6;padding:6px 0}.glt summary{font-weight:700;cursor:pointer}.glt p,.gld{margin:6px 0}.glt.flash{background:#fff3b0;transition:background .3s}
@@ -2424,7 +2424,18 @@ function spotReadHtml(c, F){
   const W = typeof wx !== "undefined" && wx && wx.current;
   if (W){ const from = W.wind_direction_10m, bad = i.deer != null && angDiff((from + 180) % 360, i.deer) < 50;
     P.push(`Today's wind is from the ${srD16(from)} at ${Math.round(W.wind_speed_10m)} mph${bad ? `, which pushes your scent toward the side ${an} likely bed on (${srD16(i.deer)}). Pick another spot today, or come back when the wind is from the ${srD16(i.deer)}.` : i.deer != null ? `. That keeps your scent off the likely bedding side (${srD16(i.deer)}); come in from the ${srD16((from + 180) % 360)} side.` : `; walk in from the ${srD16((from + 180) % 360)} so your scent blows away from where you'll sit.`}`); }
+  // 6b. What the pros would do at this exact spot
+  const pro = [], dw = W ? (W.wind_direction_10m + 180) % 360 : null, ckN = F.named && F.named.d < 250 ? F.named : F.anyCk && F.anyCk.d < 200 ? F.anyCk : null;
+  if (ckN && !["duck", "turkey"].includes(sp)) pro.push(`sit 50–80 yards off ${ckN.p.gnis_name ? esc(ckN.p.gnis_name) : "the drainage"}${dw != null ? ` on its ${srD16(dw)} (downwind) side today` : " on the downwind side"} and watch the crossing or the first bench above it; pros also look for single tracks walking along the creek bed, which are usually a buck`);
+  if ((has(["young", "edge"]) || (c0 && /thin/i.test(c0.p.activity_name || "")) || (b0 && b0.age != null && b0.age >= 3 && b0.age <= 8)) && an === "deer") pro.push("walk the edge where the thick regrowth meets older timber for a scrape line, and set up 60–100 yards downwind of it, not on it");
+  if (lc && (lc.open > .25 || lc.crop > .1) && an === "deer") pro.push("does here likely feed in the openings at night and file back into the thick at dawn, so sit inside the tree line 50–100 yards back in the morning and on the field edge only in the last hour");
+  if (rd != null && rd > 700) pro.push("stage-hunt in: stop 15–20 minutes at any fresh sign on the way instead of walking past it");
+  const nowD = new Date(), se = an === "deer" ? proSeason(nowD, c.ll[0], c.ll[1]) : null, mw = moonWindow(nowD);
+  if (pro.length) P.push(`<b>What the pros would do here:</b> ${pro.slice(0, 3).join("; ")}.`);
+  if (se) P.push(`<b>${se.name} in East Texas:</b> ${se.tip}${mw.on ? ` The moon is ${mw.txt}, inside the window Charles Jacobs hunts all day.` : ""}`);
   // 7. Rules that change things here
+  if (F.tp && F.tp.kind === "aph") P.push("Check in and out of this unit in the Texas Hunt & Fish app (or at the sign-in box) every trip.");
+  if (/big thicket/i.test(unit)) P.push("Big Thicket National Preserve bans every kind of tree stand, climber, saddle and blind starting with the 2025–26 season, so plan to hunt from the ground.");
   if (F.tp && F.tp.zone) P.push(`TPWD zone here: ${esc(F.tp.zone)}. Check that it allows what you're carrying.`);
   if (F.camp && F.camp.d < 16000) P.push(`The nearest ${/back ?country/i.test(F.camp.cls) ? "backcountry camp site" : /fee/i.test(F.camp.cls) ? "campground" : "free hunter camp"} is ${srYd(F.camp.d)} to the ${srD16(F.camp.brg)}${F.camp.d < 5000 ? ": camp there, hunt the evening, and be back in at first light" : ". Camping the night before saves the early-morning drive"}.`);
   // 8. Nearby spots
@@ -2757,7 +2768,7 @@ function renderSun(){
   sb.innerHTML = `<div class="mini">☀ <span class="n">${t(rise)}–${t(set)}</span> · ${mo.icon} ${Math.round(mo.frac * 100)}%</div>
     <div class="full"><button class="ib-x sun-x" aria-label="Close">×</button><b>Today at map center</b><br>Sunrise <span class="n">${t(rise)}</span> · Sunset <span class="n">${t(set)}</span><br>
     Big game legal light <span class="n">${t(add(rise,-30))}–${t(add(set,30))}</span><br>Waterfowl <span class="n">${t(add(rise,-30))}–${t(set)}</span><br>
-    Moon ${mo.icon} ${esc(mo.name)}, ${Math.round(mo.frac * 100)}% lit${mo.day.rise ? " · rises " + t(mo.day.rise) : ""}${mo.day.set ? " · sets " + t(mo.day.set) : ""}
+    Moon ${mo.icon} ${esc(mo.name)}, ${Math.round(mo.frac * 100)}% lit${mo.day.rise ? " · rises " + t(mo.day.rise) : ""}${mo.day.set ? " · sets " + t(mo.day.set) : ""}${(w => w.on ? `<br><b>${esc(w.txt)}</b>: the pros' hunt-all-day window` : "")(moonWindow(now))}${(se => se ? `<br>Deer season: <b>${se.name}</b> (East Texas timing)` : "")(proSeason(now, c.lat, c.lng))}
     <div style="color:#5b6656;font-size:11px">Typical hours in these states; times in your device's time zone. Check state rules.</div></div>`;
 }
 map.on("moveend", renderSun);
@@ -2996,6 +3007,38 @@ function moonInfo(date, lat, lng){
     if (a2 > hi){ hi = a2; hiT = t; } if (a2 < lo){ lo = a2; loT = t; } prev = a2; }
   return { frac, phase, name: nm[1], icon: nm[2], day: { rise, set, overhead: hi > 0 ? hiT : null, underfoot: lo < 0 ? loT : null } };
 }
+/* ---------- What the Texas public-land pros do (from their podcasts and videos, Nov 2026) ---------- */
+function moonWindow(date){ const p = moonInfo(date, 31, -95).phase, S = 29.53, dn = Math.min(p, 1 - p) * S, df = Math.abs(p - .5) * S;
+  const which = dn <= df ? "new" : "full", d = Math.min(dn, df), after = which === "new" ? p < .5 : p > .5;
+  return { which, d, after, on: d <= 3.2, txt: d < .6 ? `${which} moon today` : `${Math.round(d)} day${Math.round(d) === 1 ? "" : "s"} ${after ? "after" : "before"} the ${which} moon` }; }
+const PRO_SEASON = [
+  { k: "early", from: 915, to: 1019, name: "Early season", tip: "Feed trees and browse. Water oaks and white oaks drop first. Hunt them midday to evening, not at dawn (deer are already there in the dark and you'll bump them). Rain is your best day: deer get up early and stay up. Light rattling near fresh scrapes can work." },
+  { k: "prerut", from: 1020, to: 1104, name: "Pre-rut", tip: "Bucks are aggressive but still careful. Hunt fresh scrape lines on the edge of doe bedding, not on feed trees or roads. Soft tending grunts and light rattling, then sit still 20–30 minutes. The first real cold front is the alarm clock: be in the woods for it." },
+  { k: "rut", from: 1105, to: 1130, name: "Rut", tip: "Be with the does. Sit 50–100 yards downwind of doe bedding, at creek crossings, and where does cross fences from private land. Don't chase a buck you saw yesterday. Sit all day if you can and move every 2–3 hours: bucks move midday. Mornings are for bucks, evenings for does." },
+  { k: "post", from: 1201, to: 1209, name: "Post-rut", tip: "Bucks are worn out and feeding. Hunt the trails between food and bedding. A second rut hits about 4 weeks after the first, when does that didn't breed come back into heat." },
+  { k: "late", from: 1210, to: 1231, name: "Late season", tip: "Food and thick cover: beautyberry, yaupon and greenbrier browse lines, the last acorns in the bottoms, and a pine thicket bedding next to a hardwood bottom. Jimmy Scott's biggest buck (142\") came on Dec 27 on that pattern." },
+  { k: "late", from: 101, to: 131, name: "Late season", tip: "Food and thick cover: browse lines, the last acorns, south-facing thick cover on cold mornings. Hunt the warmest part of a cold day." }];
+function proSeason(date, lat, lng){ if (!(lat > 29 && lat < 34.6 && lng > -97.6 && lng < -88)) return null; // East Texas / Gulf pine woods timing
+  const x = (date.getMonth() + 1) * 100 + date.getDate(); return PRO_SEASON.find(s => x >= s.from && x <= s.to) || null; }
+function prosHtml(){ const now = new Date(), c = typeof map !== "undefined" ? map.getCenter() : { lat: 31, lng: -95 }, se = proSeason(now, c.lat, c.lng), mw = moonWindow(now);
+  return `<details class="pros"><summary>🎙 What Texas public-land pros do</summary>
+  <p class="meta">Pulled from the Texas Public Podcast (Team Texas Wild: Jimmy Scott, Charles Jacobs, the Mackeys, the Binghams, Seth &amp; Rudy) and Destination Outdoors' Davy Crockett season. They hunt the same East Texas national forests.</p>
+  ${se ? `<p class="now"><b>Right now (${se.name}):</b> ${se.tip}</p>` : ""}
+  <p class="now"><b>Moon:</b> ${mw.txt}.${mw.on ? " That's inside Charles Jacobs' window (3 days either side of the new or full moon), when he hunts all day. About half his bucks came then." : " Charles Jacobs hunts all day for 3 days either side of the new and full moon."}</p>
+  <ol>
+  <li><b>Hunt the edge of the thick, not the open.</b> Mature bucks travel inside or along yaupon, beautyberry, greenbrier and young pine. Big open oak flats and plain pine plantations are where you catch a young buck chasing a doe, not a cruising mature one.</li>
+  <li><b>Creeks are the terrain.</b> Watch where a steep bank flattens (the crossing), creek bends and oxbows, the head of a drain, and the ${gw("bench", "first bench above the bottom")}. Single tracks walking along a sandy creek bed are usually a buck (Jimmy Scott). Sit 50 yards off the creek on the downwind side so your scent isn't on the trail (Destination Outdoors).</li>
+  <li><b>Find the does first.</b> Bucks circle ${gw("dobed", "doe bedding")} 50–100 yards out on the downwind side. Where 3–4 trails meet near doe bedding is the best seat in the woods (Sherry Mackey, the Binghams).</li>
+  <li><b>Wind first, always.</b> Jimmy Scott won't sit a spot without the right wind. Walk in from the side with a loop, never straight at the bedding. On calm mornings ${gw("thermals", "thermals")} pull scent downhill into the bottom.</li>
+  <li><b>${gw("stagehunt", "Stage-hunt")} your way in.</b> Sit 15–20 minutes at good sign on the way instead of walking past it.</li>
+  <li><b>Read the ${gw("scrapeline", "scrape lines")}.</b> A line of scrapes beats one scrape. Fresh urine in a scrape means the buck is close. Sit 60–100 yards downwind of the line, not on it.</li>
+  <li><b>${gw("calling", "Call")}.</b> Contact grunt, wait a minute, then light rattling (harder on windy days). Then freeze 20–30 minutes. In Destination Outdoors' video, a shooter answered the grunt and hopped the creek to get downwind before he could shoot.</li>
+  <li><b>Go mobile.</b> A climber 15–20 ft up a pine next to a leafy sweetgum or oak hides your outline. Move 30–100 yards as the sign tells you. <b>Wear the harness while climbing</b>: Daniel Mackey hung from one arm for 25 minutes when his lower deck fell.</li>
+  <li><b>Use other hunters.</b> Pushed deer only go 50–100 yards to the next thick island. Sit on those islands on busy weekends, and give other people's stands 150+ yards.</li>
+  <li><b>Time it.</b> Destination Outdoors logged 30 Davy Crockett sits: 94 deer, twice as many bucks in the mornings and twice as many does in the evenings. Movement took off around Nov 10 and stayed good to the end of the season. Cold fronts and drizzle made the best sits.</li>
+  <li><b>Pick one area and learn it.</b> Spend all day there, mark every track and which way it points, and come back. Years one and two are for learning; year three is for cashing in. Check the easy spots before the farthest, nastiest ones.</li>
+  </ol>
+  <p class="meta">Rules they flagged: check in and out of TPWD public hunting units in the Texas Hunt &amp; Fish app (or at the sign-in box). Big Thicket National Preserve banned every kind of tree stand, climber, saddle and blind starting with the 2025–26 season. Hunt from the ground there.</p></details>`; }
 function sunMoonHtml(ll, date){
   const t = d => d ? d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : "—", add = (d, m) => new Date(d.getTime() + m * 6e4);
   const { rise, set } = sunTimes(date, ll.lat, ll.lng), mo = moonInfo(date, ll.lat, ll.lng), md = mo.day;
@@ -3004,6 +3047,7 @@ function sunMoonHtml(ll, date){
   return `<table style="font-size:13px"><tr><td>Sunrise / sunset</td><td class="n">${t(rise)} / ${t(set)}</td></tr>
     <tr><td>Big game legal light</td><td class="n">${t(add(rise, -30))}–${t(add(set, 30))}</td></tr>
     <tr><td>Moon</td><td>${mo.icon} ${esc(mo.name)}, ${Math.round(mo.frac * 100)}% lit</td></tr>
+    <tr><td>Moon window</td><td>${(w => esc(w.txt) + (w.on ? " · pros hunt all day" : ""))(moonWindow(date))}</td></tr>
     <tr><td>Moonrise / moonset</td><td class="n">${t(md.rise)} / ${t(md.set)}</td></tr>
     <tr><td>Major feeding times</td><td class="n">${majors.join("<br>") || "—"}</td></tr>
     <tr><td>Minor feeding times</td><td class="n">${minors.join("<br>") || "—"}</td></tr></table>
@@ -4492,6 +4536,12 @@ const GLOSS = [
  ["drainhead", "Head of a drainage / two drainages heading close", "Where a drainage starts (its top end). If two creeks start close to each other, the high ground between their tops is a narrow dry neck, and deer cross there instead of wading or going around. That neck is a funnel.", "On the Topo map: where two blue creek lines end close together, the gap between their tops."],
  ["crossing", "Creek crossing", "The spot where deer cross a creek: usually where it's shallow, the banks are low, or a tree has fallen across it. Deer use the same crossings year after year, so you'll see a muddy trail going down one bank and up the other with lots of tracks.", "On the map: hard to see. Walk the creek and look for trails going in and out."],
  ["row", "Pipeline, power line and firebreak", "Long straight cleared strips through the woods. A <b>pipeline</b> or <b>power line</b> right-of-way is a mowed lane over a buried pipe or under power lines. A <b>firebreak</b> is a plowed or bladed lane the Forest Service makes to stop fires. Deer cross them, but they don't like being out in the open, so they cross at the same few spots where the woods come closest or where the brush is tallest.", "From satellite: long, perfectly straight light lines cutting across the woods.", "img/gloss/row.jpg"],
+ ["bench", "Bench / first ledge above a creek", "A flat shelf partway down the slope between the high ground and a creek bottom. Deer walk the bench or the <i>toe</i> of the slope (where it flattens into the bottom) because they stay hidden and can still see and smell down into the bottom. Charles Jacobs (East Texas national forests since the 1990s) likes to sit just above it, looking down into the low travel route.", "On the Topo or Slope layer: where contour lines spread apart for a bit between tighter lines above and below."],
+ ["dobed", "Doe bedding and the buck's buffer", "Does bed in groups in the thickest, shadiest cover close to food. In the rut, bucks don't walk into that bedding: they cruise a loop 50–100 yards outside it on the <b>downwind or crosswind side</b>, scent-checking for a doe in heat, and cut across as many doe trails as they can. Set up on that buffer line, not in the bed.", "Find it on foot: lots of round tracks, small beds, heavy trails into a thicket, and browse nipped about knee-high."],
+ ["scrapeline", "Scrape line, licking branch and mock scrape", "A <b>scrape</b> is a patch of pawed-up bare dirt under a low <b>licking branch</b> that bucks chew, rub their face on and urinate into. Several scrapes in a row along an edge or old road is a <b>scrape line</b>, which is worth far more than a single scrape. Community scrapes under hollies and magnolias get used for years. A <b>mock scrape</b> is one you make yourself (rake the dirt, pull a branch down to head height) to get bucks on camera; it's not bait. The pros sit 60–100 yards downwind of a scrape line, not on it, because bucks check it from downwind.", "On foot: look along thicket edges, old logging roads and around evergreen trees (holly, magnolia) at the edge of doe bedding."],
+ ["stagehunt", "Stage-hunting", "Instead of walking straight to your farthest spot, you stop and sit 15–20 minutes at each good spot on the way in, then move a little deeper next time. Team Texas Wild's rule: <i>don't walk past good sign to get to good sign</i>. You see deer you'd have spooked, and you learn where they are without blowing the area up.", ""],
+ ["calling", "Grunting and rattling", "A <b>contact grunt</b> is a short, soft \"brrp\" (\"I'm here\"). A <b>tending grunt</b> is a string of soft ticking grunts a buck makes trailing a doe. <b>Rattling</b> is clashing antlers (or a rattle bag) to sound like two bucks fighting. The pros grunt and rattle softly on calm days and harder on windy days, then <b>freeze for 20–30 minutes</b>: mature bucks usually circle downwind and stop in the thick where you can't see them. Young bucks come straight in.", ""],
+ ["thermals", "Thermals", "Air moving uphill or downhill on its own, separate from the wind. When the sun heats the ground in the morning, air rises (your scent drifts up the slope). In the evening it cools and sinks (your scent drains down into the creek bottom). On calm days in a creek bottom, thermals decide where your scent goes.", ""],
  ["pressure", "Hunting pressure", "How many people are out there walking around and hunting. Deer on public land learn where people go (mostly near roads, parking spots and easy trails) and move away from them or only move at night there.", ""]
 ];
 const GLSVG = {
@@ -4517,6 +4567,7 @@ function thickTipsHtml(open){ return `<details class="thick"${open ? " open" : "
   </ol>
   <div class="row thbtn"><button class="btn sm" data-thick="scan">Scan this view for thick-woods spots</button><button class="btn sm ghost" data-thick="cover">Show deer food</button><button class="btn sm ghost" data-thick="young">Show thick cover, burns &amp; cuts</button><button class="btn sm ghost" data-thick="lanes">Show creeks, power lines &amp; pipelines</button></div>
   <p class="meta">These are also in Layers under Habitat: Land cover, Deer food, Thick cover, Burns, Timber harvests, Creeks, and Power lines &amp; pipelines.</p>
+  ${prosHtml()}
   ${glossHtml()}
   <p class="meta">Sources: Mississippi State GPS bedding study; Penn State hunter-distribution study; U.S. Forest Service rules (36 CFR 261.6, damaging trees and plants).</p></div></details>`; }
 document.addEventListener("click", ev => { const a = ev.target.closest && ev.target.closest(".glw"); if (!a) return; ev.preventDefault();
@@ -4669,7 +4720,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "18.3 (Nov 9, 2026)";
+const APP_VERSION = "18.4 (Nov 9, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
