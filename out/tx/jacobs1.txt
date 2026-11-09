@@ -1,0 +1,778 @@
+# Key Rut Strategies | Calling Specifics | Hunting Buck Loops Deep!
+# https://mcdn.podbean.com/mf/web/axzm3sazhme45v6z/Chares_POdcast6jj8f.mp3
+[00:17] Alright guys, welcome to this week's episode of the Texas Public Podcast.
+[00:21] Happy Father's Day, Happy Father's Day week and weekend, whatever you happen to
+[00:24] might be listening to this. I think we're gonna drop this probably before Father's
+[00:28] Day. So, Happy Father's Day to all you dads, all you step dads, all you stand in
+[00:32] dads out there. So, appreciate everybody and all you fathers and all you hunters
+[00:37] out there. So, today we've got a guest on the episode today. I'm super excited to
+[00:41] have him on but as always I got Rudy sitting here with Rudy what's going on
+[00:45] dude? I'm doing good man, how are you? I'm doing great. Is it in the days world?
+[00:54] Yeah, feeling good after that nap? Yeah man. Rudy is like man I'm gonna take a nap
+[01:05] for the podcast. I was like uh oh. I was like we might we might lose him forever.
+[01:08] But dude it was it was hot today. That's for sure I was texting you earlier. I was
+[01:16] a uh I was uh texting somebody a little different buddy mind it. He was he was
+[01:21] working the day too and I was like dude yeah he said he was inside watching
+[01:26] YouTube getting paid and I was like yeah I said well I'm I'm at home I said but
+[01:29] I'm outside I said I'm sweating like biting at a spelling contest. It was wearing me
+[01:36] out dude it was hot today. So, but now today we've got a good friend of mine on
+[01:41] and happy to have him here man appreciate you taking the time. Mr. Charles Jacobs
+[01:46] what's going on brother? Hi, it's Paul brother. It's a pretty pleasure to be here
+[01:50] and uh getting a big ready here man. It's a session on it man. I'm watching the stuff
+[01:55] you're putting out there listening to the podcast. So, thank you stuff keep up the
+[01:59] work both of you. Thank you. Thank you. Welcome again Mr. Charles glad to have
+[02:03] you and uh learn and listen and don't mind if I ask a lot of questions because I
+[02:08] am the quite honest. I'll ask you so it's gonna be like me probably like a
+[02:13] little kid on Christmas. So, if I got an answer I'll give it if I don't then we'll
+[02:20] figure it out together. Yeah, so, no I appreciate you taking the time to step in
+[02:25] man and I've known Charles for several years now we've been we've even spent
+[02:30] some time hunting together. So, man when we first started all this and Charles has
+[02:34] been a big supporter of us and everything we've done uh you know going back to
+[02:39] the filming and everything. So, he's definitely on the short list of phone
+[02:44] calls every time a deer hits the ground. So, it's always a lot of fun. But, no
+[02:48] Charles is uh yep Charles is a full-blooded East Texas uh pretty much born
+[02:53] and raised and he's he's got some really cool stories we just been catching up
+[02:57] you know prior to the call and kind of had to cut it short before we got too far.
+[03:00] But, Charles is he's knocked down some big East Texas deer going back a long time
+[03:06] and and still to this day. So, I'm excited to share some of those pictures and stuff,
+[03:10] man. So, we've hunted together I know kind of have a good idea about how you
+[03:14] think, how you approach things. So, I'm excited man. But, now just give us a
+[03:18] little background man. Have what kind of there you grew up you know don't give away
+[03:22] any secrets or anything or or any spots but just you know kind of how you got
+[03:27] into hunting and you know coming up you know kind of like into your early 20s.
+[03:31] I'm pretty much born and raised in these Texas. I'm just so these Texas
+[03:36] is comfortable. You know my backyard was the dewards you know I grew up in
+[03:40] 20 land to hunt on and my grandparents they keep being at a very early age
+[03:45] adopted and age as the role and I was very very grateful to that and uh doing a
+[03:49] really really great life man and you know it's uh I was a five six seven year
+[03:58] old come around the woods with a 20 day shot you on shoot you worlds and uh you
+[04:02] know I put the first set of crosshairs on the deer and put it on the ground
+[04:06] last seven. And I'm kind of thinking and getting off the video and getting to
+[04:11] out sound a little bit you know I mean you didn't grow like I did but let's
+[04:16] we want to create some more men for the future of this country but yeah man
+[04:20] I'm also on the trail cameras that had the self technology no hand held devices
+[04:29] I got a handheld device and I already changed it was I'm gonna do it my
+[04:33] teacher but it was a little climbing set five minutes so much to I need zero
+[04:41] bit on your little location you get a button and leave a little you know trail
+[04:44] marker and they go to next spot yeah nothing fancy man I still a lot of
+[04:48] time since I'm a tree so all the time going bucket especially a national
+[04:53] force and I got the David Crockett National Force hunting it was across the
+[04:57] river from us there the next river and there's a lot of other people that
+[05:02] there was the boots on the ground it's trying to do the same thing I was doing
+[05:05] and these were really good spots back in there we called it no bands land and
+[05:13] I first spent most of my time and where I kept last most of my most of my
+[05:17] kills were probably within I'd say an area no more than 500 by 500 yards to be
+[05:22] honest really yeah very limited to what's yeah and I know going back sometime
+[05:28] like I mean we've even done some like some kind of some map scouting the stuff
+[05:33] together and you've showed me some of the old areas that you've hunted like it may
+[05:37] be a little bit reluctantly so but you did give me some some areas to go check
+[05:41] out which to this day I've I've never even gotten close to but they're they're
+[05:46] pretty far away from me but I was kind of thinking because you've never really
+[05:50] mentioned this did your did your grandfather take you hunting a lot did he
+[05:54] go did he hunt with you a lot and if so like kind of like how long did that last
+[05:57] I did you know like I said I was five six years old I got my first gun that
+[06:03] was mine in 1985 still have it that's all nice and great go to stock the year and
+[06:09] everything but the shot kind of tradition with human as brothers and stuff we
+[06:14] bought a pool camera trailer and this was before they had designated camp spots
+[06:20] over in the National Force and it was every opening weekend it's for all
+[06:24] season and open a weekend beer season we hooked that camper up we loaded up all
+[06:28] the spots we need the cougars of food the rest of the crew are packed with beer
+[06:31] and a little spot we camped and from there we get up the morning hot some good
+[06:40] food good drinks for sure I'm a little tight I'm not getting a drinking thing
+[06:43] but it's you know we would have a couple days of that trip where we have the dogs
+[06:50] and what I'm a familiar with the dogs they were especially a little breed a
+[06:55] pinch legged face is what they were you know about two and some noses on these
+[07:03] little dudes so we made a one-hundred and we're gonna be five six seven of us and
+[07:07] we're putting the dogs work and then that even you know we don't have to
+[07:10] separate maybe you'll slip hunting and of course those first two or three years
+[07:13] you know but time I was eight I was at my grandfather's shield and I think that
+[07:19] year around I'm eight years old I need those woods good enough I mean how to put
+[07:22] the son to my face but the son to my back and I knew how to get out of the woods
+[07:26] you get back to camp and about time I later not I was in our shoreline by
+[07:30] myself and it turned into the same hunt and same time I was deer hunting by
+[07:34] myself I showed me the woods show me the ins and outs and of course gun safety
+[07:40] was always really really huge I should be a priority for anybody that's gonna
+[07:44] be having a gun in the woods probably before I was ten he you know it was a few
+[07:51] times you go with me but I was a mall you know it was I went where I wanted to
+[07:56] go and I hunted away I went to hunt and that way ever since so when y'all were
+[08:01] kind of party hunting there you were hunting with your grandfather you mentioned
+[08:04] his brothers one of his brothers
+[08:07] yes so he had a couple brothers that we go and then their boys which were older
+[08:11] you know of course the age of my dad and stuff so it looked like I said he'd give
+[08:16] me time with one of those weekends we were other camp there and sometimes it
+[08:19] would be a weak trip there'd be six seven eight of us and the hunt already
+[08:25] so and Papa was always the one and I thought my grandfather
+[08:28] I thought we should have you know the tree of the squirrel or something but he
+[08:36] always get out in front of us or off to the side he'd do a little soup hunt and
+[08:39] we're not trying to be quiet we're a dog to do the word so squirrels open a tree
+[08:44] or the side of the tree of horses we come around it's where we're gonna turn
+[08:47] that tree and he got sort of away we'd be trouble on take a stick since we're all
+[08:52] stuffing each other and I said I'm gonna look over and get a lot of squirrels out to this
+[08:56] pallets and get a little longer so yeah I'm always curious like you know those
+[09:00] old-timers like what was what was kind of their tactics were they more like party
+[09:04] hunting kind of slip and walk they'd y'all do a lot of like sitting in hunting or
+[09:10] kind of what was their strategy it was 50-50 for the most part but it
+[09:15] depended on who was there you know it was him and the brothers a couple of his
+[09:19] nephews and you know one of the hunts of the day was gonna be a party hunt one of
+[09:24] the hunts you know your blind hunt your even hunt you're trying to your back
+[09:26] limit and one of the hunts for the day when we were there for the weekend or
+[09:30] the majority of the week was gonna be a party hunt they wanted to work the dogs
+[09:34] and they was just fine I mean and there's something that's a site when you see
+[09:40] stickers of redneck circle a tree that the dogs treat up on and that swirls up
+[09:43] their heart and it's got a violin and well you shot the last world so you
+[09:48] will divide on this one so everybody's sure this tree is full of iron and 15
+[09:53] rounds go off a Welsh world at the ground and that's a ball of fun brother
+[09:59] yeah so I got out of time in on that part right there because so I grew up you
+[10:05] know in the woods to at a very young age but my stepdad was just probably two
+[10:18] years ago with a dog group of people and we're out there trying to just kill
+[10:26] the massacre in these poor little tree rats you know like I don't know what they
+[10:30] did does but we were mad at them it's like all the times that they hopped by
+[10:34] you while you were deer hunting that we just took it out that day
+[10:39] they paid back for the last three months right now but it was like one more
+[10:42] tree and they're these it's exactly what happens is that the dogs treat the squirrel
+[10:46] and it's like 12 right next to her and the tree can open like two or three people
+[10:50] go there banging the tree with sticks and taking bonds and squirrel comes running
+[10:55] out and go to go to and this one little squirrel and all that other pieces are left
+[10:59] that won't come fall.
+[11:01] That's the brother and he called me today and his squirrels says let's go I'm
+[11:04] grabbing my boots and we're still in the fall you know that's a good time.
+[11:08] Yes sir.
+[11:09] We did a lot of the slip hunt you know we worked into an area where we were you
+[11:12] that there were acre flats and whatnot and so live our tree and the slip and watch
+[11:17] and a lot of that little list to hunt was you saw the squirrel in distance
+[11:22] sometimes it may be right there you never get up and reach up to you and let it get
+[11:25] the ground remember what's that way for the next one but every time where you see one
+[11:29] in the distance and you slip to it you know put a tree between you and it and move 20
+[11:33] or 30 yards then you relocate it and do it again and you know again a lot of effort for
+[11:38] a little tree rat but that's part of it the state they decided they wanted to regulate
+[11:43] them they gave us a responsibility to do this hunters and we're gonna do it for the
+[11:46] best of our ability.
+[11:50] So yeah it is kind of interesting that you've kind of gone about things a little different
+[11:55] you grew up hunting kind of National Forest Public Lands a lot of big woods and stuff
+[12:00] and then early like you know mid 90s going into the 2000s and stuff and then nowadays
+[12:05] you're hunting a lot more like MLB land but which is a whole different perspective because
+[12:10] it is like a lot of repetitive pressure you know hunting around guys.
+[12:15] So we'll talk about that a little later but you know a lot of guys have have least
+[12:19] hunted or private hunted most of their life and then you know these days you know everybody's
+[12:23] at least taken a crack at it so those early days you know about what age where you know
+[12:28] let's just say you know once you hit 18 plus and you started you know at what point did
+[12:33] you kind of start dedicating serious time like into like hunting big bucks like targeting
+[12:40] you know wanting to kill big bucks the National Forest and based on what you knew at that time
+[12:45] like how did you go about that learning process and what kind of strategy did that
+[12:50] turn into.
+[12:51] I knew it was pretty early pretty young man like I said you know I shot my first year
+[12:57] when I was seven years old boy dropped me off at this area I was just starting a venture
+[13:02] off home and he kind of walked in he dropped me off at this area that we kind of be looking
+[13:07] at and he disappeared when it did the same and you know it wasn't nothing crazy it was
+[13:12] you know it was a seven point and one busted off maybe 13 and a half inches but man let
+[13:17] me tell you so this day that's the biggest day ever killed because that was my first one
+[13:22] you know and I've slammed some monsters in my life but between that probably the age
+[13:27] of 12 where you just demonstrated levels start setting in the way you grow up you know you're
+[13:32] still a kid but you're a kid at a different level depending on how you grow up that you
+[13:37] start seeing what some of your other family members your aunt's you know my aunt's were
+[13:41] I got an aunt you know she blessed her heart she's had a stroke and she can't do it anymore
+[13:46] but she could slip up and hunt deer she and she hung up a toe be shot no a little buck shot
+[13:52] and every deer she ever shot I guaranteed the pattern of that buck shot you're gonna do
+[13:57] it was smarter than your fist I mean she was just right there on top of them you know
+[14:02] she put her back in a ponytail throw on a camel head a camel shirt and we're bleaching
+[14:05] we all know what color deer can see the most you know that that blue shark blows in his
+[14:09] she seems they don't kind of some of the deer that they were my shot deer or my ghost
+[14:16] mouse looks at right I think that early teenage at pre-teen age year it went from shooting the
+[14:24] first legal thing I saw to spend that time of kind of get only deer that I knew was there
+[14:32] I've seen and that was about the point in my life I think you know it was a long time ago
+[14:38] I don't know if I'm at my age here I got a few years from now but I think that was the
+[14:41] time to where I I really started realizing that there's there's more stuff in these woods
+[14:48] than what walks out front of you so they're deer season I mean there's world season like
+[14:52] you know that's for all season you starts in October when the boat season starts I was
+[14:56] kind of utilizing my 4-0 hunting for shouting so I was I was gonna get the best of both
+[15:01] worlds I'm at her 4-0 but I'm saying how many woods do you because you're for three
+[15:04] weeks I'm gonna be sitting there with a deer rifle around my bow in my hands so that's
+[15:09] not really what kind of get also deer get also signs and spend a little bit of time there
+[15:14] would be time to go from shore hunt sit there and I was actually deer hunt I was I was just
+[15:18] seeing what come through the area you know I wouldn't even look for swirls anymore I was
+[15:22] I was shouting you know and between that 12 13 14 I was really serious I'll chase something
+[15:29] but so you were young when you kind of got it in your head that you wanted to shoot something
+[15:36] big for whatever reason you know whether like I said you family members what whatever got
+[15:41] it into your head you were that's pretty young to just just to think like man I want to put
+[15:45] something big I'm seeing what other people were shooting that had four years of experience
+[15:52] in the woods that I did you know of course you asked you a hundred one questions and
+[15:57] over you if you ask for your questions because you got more knowledge but you know when you
+[16:02] start hearing the stories like all this point that was about 14 half inches walked out of
+[16:06] me but I knew this 11th one had been in the area and they'd been running again and they
+[16:11] separated and you start hearing those stories you absorb in all of this right your staunch
+[16:15] when you're a kid and you know they need you start hearing the all the big bucks that the
+[16:22] little book out to see what would happen kind of stories and it kind of changed my mind
+[16:29] said I was getting more mature and four or 14 15 16 years old and get more and more
+[16:33] mature and every day you think you know everything two years later you know I didn't know nothing
+[16:38] when I was 16 years old and they you know that's that's the only one progression of
+[16:42] knowledge but it was seeing what other people were doing and being engaged in the conversations
+[16:48] of their hearts and I'm feeling my first year when I was seven about how much 12 I think
+[16:54] I had four good you know seven to nine point deer I shot already and I've killed four they
+[17:01] four five deer I was having from the time I shot my first deer I think I was pretty much
+[17:06] average and a decent but almost every year I think there was one year you know of course
+[17:10] kids at school like this year and of course you know really well show your face you didn't
+[17:15] feel a deer kind of saying you know yeah they were gonna see what other people were
+[17:19] shooting and we go into the house a little bit or do you want to come and buy you on
+[17:23] the way home show to you and tell their story and then of course you're asking questions
+[17:27] and then you get more information and kind of transform your mind into almost you were
+[17:33] bigger than that one.
+[17:34] Yeah.
+[17:35] You want to find that deer.
+[17:36] So how do you how do you translate that into conversations what you're seeing like what's
+[17:43] you know what you're thinking you want to accomplish how do you translate that into
+[17:47] like a strategy like what did you what was it that you were thinking early on that you
+[17:54] know well I think I'm going to try this or this is how this person killed that deer so
+[17:58] I'm going to try that or like at what point did you kind of start hunting with like strategic
+[18:03] purpose.
+[18:04] When the patients finally got the little patients I needed to have because you know we've all heard
+[18:11] the term but fewer and when that deer washed out this legal you're ready right you are
+[18:17] ready but you know there's you've already identified there's something better in those
+[18:24] words there's something you want in those words you've seen it and it's this permanent
+[18:29] patience to wait on that deer that you want and putting in the work of finding out where
+[18:34] that deer's at and that's sitting there and just watching in the preseason I spent a lot
+[18:40] of time in October that I should have been swollen and I was swollen I'm actually watching
+[18:44] deer in a pattern change of the seasons you know these deer they're going to go into there's
+[18:50] one thing they won't they're chasing that girl around the woods when she's ready they're
+[18:53] ready so these little patterns change but the old sign kind of tells you what's been going
+[18:59] on you can guesstimate what is going on this year and translate it in next year but I think
+[19:04] patience was the biggest thing for me of being able to sit there and let a legal mature
+[19:09] bug walk by you because much as you should bug you're done now you're you know you're
+[19:14] looking for no you're looking for a slight bug you're done you know there's your bug
+[19:17] yeah Rudy was at the law was at the law then it was you're only allowed to kill on public
+[19:26] land one good bug and then it's fine gonna do and that was it and over the years the dough
+[19:30] has changed you know it was um there was dough up to you think she'll be again then there was
+[19:36] dough only the first week and then there were dough the only first week and a lot of the
+[19:41] hunting I did was a huge fight counter man or off your tags just off your tags okay everything
+[19:46] was up just off your general white tags if you had your target that you picked up at Walmart
+[19:50] but it was you know one legal bug I think at the time it was 13 inches and then of course
+[19:57] a spike or a branch handler but it was knowing that and when you're sitting in that moment
+[20:06] we've all been there right if you're hunting something bigger or you know something bigger
+[20:10] is there you're sitting in that moment and it's all from over your head like at his
+[20:14] hero right now he's standing there I'm gonna get that other opportunity that the one I
+[20:23] want or was this it you know and am I gonna finish this season and then look back and actually
+[20:32] going 15 minutes standing there one time two times three times but I passed it up for this
+[20:39] and that's something else you got to accept I've had a few of those years when I first
+[20:43] came on this MOD property my first year was and I saw a couple of your I should not have
+[20:48] seen so what do I do I'm hunting these two deer and I hunted them hard and I came up
+[20:53] dry you know well let me put it over the crew or something to show for it and that was
+[21:01] maturity that was in 2017 first year I go on MOD lease I was still passing deer to shoot
+[21:07] deer I want it and I'm done that most of my mature adult life yeah and you were
+[21:12] patient patients was to eat yeah and you that's that's part of adjusting to a new property
+[21:17] to you may have had some some elevated expectations based on which maybe what you saw earlier and
+[21:23] you're like man I'm holding out for that again and then sometimes it works out in your favor
+[21:27] sometimes it doesn't right so this is what it was great is the way he hunts and how we
+[21:35] hunted you know and when he's talking about his maturity is how he grew I guess as a hunter
+[21:41] as well it's kind of like for me too because you notice like you know we've been hunting
+[21:47] our whole lives you know and you know some like Reagan and Dave's really good friends
+[21:53] of ours you know they're still very fresh and their hunting career you know but they've
+[21:58] done very well and and they're very very knowledgeable already you know they're growing but they're
+[22:05] very smart they put it together and they know how to put it together but anyways they're
+[22:11] like man if it's legal and it comes out and it's a target book I don't want to carry one
+[22:15] of the legal ones we're shooting it you know at some point you're going to be on that you
+[22:20] know and that's right little and for like you know you're fresh harder so yeah set this
+[22:26] well I think you know I think we're at that point where we're like hey yeah if it's legal
+[22:31] like in the same Houston I would definitely probably shoot the first legal buck that comes
+[22:36] by you know but anywhere else I hunt and I'd specifically go to these areas to target
+[22:42] bigger gear you know what I mean bigger genetic gear and I want to shoot the older gear so
+[22:50] that's my growth as well so I think that's kind of cool listening to it from what I would
+[22:57] call someone as my elder and to their to their non-negative way as far as we're here
+[23:05] and older gentlemen using our respectful way and it's more or less just like I think that's
+[23:10] cool you know but it's kind of falling in the same steps yeah without even knowing it you
+[23:19] know if you listen to this like whatever level you are in your hunting but if you're
+[23:26] in there your meds already used to be 42nd and you've only been doing it two three four
+[23:30] five years or you changed the level of sources that you're doing it the patience is a virtue
+[23:36] but it's you've got you got to know how much time do I have to put into this you know what's
+[23:41] time job requirements what's my how you home life requirements so you may only have that
+[23:47] opportunity if you've been up to years or 15 years that I don't have a lot of time this
+[23:52] season I know that I'm going to capitalize and win that needle but watch out that's what's
+[23:58] going on with me and it's perfectly fine you know at the end of the day my aunt my aunt
+[24:02] the one of her husband you know everybody calling Gator he says something to me pure
+[24:07] probably power security is going to kind of resonate you can't eat those horns you know
+[24:13] and they're going to eat those horns but you know what they make for great conversations
+[24:17] like the one we're gonna have to see them they make for great conversations over else and
+[24:21] that's my trophy for the time I put in that's my try for the effort I put in so that's
+[24:27] where I am that's where you know both of you are you know I know Seth I've seen his videos
+[24:32] Rudy I've seen your videos bro I'm very ambitious not to get off topic you have the
+[24:38] traffic them one day man it was spiked and a very nice book in one day and not only
+[24:45] one day from the same spot I'm thinking like go yeah I'm like that's awesome that is that
+[24:54] is that's like the next level like I've seen those big natural bucks I didn't go to you
+[25:00] to sit inside that fence to shoot that two hundred fifty three hundred and steer I mean
+[25:05] this dude just not down the traffic of one day I mean I don't think you were missing
+[25:08] was just warm on a hog when we went to the truck I know right I might have been able to do it
+[25:14] now something just kidding but it would have been nice hey I don't hang a lot I would never
+[25:19] do that again that was a lot of work yeah there's a lot of work machine awards like you said
+[25:24] well go if you say the best of your life other than that you got married best of your life
+[25:29] so it was definitely one I'll never forget and always be glad to tell so and I might be
+[25:36] changed from a 10 point to a 12 point to a 14 point is just and that's bike might turn
+[25:41] into a eight point by the time I'm gonna tell him that story but did you know that does
+[25:47] that elevates the next person man that that those people that you know all your girls
+[25:52] most recent podcast show had a couple of gentlemen on there that elevates that next
+[25:56] person my elevation was my family and friends around my little small town and I told you
+[26:01] how many people is in my hometown you're gonna tell you I graduated at many people
+[26:05] you know we were less than a thousand very small but today's technology and social media
+[26:11] and everything you know you can get more information out there you can see more techniques
+[26:17] and more artists and how they did it where they're hunting and I thought everybody hunt
+[26:21] your woods hunt your woods don't do what I do in my woods don't do this person doesn't
+[26:26] I was take what that person does in their woods take what I do in my woods and build that into
+[26:32] what you do in your woods because I guarantee you go 50 miles down the road and they'll do
+[26:37] something different they're still dear they're crucial to have it but they're doing something
+[26:41] different the heat pattern those doge will be a little different that right it's gonna be
+[26:45] plus or minus a week or two weeks to where my red is so on your woods no your woods and
+[26:50] hunter woods but that time and effort there and get as much information as you can for
+[26:54] anybody else it may be on those woods yeah all right all right all right I'm all I'm all
+[27:01] I'm all really I'm a really back in just a little bit because I got two questions one
+[27:04] one's a short answer just so people can see wherever where we're coming from then I got
+[27:10] another and another question for you so one what was the two biggest deer you shot out
+[27:18] of that National Forest yep you were you in 1996 and I found this point this area oh hold on
+[27:29] hold on really hush it would I'm I got a question that's gonna get to that so about
+[27:35] how big were those deer so the first year my first biggest year I'm 16 years old I've
+[27:44] shot 167 inch deer at the David Crockett National Forest oh you had to tell me where
+[27:50] you're my senior high school I've shot 172 inch deer in the same spot of the same tree
+[27:55] okay so my question of that is during that time what type of areas were you looking for
+[28:05] like what was your strategy at the time what you know what type of hunter did you consider yourself
+[28:11] or and you kind of talked about what you were using you know you were kind of using that squirrel
+[28:16] season for the scouting but what type of areas were you targeting like how are you getting on
+[28:21] these deer so I was trading food sources and once I found food sources then I needed to
+[28:28] what's around that are there safe havens of travel for this deer are there you know signs of
+[28:34] bedding areas or there signs of last year the year before straits and rugs so you can
+[28:41] have a thousand apron trees that are raining all season long but if the environment around
+[28:47] that food source isn't there the deer is probably not gonna be there and food sources somewhere
+[28:54] else if you're in an area and you've got certain trees a certain foliage and certain food sources
+[28:58] that are really thriving they're timing the yards that way a half a mile that way potentially
+[29:07] they're finding everywhere so the deer is traveling towards the food source so that's always a
+[29:11] consideration and I'm looking for the doe I want to see the signs of the doe I want to see those
+[29:17] tracks to the load I want to see those tracks I don't care how they are I just want to see
+[29:20] the signs of the doe and then I see the signs of the doe I want to see what kind of groups you're
+[29:25] running in I want to see what ages each doe or I want to see the doe so I'm finding the food sources
+[29:30] I'm finding the signs at the door there and I'm finding the environment of a mature buck that's gonna work this area.
+[29:38] I'm these sweeps, they're laying them down. They're kind of do-to-d
+[29:56] and what I noticed in the area I was hunting, some of these sweeps that I see are coming through them were on a 7 or 8 day pattern.
+[30:06] But when that little runt kicked in, my most patterns turned into every 2 or 3 days.
+[30:11] So I'm really looking for the patterns, I'm looking for the signs, and I'm trying to spend enough time in the woods to identify these things.
+[30:19] I didn't have the old next house, I didn't have the sew cameras that were centimetepitchers as soon as it went off.
+[30:24] It was my time in the woods and so we even as I would leave that school and high school jumping that truck and it's not a burn the back tires off of it to get up to the woods.
+[30:35] So I could spend an hour or two before dark to look at stuff and then do it again the next day and do it again the next day.
+[30:43] It was time and effort but back to the story I get off track. I'm looking for key things.
+[30:48] I'm looking for adding, I'm looking for travel pass, I'm looking for where the spots feel like you're safe, pinch point, river is just going to stay on a circle winds.
+[30:58] If the winds the other way, how's it going to travel the same area or will each travel the same area of the winds in a different direction?
+[31:04] Looking for all the factors that's going to increase the chances of that deer being in that area or a deer being in that area that I want to kettle us on.
+[31:13] So I think you mentioned one point early on for somebody who's a little newer when you're a food source to us may not be the same, may not be the same, it's not going to appeal the same to a deer, right?
+[31:27] If you got a five acre oak flat or a big bottom area that's just open for as far as you can see, you can see 250 yards in there and it's too wide open and too thin.
+[31:40] And then everything in there's raining, there's nothing to single out that opportunity.
+[31:47] There's nothing, it's an opportunistic funnel, you can't pinpoint anything. So there's no, you can't strategically use that.
+[31:58] It's like, well, all these are raining, but probably the oaks are doing good. We've got a good mask crop.
+[32:03] I just need to find this in better cover, in better funnel areas and then with better sign, right?
+[32:09] Because some people might see you trying to acorn and be like, oh man, the deer is going to be all over this.
+[32:14] And they're thinking with a personal mindset, not a deer's mindset.
+[32:21] My question to him is what kind of undercover brush they cover, what was it to you then?
+[32:32] Like, I know what I normally run into, tracking these deer where these big bucks go when they're shot and wounded, stuff like that.
+[32:41] All these public lands around here, and it's like, like, yopons, you know, pom-ed-o, beauty-berry, thickets, a combination of all of the above, you know, in pine, you know what I mean?
+[33:02] As heavy as you're saying, take this stuff back at what age did I get this, seriously, this is the big bucks, right?
+[33:09] When I come with patient's and maturity and knowledge.
+[33:13] We want to hear so many people I talk to, so many people I know right now that, huh, they want to be in an air-related system as much as possible.
+[33:20] I want to see as far this way, as far as I can.
+[33:22] Okay, great. You're just covered more area.
+[33:25] But once I got to a point, I'm realized, like, and these deer will walk through things, I can't crawl through.
+[33:32] These deer will walk through areas, I can't crawl through. These deer will feel safe in these areas.
+[33:36] Now, around there is a huge factor of elevation, green, sea, sea, valleys, straws, creaks, so that's all a huge factor too.
+[33:43] So, you're exactly right. You've traveled a lot of deer, you've traveled.
+[33:47] And this thing, did he come this into this because he was hurt?
+[33:52] And he felt safe? Or did he give us something familiar with it?
+[33:55] And you'll see a lot of times, very, and I'm sure you've seen it.
+[33:58] So much use of deer that came from this direction.
+[34:00] But that way, when that deer actually circled back around and was trying to hit a direction it was coming from, which has, right, in his line, it was safety.
+[34:09] And then he realized that deer didn't live up in all this thick stuff because it was trying to hide.
+[34:14] That's where this deer came from.
+[34:16] That's where this deer, it's always felt safe.
+[34:19] So, that big ice cream flat, that's got 40 trees, it's rain and acreims, go find that one 40 inch or 24 inch acre tree
+[34:26] that has all the surrounding geographic and topographic things that deer wants, that you've learned that they said deer traveled that for a reason.
+[34:36] Don't let that big open football through the acre.
+[34:39] But go find that.
+[34:40] If you catch a swag like that he's chasing a doe, it's not because that's where he wants to be.
+[34:45] It's not guaranteed being in the zone, or you know what I mean, in the game, that's what we would call it.
+[34:53] You want a young hunter or a fresh hunter no matter what age, you want to ask the question, what will the button do chasing a doe?
+[34:59] Well, look at the road next time he drops your deer, he's going to see them.
+[35:03] They'll run out front of you, it was rubbish.
+[35:05] So, if you want to know what the doe, there it is around front of the people behind.
+[35:10] That's not important to them.
+[35:12] And you know, when we were 16 or 17, it was almost as important to us.
+[35:15] But we got to have this deer smart because they're smart.
+[35:20] That's what we think we're almost up ahead.
+[35:22] We realized that if I had to, the new deer, I was going to be here instead of coming this way like he's done in the last three or eight days, he went behind me.
+[35:29] Did I do something wrong or did he just switch it up because it was a little different about the situation?
+[35:34] Yeah, and I think a good point to that is, you know, when you think about, you know, why wouldn't, why wouldn't, you know, when somebody's doing their scouting, they're finding, you know, a big grove of trees that are just raining acorns and it's just like marbles.
+[35:46] It's like, man, why wouldn't the deer be in here? You know, why wouldn't he be in here? If there's a buck around here, this is obviously where he would be.
+[35:51] But it's like you forget he's trading that for the more secluded, isolated food source, right?
+[35:58] Because it's not worth the risk to him.
+[36:00] Yeah, of course he would prefer to be in there.
+[36:02] If he was in a farm that never got hunted, he'd be out there at three in the afternoon every day and until nine in the morning.
+[36:09] But he, deer have the ability, you know, they say, you know, deer don't have, they don't think or, you know, they react.
+[36:20] They're primal, right? But he knows that travel time and travel distance is risky.
+[36:26] He's not, he would love to be there. Yes, but he's going to stay back over here in the cover, right?
+[36:32] So it's not about where you think what's best for him. It's about where's he going to feel safe.
+[36:38] And that's which is likely some sort of buffer zone in between there where the does are going to be the same way and you might catch him on the does, you know, like you said out here when you're hunting the does.
+[36:47] So speaking of hunting the does, so it sounds like you're primarily like using the rush strategy.
+[36:54] So like, were you hoping to get a buck just dog in a doe out in the open with no senses or were you hunting like funnel areas to catch one cruising?
+[37:07] So hunting to me has always done this gotta be challenging, right? I want it to be challenging.
+[37:13] I've never hunted. I've never paid to go hunt and sell effects. Nothing to use that.
+[37:19] If you told me after probably more, I know what's this or kind of feeder goes off 12 shooter books from come to it and it's already down.
+[37:26] And that's great. I'm probably not going to hunt that.
+[37:30] You know, if I need to eat long meat and so I just didn't see them, I had to get over that feeder, you know, but it's a challenge.
+[37:37] I wanted an outsmart that I want an outsmart him. That's part of my trophy.
+[37:42] What he's trying to always said, what are you going to put in my freezer and put them on the table?
+[37:47] But I want them at the end of the day, then the season is like half a lives on that big monster and outsmart.
+[37:57] Don't get me wrong. We come out these big open areas and make room trees rain and stuff.
+[38:01] Don't forget those areas. If the doe are coming there, don't forget them.
+[38:04] Do your hunt, try to pinpoint that rut and if those doe are in there all the time and that rut comes around, guess what?
+[38:11] If you run out front of you, just like you run out front of you or go down the road, if you haven't capitalized up to that point, be there.
+[38:18] Be there. Be there with the door. Always be with the door. But when you know it's turning on, that pre-rut to me is just as hard as that rut then.
+[38:24] The good thing about the pre-rut is they're getting more aggressive. They haven't walked down on doe yet, but they're stiffing around, so they're a little slower.
+[38:33] I have said in the woods, you're in the heat of the rut and have my beer in a day run by me in the National Forest.
+[38:42] I never get a dick. I'm shot on it. I mean, they're running away. I'm going to a Mega Forest.
+[38:48] Oh, you see slashes in the woods. Seeing stop and she, she, that tail's not coming up.
+[38:53] That tail comes up. She just waving at him so she can break and run again.
+[38:57] So to me, that pre-rut is huge. They're still looking for what they know they want, but they're a little slower about it.
+[39:04] You kind of catch them in between of being super smart, super dumb.
+[39:08] You get a better chance of getting that shot out there.
+[39:11] And I feel like, you know, I think I have found that time frame for me.
+[39:17] Like you said, in my woods, just for late. You know what you're talking about?
+[39:24] Because just going off video, you know, when camera footage at South, shot set, I'll be glad to send it to you and show it to you.
+[39:33] I'll have sets and it's so to you, but it's pretty cool because I was just on a little group of those on a little group betting over here.
+[39:40] And sure enough, boom. The buck started showing up. They started checking these those and then another two weeks, they were chasing them around everywhere.
+[39:51] I had a real nice deer man. I was chasing and I just decided to shoot one of the bigger bucks that were in the area there for straight.
+[40:01] One I was after.
+[40:04] So with that said, similar to my question a minute ago, how might you hunt the pre-rut versus your rut differently?
+[40:15] If you would.
+[40:17] I'm the rut. This can be the data collected based on the bill activity.
+[40:21] The pre-rut can be a combination of the data collected based on the bill activity and the signs I've seen.
+[40:28] The old signs over up to old trades.
+[40:30] Whatever remember, you know, camera footage from last year of this year, going through here.
+[40:34] What I've seen this year was my cameras run early, run into the summer.
+[40:39] I'm not sure your combination that you can see too long.
+[40:42] What I'm going to call his cautious patterns, right?
+[40:46] Like Rudy said, well, go. The weeks before he's seen that buck coming in and said he's checking them out, right?
+[40:53] So he's between that super smart and super dumb say.
+[40:57] The doge are being his attention, but they're not ready for him, but they're going to draw his attention a little bit.
+[41:03] So he's going to start coming off of his patterns a little bit.
+[41:06] He's going to be doing what we did last year.
+[41:09] I mean, they come back around the same trees. They go up the same trees and they're creatures that have it.
+[41:15] So pre-rut, I'm kind of that in between.
+[41:18] And I'm not going to do anything in order of importance.
+[41:21] I mean, Seth, you know, I'm not sure that I'm going to.
+[41:24] I'm really huge with the moon.
+[41:26] I sealed it out when it's there and I'm in the woods all day.
+[41:31] And if you look at probably the last four or five year I shot, it was in one day, but then one day of the human.
+[41:36] Pre-rut to rut season.
+[41:40] When it's the rut, I'm going to be where I know the doze are.
+[41:43] And if they're chasing, there's a hot doe on the group and the bigger the group the better.
+[41:48] But all it takes is one doe being hot and if one doe is hot in the group and that group stands together for a couple generations,
+[41:56] they're all going to come in within days of each other, really.
+[41:59] You probably, if you've got five doe on the group, probably within five days, they're all going to be hot over life in each other.
+[42:05] And he may push a little of them off the group or one of them may abandon the group and he'd give him a good chase or something.
+[42:10] But yeah, you're the rut and you'll run himself hungry, you'll run himself thirsty, you'll run himself.
+[42:19] You'll see his tongue hang on a side of his head because he'd the only thing about one day.
+[42:22] So all your thoughts on the food, all your thoughts on hunting that drawer that seals the area that he's traveling,
+[42:29] get yourself where the doves are.
+[42:31] And there's a million I'll give you a sec because every property's different.
+[42:35] But pre-rut, I'm more strategic on.
+[42:39] He's not here.
+[42:41] The doves have been here.
+[42:43] They're going to pull him off of his pattern a little bit.
+[42:45] He already knows his part check and he's starting to check.
+[42:48] He's right.
+[42:50] It's a week, two weeks out.
+[42:52] He's ready.
+[42:53] And he's going to be moving a little bit slower for you when you get the crosshair or that pan on him.
+[42:58] Yeah.
+[42:59] Yeah.
+[43:00] So have you ever killed a nearly season bug?
+[43:04] Like early, like first two weeks in the season, something like that.
+[43:09] Should I say that was still on maybe a pattern before he broke off into his cruising?
+[43:16] I've shot a couple of deer probably in the last seven or eight years, probably through the third year that were still,
+[43:25] they had just started to land their strength down.
+[43:28] Early, they had just started to land their strength down.
+[43:31] Early, they had just started their strength down.
+[43:33] I was actually set up an old streak that I knew for the last two years.
+[43:38] I'm really decent luck to be coming through.
+[43:40] And from the first year I saw him, he had probably put on, I mean, he had put on a solid,
+[43:44] 7 or 8 inches of one mass and I couldn't get on him that second year.
+[43:49] Their year, I hadn't really heard any conversation of a deer of that caliber being shot.
+[43:55] And I'm still, again, I'm a deeper than a wool, so nobody knows where I'm at.
+[43:59] That third year I was set up really early and I was bow hunting.
+[44:05] This was way too far back.
+[44:09] This was when I was about 20.
+[44:11] That was the year after that I quit bow hunting and we knew that story later on at another time.
+[44:20] But I hadn't been touched since the previous year and I just happened to be sitting there
+[44:26] and he, his first day, I went through and cleaned up and opened it back up.
+[44:30] And I watched him.
+[44:32] He went to Poland and he went to rip in some limbs and stood in a few things and he went back to Poland.
+[44:38] And he got just arrived at him all meeting about 40 yards and I went pin number two on him.
+[44:43] And we're still talking about old-school, you know, aluminum arrows and traditional hard-grain broad-head arrows.
+[44:50] So, I mean, this is stuff.
+[44:51] They were old-school East and then come on over.
+[44:55] And now I know that fancy technology is that this old-school, 100-green broadhead, whether or not.
+[45:00] I got the top part of his heart in half and I cleaned half through and he broke.
+[45:05] I took about three or four hard steps and his body just, he was done right there.
+[45:10] And that was, I won't say that was the end of the first week around October,
+[45:18] but fast forward to two months of recent, I've shot a couple old, a little early in October,
+[45:25] in the National Force and then one on this MOD property that were what I saved for the areas I was hunting.
+[45:33] It was before the pre-run.
+[45:35] So, I think it's interesting.
+[45:38] I think some people out there, maybe they need to hear it when they think of scrapes.
+[45:42] They think automatically like hard pre-run, like, oh man, you know, that's, they're getting ready.
+[45:47] They're getting ready.
+[45:49] But, you know, there's some different types of scrapes, but, you know, because I see scrapes as early as late September,
+[45:59] like middle of September.
+[46:02] I've even posted it on the channel like in the last several years, like as early as you see them.
+[46:07] So, I'm not saying it's a slam dunk and they're easy to hunt, but, you know, they'll start laying down that sign.
+[46:14] And that doesn't mean they're like, you know, everything's about to fire up, but, but you can, you can use it to decipher your area.
+[46:22] And you might, you might be able to get a game plan off of that, but, um.
+[46:26] Well, some of those little things that you're talking about, you know, those scrapes, you know, just to kind of put it out, is, they're just,
+[46:38] they're, they're testosterone is rising.
+[46:40] They've got to let out that anger.
+[46:42] So, if they're in velvet, the testosterone spike is there, that's what they're going to do.
+[46:46] Or if, as soon as that velvet comes off, we all know that's when the testosterone starts really rising.
+[46:53] And they may be going from one section to the other, you know, to check for those or say, is there another guy over here?
+[47:01] I mean, I'll hold these those down until they're ready and then move along or whatever, you know.
+[47:06] But that's not like a, like what you would consider either a community scrape or a hardcore scrape that he's setting up on a dope, that area, watching some deer close by.
+[47:16] You know, yeah.
+[47:19] So, Tracy Robes, you've seen those, I just, no purpose or point, they just don't tear up a little tree and kill it for no reason.
+[47:27] I watched the deer one of the last years on the National Forest, which was roughly 15, 2016ish.
+[47:36] I see something moving in the distance and, you know, I'm going to climb around, I've got my rifle with me and I live over it.
+[47:44] And this guy's just ripping up a little, a little bush.
+[47:48] Like, what is he doing? He's not rubbing on his.
+[47:51] He didn't want it there.
+[47:52] And the only thing I could figure, and he wasn't nothing fantastic.
+[47:55] He was a younger boy, probably as good after all he had, maybe 120 inches of the hole in his head.
+[48:00] But he was just, I watched the blue for 20 minutes, just to destroy this thing.
+[48:07] And I don't know why you're, you can't ask him, he's looking to tell you kind of thing, but you were opening on it so much.
+[48:14] You see these at Tutti, right? And then you should still like that, it just kind of stands out.
+[48:18] Like, what are they doing?
+[48:20] And I've seen it more than once as far as evidence wise, I mean, and I feel like those little scrapes that you see sometimes,
+[48:26] that just what I would say aren't really important.
+[48:29] That's what they are, just like, all right, here's a spot, I think I smell somebody come through, let them know that I was here to see it be right there.
+[48:36] Like, come fight me.
+[48:38] You know what I mean?
+[48:39] Yeah.
+[48:40] Only if people, you were a little poor, well, or still, and I don't hope you'll have something on your hand.
+[48:45] But yeah, and you also see a lot of those, those younger bucks, you know, sparred and lay in and just messing around on those small scrapes early season and stuff like that, usually.
+[48:55] And then like, you'll get a picture of a big one like in the background and he don't really want to mess with it yet.
+[49:00] And he's like, he just lets the, lets the kids play almost, you know, but, but somewhere, you know, somewhere in the cover, they might have their own, their own liquor branch, usually, that they might hit, right?
+[49:12] So, but without, without getting too deep into that, was, was there ever any particular terrain feature or, or funnel that you like to hunt best or that, you know, whether it was, you know, like primarily around the road, but did you ever use like, you know, terrain features or points or water or anything like that for your setups?
+[49:36] I mean, you know, especially like.
+[49:38] I mean, I think that's the first thing that I've ever used for me is that steel used for me.
+[49:42] You know, Wolf Den, you know, it's, that's a pretty nice drop down there.
+[49:47] That's the first ledge before the top bank of the creek falls into a bottom combination of it being a water feature.
+[49:54] You know, it's a kind of creek bank or that national forest, not to give up too much information, but there were times I was looking at the nature's river bank.
+[50:03] It was a two and a half hour walk back to my truck, but it was that big great change.
+[50:09] I want to hunt, I want to hunt down into it, get the winds right.
+[50:14] I don't want to beat me in it because I know it's still a sense of cover, you know, they're in the thick area, a sense of cover.
+[50:21] If they've got a really low area to travel through and the winds right and they can utilize their site, their sound and their nose, they're going to get low.
+[50:30] You're not in my experience. I've seen it before, but if you've got a big hybrid over here and you've got a nice low area here and it's perfect conditions with both the wind, the coverage, foliage.
+[50:43] And I'm trying to tell you that there's nothing to get lower out.
+[50:47] If there's nothing else that's on his mind, it's not the run.
+[50:50] He's traveling for point A to point B, whether it be from bed in the food source, food source back to bedding.
+[50:57] He's going to be tucked in on the edge of that thicker stuff. He's going to take that lower crate of travel. He's going to walk down that golly.
+[51:04] He's going to walk on the toe of that big bluff coming down before it flattens down into that creek bottom of that river bottom.
+[51:10] So I never might naturally hunting or just open hunt National Force necessarily just a big flat area land no matter what the foliage was.
+[51:22] If I knew something was coming through there, of course I'm going to hunt it.
+[51:25] But if it's just not a very change in this or it's not a creek or a brawl where they've got water is dried into the city or I'm looking into it or looking over it or it's to my whatever direction.
+[51:37] If it's just in the middle of the woods, it was big, just flat laid out area and all the right food source was there and all that.
+[51:45] Maybe I'm just an opportunity, but I didn't put a lot of focus on that. I did put a lot of scouting on it. I might have looked for a trail that might come through it on the edge of it or something.
+[51:55] But I was looking for those thick brush lines, those transitions from underbrush to really thicker timber, spot cut land compared to land.
+[52:05] It wasn't spot cut and the gray changes. I love trying to find the gray changes and see him the sound. I want to see with a gray change.
+[52:13] Oh, look, this would be perfect. There may not be one sign there.
+[52:16] I just wanted to see how they're like, man, if I was a deer, I'd look bigger. We'll just look at your how to deer.
+[52:21] If you were throwing into an area of blind, what you say, what you're kind of alluding to is like you would prefer to find something with terrain, elevation, some sort of back wall, something there where you can at least maybe count on until you can find it.
+[52:34] I had to start somewhere where I would start and then work out. Looking for the beach going, looking for the gray change, looking for terrain features.
+[52:45] Definitely. If there's a piece of land trails where you're going to start, look at maps, topographic, I'm going to start over here and then on this.
+[52:55] You say typically you like to be at a higher point of whatever that area is, either up on the side of the ridge or on the side of the bank or something and looking down into an area below you.
+[53:08] You kind of like the vantage point.
+[53:12] A vantage point in always the condition of what's the typical land for that area.
+[53:17] We know as we come from the summer months into the winter months that when it starts making that transition from south south, you certainly move it around the west.
+[53:27] Do we're even with the northwest, northwest, northwest, northwest, northwest, northwest land?
+[53:31] Then you have your case about west land or northeast lands.
+[53:34] No one at the time of the season on land, no one would win to expect a beach factor where I'm going to set up.
+[53:41] I've had areas I've funded in the national forest where I'm at the same area but I had four different places I've set up on.
+[53:47] My quality, grass and ingress were all different. The first four of them are to travel about the same, but I wish you got to a point where I went one way or another way just to hunt one area.
+[54:00] Yeah, I think that's a good point. If you've got a good area, even if it's something about historical, you know, people talk about one of those back to the same tree, the same tree, I get that, but you need to be willing to move ten yards this way.
+[54:14] Because like the wind just may be a little bit different degree than it was last week or last time you were there and it's like you've got that intel.
+[54:23] You're like, well, I'm trying to be just off. So I need to shift over. I mean, that was a good example of what I did last year. I hunted the same spot.
+[54:32] A couple of hunts, you know, in a row over the course of a few days, you know, not that I sat all day, but I sat in like three different trees for sure within the same little, you know, two or three acres, like, you know, bow hunting.
+[54:48] But I moved around in there. I just didn't say, well, this is a good spot, you know. So I think people need to be open to that.
+[54:55] A small shift might be a need to always be in your back pocket.
+[54:59] Don't be afraid to calm down at 9.30 in the morning and go reset up.
+[55:05] The deer are just going to speak more on visual than they are sounding. I've got video of me feeling a deer or a footfight and a very nice, respectful buck.
+[55:16] And a member of the lease that was four yards away shot a hog. You can clearly hear the gun go off in the video and that deer never flashed. You didn't care.
+[55:27] These deer, they're going to speak more on something's moving and that movement changes.
+[55:34] I've seen deer in the woods when I was traveling for it and I don't break my travel. I keep walking.
+[55:41] And I'm probably half dozen times in my life. I walked by deer laying there within 20 yards of them, but I did not break what I was doing.
+[55:49] Yeah.
+[55:50] If I had a stop, I'd do would have been gone. And every several times when I broke my deer, I stopped looking at it and I ain't going to be here anymore.
+[55:58] But, yeah, don't be afraid. If the conditions you were hunting changed on you, I guess what?
+[56:05] The conditions are already bad. Go ahead. Stop that area out. You know, put a visual on it. Really, really good.
+[56:11] These out of your hunt spot where they should come down a tree or get off your bucket, go reset up.
+[56:17] Say you did bump something up. Hopefully you didn't bump that big boy, but say you did bump something.
+[56:21] You bumped a dog. Man, you know, that was a, that's fine.
+[56:24] You don't know what you bump walking in there and put every hour in the line.
+[56:28] Go reset up with the woods on McDonald's. You don't, you know, what is it?
+[56:33] Yeah.
+[56:34] So with, with that being your typical kind of the setup that you would, that you liked, that you would maybe prefer to hunt a majority of the time or, you know, something that you were more attractive.
+[56:47] Did you, you feel like you had more success in the mornings or evenings or were you more like, wait, because I know talking over the years, you're not afraid to sit all day, that's for sure.
+[56:56] Or like you said, get down and move, but you're going to, yeah, but you're going to the woods. You're not coming out.
+[57:00] But just in generally speaking, do you feel like you had more success in the mornings versus in the evenings in those type of areas?
+[57:06] Yeah, sure. A pretty even mix. You know, even we want to take that higher advantage point.
+[57:24] I'm taking that because all the signs and all the conditions put me there and that's where I prefer to be if I can be there.
+[57:31] But if the conditions won't let me be there, of course, I'm going to hunt it the best way to hunt it.
+[57:36] But as far as the mornings and evenings, I think it's really based on what's been going on.
+[57:44] You know, there's certain areas I know I'm going to hunt in the morning, there's some areas I know I'm going to hunt in the evening.
+[57:50] But that all comes back to that decision being made from the time you put in the woods, the data you've collected, so that you like the best educated guess of where to be to most benefit your heart.
+[58:03] You must say, I'm a deer by shot in the morning, I'm a deer by shot in the evening.
+[58:11] Wow, I'm probably leaning toward us, probably killed more deer in the morning hours.
+[58:18] And if that number is true, it's not by a huge measurable amount.
+[58:24] You know, it's in my experience, you know, my experience in the years I've hunted.
+[58:30] It's been, I would say, pretty even, I would say, because I was where I was that day no matter when it was based on data and conditions.
+[58:43] You know, I wouldn't say that I've killed my last deer in the last eight years in the morning, so I'm only going to hunt more in.
+[58:55] So it's been a pretty even measure because it's been out of the case.
+[58:58] I mean, I'm not going to hunt even. I go out and mow in and it's been in the norm and, you know, there's no norm.
+[59:05] Like, I just said earlier, just when you think you got it figured out, you realize that, man, I've got to make sure justice here.
+[59:11] You know, that's why it's called hunting for a reason.
+[59:14] Yeah.
+[59:15] So you mentioned we had one strategy, we kind of hadn't talked about yet, but, you know, going back to the way you maybe used to do things, the way you do things now, because I know part of your answer to this.
+[59:27] Do you use any kind of calling? Do you do you do you do you do grunting and rattling or one of the other?
+[59:34] I use a little bit of combination of rallying and running.
+[59:39] I'll use a little bit of dope leading, but that's there's a time of the season for that.
+[59:46] There's a time of the pre-run and the run and everything for that.
+[59:52] Right. And some of these bugs are, you know, that's a sophomore level for November.
+[59:59] Their thing is we're down this area, you know, that bug from the end of August through September and maybe October was run with another bug for two bucks or three bucks, right?
+[60:09] And the question level is not that much. That's a sophomore level as it started to elevate them.
+[60:14] So am I going to do aggressive bug grants or am I going to do two new grants?
+[60:21] I might make some a little bit of tendon grunt because any one of that camel is forensic, I want to be curious.
+[60:28] And I'm not going to use a hell grunt unless I've got a deer insight.
+[60:33] I want to know where that deer is just these year.
+[60:37] Brother, I'll tell you. You can sit there and blind grunt. I do a lot of blind grunting and it's, you know, we can get to the last year before last.
+[60:46] That really, really nice big basket with the curve, brow tines, blind grunt, aggressive blind grunt.
+[60:54] And I threw in a little tendon behind it and it elevated my timer and the whale blew my head from the left to right.
+[61:00] That deer can be two, three hundred yards away. And he's going to pinpoint where that is.
+[61:04] Let's see, when he comes running in, I'm talking wide open. I saw him coming from the distance and he locked him up and started looking and sporting 50 or 60 yards from him.
+[61:14] He knew where that sounds coming from. So I'm very cautious with the grudge because if he's there and you don't know he's there and that could be a hundred yards away in the brush and you let your grunt out, he knows exactly where that came from.
+[61:30] You let that blind grunt out get real still, get real quiet and just start moving those eyes. But it's a combination of time of season for me.
+[61:38] So, I know it's turning on. I'm mixed it up. I'm running over. I've got some holes in your screen down in the brush on the ground. I'm getting that.
+[61:46] I'm timid grutting and I'm aggressive grutting and then I get quiet and I stay quiet for 20-30 minutes. And I'm going to go ahead and begin.
+[61:54] Gotcha. Okay. Well, you answer one of my questions. I'm going to ask you how often you grunt when you're in the tree.
+[62:01] So you're saying like you're definitely not afraid to do it, you know, back to back of 20-30 minutes.
+[62:07] So when you say that you're type of grunting, like what's your go to? Like, I know you said you're not. Do you feel like you do more? I mean, I would say everybody would do more blind grunting.
+[62:16] I guess unless you're just afraid to. But what you're saying is don't be afraid to blind grunt because some people say I'm not going to grunt unless I'm grunting out of deer.
+[62:24] You know, what I'm trying to get is the tension because he's leaving or something. But you've actually had success just blind grunting.
+[62:30] Oh, we've done it out. And again, here's the thing with blind grunting is don't be afraid to blind grunt. And if you're pre-rut, work in lower tingling gruts.
+[62:38] Learn how to do a really good tingling grut because you're starting to get curious.
+[62:42] They know what's coming for them and like, oh, this, there's some other already all something.
+[62:48] They're going to come check it out. But know this is a blind grunt.
+[62:51] And that's why I say put it down on gets dual and just really start watching the woods.
+[62:56] In this year, it's coming from a distance. I've had them come on all the way in and walk up the brakes to just start sorting because they're ready.
+[63:03] And that was only an aggressive grunt. I gave it, I put an aggressive grunt out of those woods and something took the challenge.
+[63:11] It was coming for a fight. But do you do those little blind tingling gruts?
+[63:17] Well, do you know that there's coming on curiosity now?
+[63:20] He's not coming to fight you. He's from a curiosity. So he kind of knows where he came from.
+[63:25] He's not coming to that area of how he wants to come to that area because he's not a rush.
+[63:29] He may come in and be standing 50 yards or 120 yards from you in a thick area.
+[63:34] And I have washed your center for 20 minutes and check out an area.
+[63:38] So you do your little tingling grut.
+[63:44] That's been 20, 30 minutes. See nothing.
+[63:47] You know, I get a decision now. How well did I just go about my hunting area before I let that next run out?
+[63:53] He made me stand there, see he's from me. You don't even know he's there. You live that grunt up and say you're under full cover.
+[63:58] And you give a couple of nice little tinggrunts to it and he pinpoints you and already knows.
+[64:03] Nope. You'll never know he was there.
+[64:05] Yeah.
+[64:06] And if you're even bust out or he made you just a little rod back out of the area, you never know it.
+[64:09] So that is a risk of blind grit. But if you're going to blind grit and this part, you know, really, really pet tissue woods.
+[64:15] Look at those ting areas and they may be standing there and you won't even know he's there.
+[64:20] But he's coming in to check something out now.
+[64:24] Yeah, no, that's a good point. Because if you're going to be grunting, if you're going to take, if you're going to start tossing them out there, like you said, even if you're just doing tinggrut and tinggrunts, sit still at least that next 15, 20 minutes.
+[64:39] And he, like you said, he's probably coming to the thickest point and you're probably at some point either on an edge where you can see or something.
+[64:46] They're going to stop somewhere before they step out, right? And he's there. They probably pick us off a lot more than we realize.
+[64:54] Rudy, Rudy, I know we talk a lot about grunting and I know you, I know you, correct me if I'm wrong, but I know you're a big fan of the tinggrunts, right?
+[65:03] I mean, what's your take on all that?
+[65:04] Absolutely.
+[65:05] Absolutely.
+[65:06] I'm a big fan of using calls and general rattling. So, yeah, I believe in it, especially in those certain set of woods.
+[65:15] I mean, it's a lot better. And over here, closer to home, I don't touch any kind of horns. I just do tinggrunts, real soft, real soft.
+[65:28] Because they have like you said, it's not about being loud. It's not about, you know, you can thumb up.
+[65:35] It's just about being nice and easy and they can hear it a long way. They're here to tune for that tone.
+[65:41] And I'll come sneaking right on it and usually circling downwind if it's a mature deer for sure.
+[65:47] I still don't know what to do with that.
+[65:49] You're like, what was that?
+[65:52] I said, utilize your hunting space, your hunting area.
+[65:55] If you're hunting kind of an open area in front of you and you've decided to back up to the big area and you've got a combination of the sick and whatever to your right.
+[66:03] The wind's going that way and if he comes in, he's coming in that way.
+[66:07] Turn your head to the left and you've got a creep bank on the left. Turn your head to the left and you're right over there.
+[66:12] You've been coming a little farther for your benefit because you see that that came from across the creek or something.
+[66:19] That's what that came from. Like I said, really, that came from a deer run or a deer run or a post run because he gets their attention to come check something out.
+[66:27] Yeah, that's what I'm saying.
+[66:29] Turn it up. Turn it up in the view of the run because there are people with some of their mind.
+[66:34] If I can come whoop you off of it and have it, I'm going to come do it kind of thing.
+[66:38] So, like, here's a good scenario. You know, you can do like what I call just a contact grunt,
+[66:48] which is just like a two to three short.
+[66:52] Grat's not real short. I'm talking just shorter.
+[66:56] You know, maybe one to two second crimes, you know, and what that and you want to do that at a medium tone at first.
+[67:04] You want to make sure the area is clear before you pick up. Like I said, you've got to do a lot of checkoffs in your area before you even reach for the grunt call.
+[67:12] Right.
+[67:13] He just said a medium tone. Give us something close. It's the Titian first.
+[67:19] That's right. And if you get that deer in or you hear him or see him and you know when he's coming to check out what you just did and he locks up.
+[67:31] I'm going to go as soft as I can and I am going to turn and maybe even put the tube of it in my armpit or in my jacket, you know, and turn.
+[67:43] And just barely, you know, soft and he's coming here.
+[67:48] But he's going to feel like it's further. Maybe a little like you said on the other side of the creek is in the one and a half.
+[67:55] He's going to have to come past you. You already know he's coming to you.
+[67:58] And now it's just a little further. He's got it. He's got it down there. He's just got to get there now.
+[68:03] That's it. That's so key. Anybody that's interested in this? That is so key.
+[68:08] I see people grunting in their old chin out like they're blowing trumpet because they want the whole wood security.
+[68:15] You know, work your area, grunt for your area. Move that around and I don't want to do it to slip up to that particular area there and me not noise there.
+[68:23] I want you to come out where I get shot. That's a whole point of growth. You can become a U.
+[68:28] Yeah, and they're throwing that grunt out to the widest open space in their hunting area. Right? I mean, I think just optically we probably default that.
+[68:37] Like a lot of people are just looking down the lane that they're hunting wherever they can see most the way they set up their stand so they can look straight.
+[68:44] You know, like that's what you do. Right? And then they're just throwing that grunt out there to that same space, which makes it easier on the deer.
+[68:51] Right? But I think both of y'all and it's interesting to hear both of y'all mention the same tip about throwing that grunt somewhere else.
+[69:00] Throw in your head and mess up a lot to learn. You know, you can come through that area. You should come check that area out.
+[69:06] That's right. I think here's something, you know, since we're talking about calling, you know, I mean, I got to give it to Harry Stanley on this one.
+[69:16] And I don't remember who he heard from, but it was a podcast from somewhere. But, you know, taking a string and tying it out to, you know, just smaller.
+[69:25] And this is a good tip for like early season or like, I was, they not pre-seasoned, but like mid-post season, something like that.
+[69:34] When the bucks are starting to light far and tickle up a little bit, but taking two of them and tying them off on the string and dropping it down the ground level and just kind of like popping that string
+[69:44] and letting it hit the grass and think whole and, you know, maybe into a little bit of a brush and you're letting them just kind of clackle.
+[69:52] You know, it's nothing crazy. Not the major. You're not trying to draw a crazy scene, but enough sound and commotion to sound like two small young bucks just tickling each other.
+[70:03] Because sometimes that'll draw the big buck in the area like these little shits in here.
+[70:09] How are you sure you're just able to come see?
+[70:11] That's right. You know, like my brother's on the ground. If my brother's on the ground, the string tied to it every time.
+[70:19] See? Okay. That's cool. You know, and like I think that's an important tip, you know, for somebody who told me that, and I still don't really, I have done it.
+[70:31] I just don't do it every time. My mom keeps jacking on the freaking antlers, dude. I gotta get some more.
+[70:37] It's a scene of antlers. Little side stuff. If you got some natural antlers, you're just going to give you the best sound.
+[70:45] There's some really good ones out there. You know, fake and different rattling techniques.
+[70:50] I've got a couple of those little taking apart and taking my guy around. That sounds really good.
+[70:54] Yeah, you got some natural antlers that you can use. It's just going to be that much faster.
+[70:59] Yeah, you know, something else. I throw kind of a random tactic in there. Something that I've done a little bit more of the last couple years.
+[71:07] And sometimes I've even done by accident. But I think this is a little earlier, like just a little bit shy of pre-rut.
+[71:15] There's something also to be said about. And you can grunt along with it, but just, you know, real soft. And like once or twice, and then nothing else, no one crazy with it.
+[71:26] But like even the earlier parts of the season thrashing, you know, bushes and limbs. Because the last couple years, two different times, I've had bucks running on me early October, like bed to food time frame.
+[71:43] Like I'm not hunting the scrapes areas. I'm not. I'm just hunting, you know, a throughput area or food source.
+[71:50] And bucks have come in because I was moving stands or I was like, they hear that and it just drives them nuts because that's when they're laying down a lot of the rubs, you know, like they just start rubbing a bunch.
+[72:03] And it's like it's midday and it's like after they hear it for a couple of times, they're just like, damn it, what is that? And they get up and they just come down there to check it out.
+[72:13] I think you could try something like that earlier in the season more often than people think. Anyway, I'm just throwing that out there.
+[72:20] I think that's what you're going to do because you're right, because a lot of it is territorial. I mean, these bucks are fighting and we see them fighting what you're all fighting.
+[72:30] Nine times up to, they're fighting because there is a hot do. But sometimes they're fighting just because this kind of team's doing trying to get in my area.
+[72:39] I mean, you walk in my house, we're probably fighting kind of thing. And that early season, like you said, Seth, you can do a little bit of brushing and you know, that's those horns in that brush.
+[72:50] They know if you can push or push or turn it on. But they can tell their hangouts, what's something that's not fighting for them.
+[73:00] Those men, they are fighting, it's the area they're fighting for at the time they're fighting is for the breeding rights, the those in that area.
+[73:07] Those are from the front end. And the bottom line of it is, if another buck comes in, and that's where the theory of the mature buck always wins and he controls the area.
+[73:20] Right, because he's going to know exactly when to be there. He's going to know that, hey, that young buck can go in there and try to hold that girl down.
+[73:29] But I know in about three, four days, that's when I need to be there because she'll be getting real close like she did last year.
+[73:36] And I'm going to go take out all them other bucks. And that's my spot now just for that week grace period or if it's if it's a group of three, four, those, he's going to hang out.
+[73:46] So all three, four of them get bread, you know, and then he's going to move on to the next step.
+[73:53] You're just not going to get a tasting group. There's just pockets of those and all over the place. And you've got to learn over time, you know, with that, like you did, and putting in that work and hunting different areas like this group over here was in the cycle at this time of the year.
+[74:12] And this one was in this time of the year. So you can get those different spots and know that I'm going to have some different bucks to chase in these different times range if I don't lock it up in this time period.
+[74:22] For smart pictures, smart pictures.
+[74:26] Alright guys, we are going to hit the Paul's here with Charles. We've got a lot of good conversation coming up. We're going to come back next time and talk about more about how to hunt buck loops.
+[74:36] Alright guys, we're going to hit the Paul's button with Mr. Charles. We've got a lot of content left. We're going to come back for a part two.
+[74:42] We're going to talk more about hunting buck loops when they're on their kind of long range patterns and what part of the loop you want to hunt, we're going to get into some of Charles's biggest deer stories.
+[74:53] But a lot of good stuff left. Just too much to share all at once. So appreciate you guys listening to the podcast and do us a huge favor.
+[75:01] If you want to share the podcast with the friends, share the podcast with the guests.
+[75:07] Come along with us as we grow the podcast here in Texas and thank you from the bottom of my heart for stopping and checking out the show.
+[75:14] We will see you back on the next episode.
