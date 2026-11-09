@@ -5,26 +5,15 @@ on:
     paths: [tools/**, .github/workflows/fetch.yml]
 permissions:
   contents: write
+  actions: read
 jobs:
-  tx:
+  collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        ep:
-          - { pat: "6 Bucks In TWO YEARS", out: "jimmy1" }
-          - { pat: "Calling In Giants", out: "jimmy2" }
-          - { pat: "Key Rut Strategies", out: "jacobs1" }
-          - { pat: "How to Hunt Buck Loops", out: "jacobs2" }
-          - { pat: "Where You Need to HUNT The next 10 Days", out: "ttw_oct26" }
-          - { pat: "Bingham Family", out: "bingham" }
-          - { pat: "I Know Where Deer Are Bedding", out: "bedding" }
-          - { pat: "Fill Tags CONSISTENTLY", out: "mackey" }
-          - { pat: "Rain, Acorns", out: "acorns" }
     steps:
       - uses: actions/checkout@v4
-      - run: pip install faster-whisper==1.0.3
-      - run: python3 tools/transcribe.py "${{ matrix.ep.pat }}" "${{ matrix.ep.out }}"
-      - uses: actions/upload-artifact@v4
-        with: { name: "tx-${{ matrix.ep.out }}", path: out/tx/, if-no-files-found: warn }
+      - uses: actions/download-artifact@v4
+        with: { run-id: 42687179178, github-token: "${{ github.token }}", path: art, pattern: "tx-*", merge-multiple: true }
+      - run: |
+          mkdir -p out/tx && cp art/*.txt out/tx/ && ls -la out/tx
+          git config user.name "fetch-bot"; git config user.email "fetch-bot@users.noreply.github.com"
+          git add out/tx && git commit -m "Transcripts" && git push
