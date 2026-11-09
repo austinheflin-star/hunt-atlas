@@ -2270,6 +2270,11 @@ async function scan(){
       for (const ft of pad.features){ if (!scanPublic(ft.properties)) continue; const gm = ft.geometry; if (!gm) continue;
         const polys = gm.type === "Polygon" ? [gm.coordinates] : gm.type === "MultiPolygon" ? gm.coordinates : [];
         for (const poly of polys){ g.beginPath(); poly.forEach(ring2); g.fill("evenodd"); } }
+      // Texas: TPWD's own unit boundaries count as huntable (PAD-US labels some units, like Somerville's Nails Creek, as parks), minus TPWD's no-hunt zones
+      const tpB = await fetchTpwdBounds(b).catch(() => null);
+      if (tpB){ const draw = ft => { const gm = ft.geometry; if (!gm) return; const polys = gm.type === "Polygon" ? [gm.coordinates] : gm.type === "MultiPolygon" ? gm.coordinates : []; for (const poly of polys){ g.beginPath(); poly.forEach(ring2); g.fill("evenodd"); } };
+        tpB.filter(ft => /property boundary|hunt area|hunting compartment/i.test(ft.properties.Class || "") && !/waterfowl/i.test(ft.properties.Class || "")).forEach(draw);
+        g.globalCompositeOperation = "destination-out"; tpB.filter(ft => /no hunt|no public access|in-?holding/i.test(ft.properties.Class || "")).forEach(draw); g.globalCompositeOperation = "source-over"; }
       const d = g.getImageData(0,0,w,h).data; pub = new Uint8Array(N); let any = 0;
       for (let i = 0; i < N; i++){ pub[i] = d[i*4+3] > 127; any += pub[i]; }
       if (!any && publicOnly){ prog(null, "No open or permit-access public land in this view. Pan to green-outlined land, or uncheck the public-land filter."); return; }
@@ -4384,6 +4389,11 @@ function pickLand(fs){
   return { main, others };
 }
 // Texas: TPWD's own public hunting lands (APH units, WMAs, state park hunt areas) and their marked no-hunt zones
+async function fetchTpwdBounds(b){
+  if (!(b.getSouth() < 36.6 && b.getNorth() > 25.8 && b.getWest() < -93.5 && b.getEast() > -106.7)) return null;
+  const q = new URLSearchParams({ geometry: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].join(","), geometryType: "esriGeometryEnvelope", inSR: "4326", outSR: "4326", spatialRel: "esriSpatialRelIntersects",
+    where: "1=1", outFields: "LocName,Class", returnGeometry: "true", f: "geojson", geometryPrecision: "5" });
+  const j = await fetch(TPWD + "TPWD_PublicHuntLocatorMap/MapServer/9/query?" + q).then(r => r.json()); return j.features || null; }
 async function tpwdAt(ll){
   const q = new URLSearchParams({ geometry: `${ll.lng},${ll.lat}`, geometryType: "esriGeometryPoint", inSR: "4326", spatialRel: "esriSpatialRelIntersects", returnGeometry: "false", f: "json", where: "1=1" });
   const B = TPWD + "TPWD_PublicHuntLocatorMap/MapServer/";
