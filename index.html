@@ -3011,15 +3011,15 @@ function moonInfo(date, lat, lng){
 function moonWindow(date){ const p = moonInfo(date, 31, -95).phase, S = 29.53, dn = Math.min(p, 1 - p) * S, df = Math.abs(p - .5) * S;
   const which = dn <= df ? "new" : "full", d = Math.min(dn, df), after = which === "new" ? p < .5 : p > .5;
   return { which, d, after, on: d <= 3.2, txt: d < .6 ? `${which} moon today` : `${Math.round(d)} day${Math.round(d) === 1 ? "" : "s"} ${after ? "after" : "before"} the ${which} moon` }; }
-const PRO_SEASON = [
+function PRO_SEASONS(){ return [
   { k: "early", from: 915, to: 1019, name: "Early season", tip: "Feed trees and browse. Water oaks and white oaks drop first. Hunt them midday to evening, not at dawn (deer are already there in the dark and you'll bump them). Rain is your best day: deer get up early and stay up. Light rattling near fresh scrapes can work." },
   { k: "prerut", from: 1020, to: 1104, name: "Pre-rut", tip: "Bucks are aggressive but still careful. Hunt fresh scrape lines on the edge of doe bedding, not on feed trees or roads. Soft tending grunts and light rattling, then sit still 20–30 minutes. The first real cold front is the alarm clock: be in the woods for it." },
   { k: "rut", from: 1105, to: 1130, name: "Rut", tip: "Be with the does. Sit 50–100 yards downwind of doe bedding, at creek crossings, and where does cross fences from private land. Don't chase a buck you saw yesterday. Sit all day if you can and move every 2–3 hours: bucks move midday. Mornings are for bucks, evenings for does." },
   { k: "post", from: 1201, to: 1209, name: "Post-rut", tip: "Bucks are worn out and feeding. Hunt the trails between food and bedding. A second rut hits about 4 weeks after the first, when does that didn't breed come back into heat." },
   { k: "late", from: 1210, to: 1231, name: "Late season", tip: "Food and thick cover: beautyberry, yaupon and greenbrier browse lines, the last acorns in the bottoms, and a pine thicket bedding next to a hardwood bottom. Jimmy Scott's biggest buck (142\") came on Dec 27 on that pattern." },
-  { k: "late", from: 101, to: 131, name: "Late season", tip: "Food and thick cover: browse lines, the last acorns, south-facing thick cover on cold mornings. Hunt the warmest part of a cold day." }];
+  { k: "late", from: 101, to: 131, name: "Late season", tip: "Food and thick cover: browse lines, the last acorns, south-facing thick cover on cold mornings. Hunt the warmest part of a cold day." }]; }
 function proSeason(date, lat, lng){ if (!(lat > 29 && lat < 34.6 && lng > -97.6 && lng < -88)) return null; // East Texas / Gulf pine woods timing
-  const x = (date.getMonth() + 1) * 100 + date.getDate(); return PRO_SEASON.find(s => x >= s.from && x <= s.to) || null; }
+  const x = (date.getMonth() + 1) * 100 + date.getDate(); return PRO_SEASONS().find(s => x >= s.from && x <= s.to) || null; }
 function prosHtml(){ const now = new Date(), c = typeof map !== "undefined" ? map.getCenter() : { lat: 31, lng: -95 }, se = proSeason(now, c.lat, c.lng), mw = moonWindow(now);
   return `<details class="pros"><summary>🎙 What Texas public-land pros do</summary>
   <p class="meta">Pulled from the Texas Public Podcast (Team Texas Wild: Jimmy Scott, Charles Jacobs, the Mackeys, the Binghams, Seth &amp; Rudy) and Destination Outdoors' Davy Crockett season. They hunt the same East Texas national forests.</p>
