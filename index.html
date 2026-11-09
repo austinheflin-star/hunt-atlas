@@ -1857,9 +1857,9 @@ map.on("moveend", refreshPad);
 
 /* ---------- Spot finder ---------- */
 const SPECIES = {
-  whitetail: { saddle:1.0, bench:.9, ridge:.5, drain:.7, north:.2, water:.5, remote:1.0, flat:.3, edge:.7, corner:.8, pinch:1.0, food:.6, cover:.8, crossing:.6, leeward:.6, young:.7, remoteFar:1400, label:"whitetail" },
+  whitetail: { saddle:1.0, bench:.9, ridge:.5, drain:.7, north:.2, water:.5, remote:1.0, flat:.3, edge:.7, corner:.8, pinch:1.0, food:.6, cover:.8, crossing:.6, leeward:.6, young:.7, fence:.6, creekside:.6, junction:.8, remoteFar:1400, label:"whitetail" },
   // Thick pine-hardwood public land with no bait (East Texas, Louisiana, Arkansas, the Southeast): creek bottoms, crossings, cut and burn edges, funnels and distance from roads matter most; ridges and slopes barely exist
-  thick:     { saddle:.4, bench:.4, ridge:.3, drain:1.1, north:0, water:.6, remote:1.3, flat:.4, edge:1.0, corner:.9, pinch:1.1, food:.4, cover:1.0, crossing:1.1, leeward:.2, young:1.2, remoteFar:800, label:"whitetail" },
+  thick:     { saddle:.4, bench:.4, ridge:.3, drain:1.1, north:0, water:.6, remote:1.3, flat:.4, edge:1.0, corner:.9, pinch:1.1, food:.4, cover:1.0, crossing:1.1, leeward:.2, young:1.2, fence:.9, creekside:1.0, junction:1.0, remoteFar:800, label:"whitetail" },
   mule:      { saddle:.7, bench:.8, ridge:1.0, drain:.3, north:.6, water:.4, remote:1.0, flat:0, edge:.3, corner:.2, pinch:.4, food:.5, cover:.5, crossing:.2, leeward:.8, young:.7, remoteFar:1800 },
   elk:       { saddle:1.0, bench:1.0, ridge:.4, drain:.5, north:1.0, water:.9, remote:1.5, flat:0, edge:.4, corner:.2, pinch:.5, food:.7, cover:.9, crossing:.3, leeward:.5, young:.8, remoteFar:2500 },
   turkey:    { saddle:.3, bench:.8, ridge:.7, drain:.3, north:0, water:.8, remote:.7, flat:.6, edge:.9, corner:.5, pinch:.3, food:.9, cover:.2, crossing:.3, leeward:.1, young:.6, remoteFar:1000 },
@@ -1867,9 +1867,9 @@ const SPECIES = {
   duck:      { saddle:0, bench:0, ridge:0, drain:.4, north:0, water:2.5, remote:.8, flat:1.0, edge:0, corner:0, pinch:0, food:1.0, cover:0, crossing:0, leeward:0, young:0, remoteFar:900 }
 };
 const FEAT_LABEL = { saddle:"Saddle", bench:"Bench", ridge:"Ridge point", drain:"Drainage / funnel", north:"North-facing cover", water:"Near water", remote:"Low hunting pressure", flat:"Flat bottom",
-  edge:"Timber edge", corner:"Inside corner", pinch:"Pinch point", food:"Near food", cover:"Thick cover", crossing:"Creek crossing", leeward:"Downwind side of a point", young:"Young forest / old burn" };
+  edge:"Timber edge", corner:"Inside corner", pinch:"Pinch point", food:"Near food", cover:"Thick cover", crossing:"Creek crossing", leeward:"Downwind side of a point", young:"Young forest / old burn", fence:"Woods by private fields", creekside:"Off the creek bank", junction:"Cover types meet" };
 const FCOL = { saddle:"#ff3d7f", bench:"#00b7ff", ridge:"#ffd400", drain:"#2ecc71", north:"#5b7cfa", water:"#00e5ff", remote:"#c07bff", flat:"#a3e635",
-  edge:"#ff8c00", corner:"#ff5722", pinch:"#ff1744", food:"#cddc39", cover:"#1b8a3a", crossing:"#40c4ff", leeward:"#ffeb3b", young:"#8bc34a" };
+  edge:"#ff8c00", corner:"#ff5722", pinch:"#ff1744", food:"#cddc39", cover:"#1b8a3a", crossing:"#40c4ff", leeward:"#ffeb3b", young:"#8bc34a", fence:"#e040fb", creekside:"#26a69a", junction:"#ff6f00" };
 const angDiff = (x, y) => Math.abs(((x - y + 540) % 360) - 180);
 
 // Simple pin grouping: nearby pins merge into a numbered bubble when zoomed out
@@ -1964,6 +1964,9 @@ const WHY = {
   cover: () => "<b>Thick cover.</b> A Mississippi State GPS study of 60 bucks found the bedding areas they reused most had one thing in common: dense screening cover.",
   crossing: () => "<b>Creek crossing.</b> Deer cross creeks where banks are low and the ground is flat; trails from both sides converge there.",
   young: s => `<b>Young forest or old burn.</b> A timber cut or wildfire from roughly 3–15 years ago that grew back thick. ${s === "elk" || s === "turkey" ? "The new grass and browse draw elk and turkeys to feed." : "It's some of the best bedding cover and browse there is for deer."}`,
+  fence: () => "<b>Woods by private fields.</b> Public woods within about 200 yards of private pasture or crops. Does feed on the private fields at night and file back into the public thick at dawn, and in the rut bucks cross the fence chasing them (Austin's NW Sam Houston block; Texas Fish & Game on national-forest bucks).",
+  creekside: () => "<b>Off the creek bank.</b> 30–150 yards back from a creek, in the timber. East Texas pros sit here: deer travel the bottom and the first bench above it, and sitting a little back keeps your scent off the trail (Destination Outdoors, Charles Jacobs).",
+  junction: () => "<b>Cover types meet.</b> Thick bedding cover, an edge and a drain or young growth all within about 100 yards. Several trails tend to meet at spots like this; the Binghams and Sherry Mackey call them the best seat in the woods.",
   leeward: () => "<b>Downwind side of a point.</b> Mature bucks often bed just over the crest on the downwind side. Wind from behind covers their back, and they can watch downhill.",
   flat: s => s === "duck" || s === "hog" ? "<b>Flat bottom.</b> Low, flat ground that floods or stays damp: feeding ground for ducks and hogs." : "<b>Flat ground.</b> In flat country the best spots are subtle: edges, small rises and anywhere water and cover meet."
 };
@@ -2007,7 +2010,7 @@ function huntPlan(i){
 }
 // The scoring math runs in a background worker so the map stays smooth while it works.
 function scoreCore(d, prog){
-  const { px, W, ox, oy, w, h, f, cell, rm, pub, sp, spKey, keys, vb, lc, windTo, young } = d, N = w * h, isDuck = spKey === "duck";
+  const { px, W, ox, oy, w, h, f, cell, rm, pub, pubM, sp, spKey, keys, vb, lc, windTo, young } = d, N = w * h, isDuck = spKey === "duck";
   let wm = d.wm;
   const angD = (x, y) => Math.abs(((x - y + 540) % 360) - 180);
   let e = new Float32Array(N);
@@ -2045,6 +2048,8 @@ function scoreCore(d, prog){
     dOpen = distField(open, w, h, cell); dTree = distField(tree, w, h, cell); dCrop = distField(crop, w, h, cell); dRange = distField(range, w, h, cell);
     openFrac = boxMean(Float32Array.from(open), w, h, R(90)); openBig = boxMean(Float32Array.from(open), w, h, R(220));
   }
+  let dPrivOpen = null;
+  if (lc && pubM){ const po = new Uint8Array(N); let any = 0; for (let i = 0; i < N; i++){ po[i] = !pubM[i] && open[i]; any |= po[i]; } if (any) dPrivOpen = distField(po, w, h, cell); }
   prog(.45);
   const dRoad = rm ? distField(rm, w, h, cell) : null, dWater = wm ? distField(wm, w, h, cell) : null;
   prog(.55);
@@ -2055,7 +2060,10 @@ function scoreCore(d, prog){
   if (!lc){ wts.edge = wts.corner = wts.pinch = wts.food = wts.cover = 0; }
   if (windTo == null) wts.leeward = 0;
   if (!young) wts.young = 0;
-  const wsum = keys.reduce((a, kk) => a + (wts[kk] || 0), 0) || 1, score = new Float32Array(N), fv = {};
+  if (!dPrivOpen) wts.fence = 0;
+  if (!dWater || !lc) wts.creekside = 0;
+  if (!lc) wts.junction = 0;
+  const wsum = keys.reduce((a, kk) => a + (wts[kk] || 0), 0) || 1, score = new Float32Array(N), fv = {}, base = new Float32Array(N), mult = new Float32Array(N), done = new Uint8Array(N);
   keys.forEach(kk => fv[kk] = new Float32Array(N));
   const farP = 1 - Math.pow(2.97, -sp.remoteFar / 1000);
   const mg = Math.max(k, 3, R(500) + 1);
@@ -2088,13 +2096,23 @@ function scoreCore(d, prog){
       cover: T && dOpen[i] > 40 ? clamp01((dOpen[i] - 40) / 150) : 0,
       crossing: dWater && dWater[i] < 45 && s < 8 && ts < .1 && !(c === 1) ? (1 - dWater[i] / 45) * (s < 4 ? 1 : .6) : 0,
       young: young && young[i] ? (lc && (c === 1 || c === 7) ? 0 : 1) : 0,
+      fence: dPrivOpen && T && dPrivOpen[i] < 200 ? (1 - dPrivOpen[i] / 200) * (dPrivOpen[i] < 15 ? .5 : 1) : 0,
+      creekside: dWater && T && dWater[i] >= 25 && dWater[i] <= 160 && s < 12 ? clamp01(1 - Math.abs(dWater[i] - 75) / 90) * (ts > -.15 ? 1 : .5) : 0,
+      junction: 0,
       leeward: windTo != null && asp[i] >= 0 && s > 6 && s < 30 && ts > .1 ? clamp01(1 - angD(asp[i], windTo) / 70) * clamp01(ts) : 0
     };
     let v = 0; for (const kk of keys){ fv[kk][i] = F[kk]; v += (wts[kk] || 0) * F[kk]; }
-    v /= wsum; if (s > 38) v *= .3; if (dRoad && dRoad[i] < 80) v *= .2; if (dWater && dWater[i] < 20 && !isDuck) v *= .4;
-    if (c === 7) v *= .1; if (c === 1 && !isDuck) v *= .2; if ((c === 5 || c === 8) && spKey !== "turkey" && !isDuck) v *= .5;
-    score[i] = v;
+    let mu = 1; if (s > 38) mu *= .3; if (dRoad && dRoad[i] < 80) mu *= .2; if (dWater && dWater[i] < 20 && !isDuck) mu *= .4;
+    if (c === 7) mu *= .1; if (c === 1 && !isDuck) mu *= .2; if ((c === 5 || c === 8) && spKey !== "turkey" && !isDuck) mu *= .5;
+    base[i] = v; mult[i] = mu; done[i] = 1; score[i] = v / wsum * mu;
   }
+  // Junctions: thick cover, an edge, a drain/creek bank and young growth all within ~100 m (where several trails meet)
+  if (wts.junction && fv.junction){
+    const ind = a => Float32Array.from(a, v => v > .3 ? 1 : 0), mx = (p, q) => p.map((v, j) => Math.max(v, q[j]));
+    const A = boxMean(ind(fv.cover), w, h, R(100)), B = boxMean(mx(ind(fv.edge), ind(fv.corner)), w, h, R(100)),
+      C = boxMean(mx(mx(ind(fv.drain), ind(fv.crossing)), ind(fv.creekside)), w, h, R(100)), D = young ? boxMean(ind(fv.young), w, h, R(100)) : null;
+    for (let i = 0; i < N; i++){ if (!done[i]) continue; const n = (A[i] > .04) + (B[i] > .04) + (C[i] > .04) + (D && D[i] > .04 ? 1 : 0);
+      const J = clamp01((n - 1) / 2.5); fv.junction[i] = J; score[i] = (base[i] + wts.junction * J) / wsum * mult[i]; } }
   prog(.75);
   const raw = score.slice(); let maxRaw = 1e-9; for (let i = 0; i < N; i++) if (raw[i] > maxRaw) maxRaw = raw[i];
   const top = pct(score, .999) || 1; for (let i = 0; i < N; i++) score[i] = clamp01(score[i] / top);
@@ -2188,7 +2206,8 @@ const FICON = {
   remote: '<path d="M8 2L13 10H3Z"/><path d="M8 10V14"/>', flat: '<path d="M1 9H15M1 13H15"/>',
   edge: '<path d="M2 14V4M6 14V6M2 4L4 1L6 6"/><path d="M9 12H15"/>', corner: '<path d="M3 2V13H14"/><path d="M6 10L9 7"/>', pinch: '<path d="M2 2C6 6 6 10 2 14M14 2C10 6 10 10 14 14"/>',
   food: '<path d="M8 15V5M8 9C5 9 4 6 4 4C7 4 8 6 8 9M8 7C11 7 12 4 12 2C9 2 8 4 8 7"/>', cover: '<circle cx="5" cy="6" r="3"/><circle cx="11" cy="6" r="3"/><circle cx="8" cy="11" r="3"/>',
-  crossing: '<path d="M1 6C4 4 6 8 9 6S14 4 15 6M1 11C4 9 6 13 9 11S14 9 15 11"/><path d="M5 2V15"/>', leeward: '<path d="M1 5H10A2 2 0 1 0 8 3M1 9H13A2 2 0 1 1 11 11"/>', young: '<path d="M8 15V8M8 8L4 11M8 10L12 7M8 8C6 6 6 3 8 1C10 3 10 6 8 8"/>' };
+  crossing: '<path d="M1 6C4 4 6 8 9 6S14 4 15 6M1 11C4 9 6 13 9 11S14 9 15 11"/><path d="M5 2V15"/>', leeward: '<path d="M1 5H10A2 2 0 1 0 8 3M1 9H13A2 2 0 1 1 11 11"/>', young: '<path d="M8 15V8M8 8L4 11M8 10L12 7M8 8C6 6 6 3 8 1C10 3 10 6 8 8"/>',
+  fence: '<path d="M2 3V14M8 3V14M14 3V14M1 6H15M1 10H15"/>', creekside: '<path d="M1 12C4 10 6 14 9 12S14 10 15 12"/><path d="M4 9L8 3L12 9"/>', junction: '<path d="M8 1V15M1 8H15M3 3L13 13"/>' };
 const fIcon = k => `<svg viewBox="0 0 16 16" aria-hidden="true">${FICON[k] || ""}</svg>`;
 const gradeOf = (sc, rank) => rank < 3 && sc >= 85 ? "A" : rank < 7 && sc >= 70 ? "B" : "C";
 function walkText(m){ if (m == null) return ""; const mi = m / 1609.34, min = Math.max(2, Math.round(mi / 1.6 * 60 / 5) * 5);
@@ -2244,7 +2263,7 @@ async function scan(){
       for (let i = 0; i < N; i++){ rm[i] = rd[i*4+3] > 100; wm[i] = wd[i*4+3] > 60; }
     }
     let pub = null;
-    if (pad && publicOnly){
+    if (pad){
       const c = document.createElement("canvas"); c.width = w; c.height = h; const g = c.getContext("2d", { willReadFrequently: true });
       g.fillStyle = "#000";
       const ring2 = r => { r.forEach((p, j) => { const q = proj(p[1], p[0], z), x = (q.x-gx0)/f, y = (q.y-gy0)/f; j ? g.lineTo(x, y) : g.moveTo(x, y); }); g.closePath(); };
@@ -2253,8 +2272,9 @@ async function scan(){
         for (const poly of polys){ g.beginPath(); poly.forEach(ring2); g.fill("evenodd"); } }
       const d = g.getImageData(0,0,w,h).data; pub = new Uint8Array(N); let any = 0;
       for (let i = 0; i < N; i++){ pub[i] = d[i*4+3] > 127; any += pub[i]; }
-      if (!any){ prog(null, "No open or permit-access public land in this view. Pan to green-outlined land, or uncheck the public-land filter."); return; }
+      if (!any && publicOnly){ prog(null, "No open or permit-access public land in this view. Pan to green-outlined land, or uncheck the public-land filter."); return; }
     }
+    const pubM = pub; if (!publicOnly) pub = null;
     let young = null;
     if (youngFeats && youngFeats.length){
       const c = document.createElement("canvas"); c.width = w; c.height = h; const g = c.getContext("2d", { willReadFrequently: true }); g.fillStyle = "#000";
@@ -2266,7 +2286,13 @@ async function scan(){
     }
     prog(55, "Scoring terrain…");
     const keys = Object.keys(FEAT_LABEL);
-    const r = await runScore({ px, W, ox, oy, w, h, f, cell, rm, wm, pub, sp, spKey, keys, lc, windTo, young,
+    // Season tweaks from the East Texas pros (early: food; pre-rut/rut: edges, crossings, fence lines; late: cover and browse)
+    const seNow = (spKey === "thick" || spKey === "whitetail") && typeof proSeason === "function" ? proSeason(new Date(), view.getCenter().lat, view.getCenter().lng) : null;
+    const SEASON_W = { early: { food: 1.6, young: 1.1, fence: .6 }, prerut: { edge: 1.2, cover: 1.1, junction: 1.3 }, rut: { fence: 1.6, crossing: 1.2, creekside: 1.3, junction: 1.3, edge: 1.1 },
+      post: { food: 1.3, edge: 1.2 }, late: { cover: 1.3, young: 1.3, food: 1.2, fence: .7 } };
+    const spW = Object.assign({}, sp); if (seNow) for (const [kk, m] of Object.entries(SEASON_W[seNow.k] || {})) spW[kk] = (spW[kk] || 0) * m;
+    if (seNow) notes.push(`Weighted for the ${seNow.name.toLowerCase()} (East Texas timing).`);
+    const r = await runScore({ px, W, ox, oy, w, h, f, cell, rm, wm, pub, pubM, sp: spW, spKey, keys, lc, windTo, young,
       vb: [(v0.x - gx0)/f, (v0.y - gy0)/f, (v1.x - gx0)/f, (v1.y - gy0)/f] }, p => prog(55 + 42 * p, "Scoring terrain…"));
 
     if (heat) map.removeLayer(heat);
@@ -2413,6 +2439,9 @@ function spotReadHtml(c, F){
   if (has(["cover", "bench", "leeward", "north"])) why.push("it scores as bedding cover");
   if (has(["remote"])) why.push("it's farther from roads than most of this view, so fewer hunters reach it");
   if (has(["water"])) why.push("water is close");
+  if (has(["fence"])) why.push("it's in public woods just off private fields, where does feed at night and bucks cross after them in the rut");
+  if (has(["creekside"])) why.push("it sits 30–150 yards back from the creek, where the pros sit to watch the bottom");
+  if (has(["junction"])) why.push("thick cover, an edge and a drain or young growth all meet within about 100 yards");
   if (why.length) P.push(`The scanner ranked it ${c.gr} (${c.sc}/100) mainly because ${why.slice(0, 3).join(", and ")}.`);
   // 5. Pressure
   const rd = F.pubRoad ? F.pubRoad.d : i.road, pk = F.park ? F.park.d : null;
