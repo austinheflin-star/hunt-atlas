@@ -15,7 +15,7 @@ for nm, r in (("nails", R[0]), ("yegua", R[2])):
     ex = {"bbox": b, "bboxSR": 4326, "imageSR": 3857, "size": "2400,2000", "f": "image"}
     save(nm + "_sat.jpg", get("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?" + urllib.parse.urlencode(dict(ex, format="jpg"))))
     save(nm + "_topo.png", get("https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/export?" + urllib.parse.urlencode(dict(ex, format="png"))))
-    save(nm + "_nhd.png", get("https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/export?" + urllib.parse.urlencode(dict(ex, format="png32", transparent="true", layers="show:6,9,12"))))
+    save(nm + "_nhd.png", get("https://hydro.nationalmap.gov/arcgis/rest/services/nhd/MapServer/export?" + urllib.parse.urlencode(dict(ex, format="png32", transparent="true", layers="show:6"))))
     save(nm + "_lc.png", get("https://www.mrlc.gov/geoserver/mrlc_display/NLCD_2021_Land_Cover_L48/wms?" + urllib.parse.urlencode({"service": "WMS", "version": "1.1.1", "request": "GetMap", "layers": "NLCD_2021_Land_Cover_L48", "styles": "", "srs": "EPSG:4326", "bbox": b, "width": 1200, "height": 1000, "format": "image/png"})))
     env = dict(geometry=b, geometryType="esriGeometryEnvelope", inSR="4326", spatialRel="esriSpatialRelIntersects", outSR="4326", f="geojson", returnGeometry="true", where="1=1", outFields="*")
     for L in (7, 8, 9):
