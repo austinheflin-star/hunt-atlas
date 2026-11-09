@@ -1574,7 +1574,7 @@ const tpwdKind = c => Object.keys(TPWD_PT).find(k => TPWD_PT[k].test(c || "")) |
 const glyphIcon = (k, title) => { const [g, col] = TPWD_GLYPH[k] || TPWD_GLYPH.info;
   return L.divIcon({ className: "", html: `<div class="fic" style="background:${col}" title="${esc(title || "")}">${g}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] }); };
 const tpwdPts = agsLayer({ name: "TPWD camping, parking & gates", url: TPWD + "TPWD_PublicHuntLocatorMap/MapServer/7", fields: "Class,LocName,PH_UnitNum", kind: "point", inView: true, minZoom: 11,
-  keep: p => !/compartment number/i.test(p.Class || ""),
+  keep: p => !/compartment number/i.test(p.Class || "") && !/camp/i.test(p.Class || ""),
   point: (p, ll) => L.marker(ll, { icon: glyphIcon(tpwdKind(p.Class), p.Class), riseOnHover: true }),
   popup: p => `<h4>${esc(p.Class || "Point")}</h4><div>${esc(p.LocName || "")}${p.PH_UnitNum ? " · unit " + esc(p.PH_UnitNum) : ""}</div><p class="meta">From the unit's map in TPWD's 2026-27 Public Hunting Lands map booklet.</p>` });
 const TPWD_LINE = c => /4wd/i.test(c) ? ["#a0622d", 3, "8 5", "4WD road"] : /atv|orv/i.test(c) ? ["#ef6c00", 2.5, "6 5", "ATV trail"] : /walk|hik|equest|ada|path/i.test(c) ? ["#2e7d32", 2.5, "1 5", "Foot trail"]
@@ -1671,9 +1671,26 @@ const pipeLines = agsLayer({ name: "Gas pipelines", url: "https://services2.arcg
 const linesGroup = L.layerGroup([powerLines, pipeLines]);
 [[burnsGroup, "burns"], [linesGroup, "lines"]].forEach(([g, k]) => g.eachLayer(l => l.on("add", () => { l._key = k; })));
 const LANDCOVER_LEG = [["#1c6330", "Evergreen (pines)"], ["#68aa63", "Deciduous (hardwoods)"], ["#b5c98e", "Mixed pine-hardwood"], ["#bad8ea", "Woody wetlands (wet bottoms)"], ["#ccba7c", "Shrub/scrub (young cuts, thickets)"], ["#dbd83d", "Pasture/hay"], ["#ab6c28", "Crops"]];
+// ---- Camping: TPWD hunter camps (Texas) + Forest Service campgrounds (all national forests), on by default ----
+const campPopup = p => { const c = p.Class || "", fee = /fee/i.test(c), back = /back ?country/i.test(c);
+  return `<h4>${fee ? "Campground (fee)" : back ? "Backcountry camp site" : "Hunter camp"}</h4><div>${esc(p.LocName || "")}${p.PH_UnitNum ? " · unit " + esc(p.PH_UnitNum) : ""}</div>
+  <p>${fee ? "A maintained campground; expect a fee." : back ? "A primitive camp site away from the road: walk or ride in, pack everything out." : "A designated camp on TPWD's unit map: free, first come, first served, usually no water or trash service."}${/National Forest/i.test(p.LocName || "") ? " During deer season, camping on the national forests in Texas is allowed only in designated camps like this one (14 days in any 30)." : ""}</p>
+  <p class="meta">From the unit's map in TPWD's 2026-27 Public Hunting Lands map booklet. Call the area office to confirm it's open.</p>`; };
+const tpwdCamps = agsLayer({ name: "TPWD hunter camps", url: TPWD + "TPWD_PublicHuntLocatorMap/MapServer/7", fields: "Class,LocName,PH_UnitNum", where: "Class LIKE '%Camp%'", kind: "point", inView: true, minZoom: 8,
+  point: (p, ll) => L.marker(ll, { icon: glyphIcon("camp", p.Class), riseOnHover: true, zIndexOffset: 500 }), popup: campPopup });
+const FS_ACT = "https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_RecreationAreaActivities_01/MapServer/0";
+const fsSeen = new Set();
+const fsCamps = agsLayer({ name: "Forest Service campgrounds", url: FS_ACT, fields: "recareaname,recareaid,activityname,recareaurl,open_season_start,open_season_end", kind: "point", inView: true, minZoom: 8,
+  where: "activityname IN ('Campground Camping','Dispersed Camping','RV Camping','Group Camping','Cabin Rentals','OHV Camping','Horse Camping')",
+  keep: p => { const k = p.recareaid + ""; if (fsSeen.has(k)) return false; fsSeen.add(k); setTimeout(() => fsSeen.delete(k), 4000); return true; },
+  point: (p, ll) => L.marker(ll, { icon: glyphIcon("camp", "Campground"), riseOnHover: true }),
+  popup: p => `<h4>${esc((p.recareaname || "Campground").replace(/:\s*[\d()\- ]+$/, ""))}</h4><div>${esc(p.activityname || "")}</div>${p.open_season_start ? `<div>Season: ${esc(p.open_season_start)}${p.open_season_end ? " – " + esc(p.open_season_end) : ""}</div>` : ""}
+    ${p.recareaurl ? `<p><a href="${esc(p.recareaurl)}" target="_blank" rel="noopener">Forest Service page</a></p>` : ""}<p class="meta">U.S. Forest Service recreation sites. Hunter-only camps aren't in this list; in Texas they come from TPWD's maps.</p>` });
+const campsGroup = L.layerGroup([tpwdCamps, fsCamps]); campsGroup.eachLayer(l => l.on("add", () => { l._key = "camps"; }));
 const LAYERS = [
   { id:"pad", g:"public", st:"ALL", name:"Public land, all agencies", layer:publicGroup, color:"#2f8f4e", legend:[["#2f8f4e","Open"],["#d39a1c","Permit / seasonal"],["#b3392f","Closed"]] },
   { id:"stateareas", g:"public", st:"ALL", name:"Official state hunting-area maps", layer:grpStateAreas, color:"#1f7a3a", note:"Agency boundaries with unit names: Texas (incl. dove & small-game leases), Arkansas, Colorado, Missouri. Elsewhere the Public land layer shows them." },
+  { id:"camps", g:"public", st:"ALL", name:"Camping: hunter camps & campgrounds", layer:campsGroup, color:"#2e7d32", minZoom:8, note:"Texas hunter camps (free, designated) and back-country sites from TPWD's maps, plus Forest Service campgrounds in every national forest. In Texas national forests during deer season you may camp only in designated camps." },
   { id:"details", g:"public", st:"ALL", name:"Camping, parking, gates & area zones", layer:grpDetails, color:"#2e7d32", minZoom:11, note:"From the agencies' own area maps: camp sites, parking, gates, info stations, area roads and no-hunt / archery-only zones (Texas units, Arkansas WMA parking). National forest campgrounds: see Roads, trails & access." },
   { id:"landlock", g:"public", st:"ALL", name:"Flag possibly landlocked tracts", layer:landlockLayer, color:"#b3392f", minZoom:12, note:"No public road reaches the tract or land connected to it" },
   { id:"deerunits", g:"units", st:"ALL", name:"Deer units, GMUs & zones", layer:grpDeer, color:"#f2542d", note:"Texas whitetail & mule deer units, Arkansas deer zones, New Mexico and Colorado GMUs" },
@@ -1762,7 +1779,8 @@ $("#lyrBtn").onclick = () => { const p = $("#lyrPanel"), open = p.hidden; if (!o
 document.addEventListener("click", e => { if (!e.target.closest(".lyr-panel, .lyr-btn")) closeLayers(); });
 map.on("zoomend", lyrMeta);
 setBase(PREF.base || "USGS Topo");
-[...new Set((PREF.on || ["pad"]).map(id => LAYER_RENAME[id] || id))].forEach(id => { const o = LAYERS.find(x => x.id === id); if (o && !map.hasLayer(o.layer)) map.addLayer(o.layer); });
+if (PREF.on && !PREF.campsAdded){ PREF.on = [...PREF.on, "camps"]; savePref({ on: PREF.on, campsAdded: 1 }); }
+[...new Set((PREF.on || ["pad", "camps"]).map(id => LAYER_RENAME[id] || id))].forEach(id => { const o = LAYERS.find(x => x.id === id); if (o && !map.hasLayer(o.layer)) map.addLayer(o.layer); });
 window.__lyrReady = true; lyrMeta();
 L.control.scale({ imperial: true, metric: false }).addTo(map);
 const zoomBox = L.control({ position: "bottomleft" });
@@ -2344,14 +2362,14 @@ async function spotFacts(c){
     srQ("https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Power_Transmission_Lines/FeatureServer/0", ll, 500, "VOLTAGE"),
     srQ("https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Natural_Gas_Interstate_and_Intrastate_Pipelines_1/FeatureServer/0", ll, 500, "Operator"),
     inTX ? tpwdAt(LL).catch(() => null) : null,
-    inTX ? srQ(TPWD + "TPWD_PublicHuntLocatorMap/MapServer/7", ll, 4000, "Class") : [], inTX ? srQ(TPWD + "TPWD_PublicHuntLocatorMap/MapServer/8", ll, 600, "Class") : []]);
+    inTX ? srQ(TPWD + "TPWD_PublicHuntLocatorMap/MapServer/7", ll, 16000, "Class,LocName") : [], inTX ? srQ(TPWD + "TPWD_PublicHuntLocatorMap/MapServer/8", ll, 600, "Class") : []]);
   const near = (fs, fn) => fs.map(f => Object.assign({ p: f.attributes }, srDist(ll, f.geometry))).filter(fn || (() => true)).sort((x, y) => x.d - y.d);
   const ck = near(creeks), named = ck.find(x => x.p.gnis_name), anyCk = ck[0];
   const roads = near([...r2, ...r6, ...r8]).map(x => Object.assign(x, { cls: RCLS(x.p.MTFCC), name: x.p.NAME }));
   const pubRoad = roads.find(x => !["priv", "trail"].includes(x.cls)), trail = roads.find(x => x.cls === "trail");
   const now = Date.now(), burns = near(rx).map(x => Object.assign(x, { age: x.p.date_completed ? (now - x.p.date_completed) / 31557600000 : null, yr: x.p.date_completed ? new Date(x.p.date_completed).getFullYear() : null }));
   const cuts = near(hv), pwr = near(pw)[0], pipe = near(pp)[0];
-  const tpp = near(tpPts || []).map(x => Object.assign(x, { cls: x.p.Class || "" })), park = tpp.find(x => /Access|Parking|Gate|Info|Registration/i.test(x.cls)), camp = tpp.find(x => /Camp/i.test(x.cls));
+  const tpp = near(tpPts || []).map(x => Object.assign(x, { cls: x.p.Class || "" })), park = tpp.filter(x => x.d < 4000).find(x => /Access|Parking|Gate|Info|Registration/i.test(x.cls)), camp = tpp.find(x => /Camp/i.test(x.cls));
   const tpl = near(tpLines || [])[0];
   const pad = (typeof featsAt === "function" ? featsAt(LL) : []).find(p => p && p.Unit_Nm) || null;
   const others = (lastSpots || []).filter(o => o !== c && o.ll).map(o => ({ n: o.n, d: srDist(ll, { x: o.ll[1], y: o.ll[0] }).d, brg: srDist(ll, { x: o.ll[1], y: o.ll[0] }).brg })).sort((x, y) => x.d - y.d);
@@ -2408,7 +2426,7 @@ function spotReadHtml(c, F){
     P.push(`Today's wind is from the ${srD16(from)} at ${Math.round(W.wind_speed_10m)} mph${bad ? `, which pushes your scent toward the side ${an} likely bed on (${srD16(i.deer)}). Pick another spot today, or come back when the wind is from the ${srD16(i.deer)}.` : i.deer != null ? `. That keeps your scent off the likely bedding side (${srD16(i.deer)}); come in from the ${srD16((from + 180) % 360)} side.` : `; walk in from the ${srD16((from + 180) % 360)} so your scent blows away from where you'll sit.`}`); }
   // 7. Rules that change things here
   if (F.tp && F.tp.zone) P.push(`TPWD zone here: ${esc(F.tp.zone)}. Check that it allows what you're carrying.`);
-  if (F.camp && F.camp.d < 3000) P.push(`A designated camp site is ${srYd(F.camp.d)} ${srD16(F.camp.brg)}: camp, hunt the evening, and hunt again at first light.`);
+  if (F.camp && F.camp.d < 16000) P.push(`The nearest ${/back ?country/i.test(F.camp.cls) ? "backcountry camp site" : /fee/i.test(F.camp.cls) ? "campground" : "free hunter camp"} is ${srYd(F.camp.d)} to the ${srD16(F.camp.brg)}${F.camp.d < 5000 ? ": camp there, hunt the evening, and be back in at first light" : ". Camping the night before saves the early-morning drive"}.`);
   // 8. Nearby spots
   const o = F.others.filter(x => x.d < 800);
   if (o.length) P.push(`Spot ${o.map(x => x.n + 1).join(" and spot ")} ${o.length > 1 ? "are" : "is"} within ${srYd(o[o.length - 1].d)}${o[0].brg != null ? " (" + srD16(o[0].brg) + ")" : ""}. Scout them together on one walk and hunt whichever has the freshest sign.`);
@@ -4651,7 +4669,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "18.2 (Nov 9, 2026)";
+const APP_VERSION = "18.3 (Nov 9, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
