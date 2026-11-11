@@ -175,6 +175,14 @@ function aiShow(){ aiPins.clearLayers(); const sc = AI.scans.find(s => s.id === 
 function aiPanel(){ const el = $("#aiPanel"); if (!el) return; const t = new Date(Date.now() + 864e5), iso = d => new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10), tt = aiTotals(), c = AI.cal || {};
   const prev = AI.scans.find(s => s.res && s.center && map.getBounds().contains(s.center));
   el.hidden = false; el.innerHTML = `<div class="aibox"><b>AI scan</b> <span class="meta">Claude looks at pictures of this view and picks the spots. It runs on your own Claude account, only when you press the buttons.</span>
+    <details class="hp" ${AI.log.some(e => e.sent) ? "" : "open"}><summary>How to use it</summary><ol class="aisteps">
+      <li><b>Frame the ground.</b> Move and zoom the map until the tract you want to hunt fills the screen.</li>
+      <li><b>Fill in the sit</b> below (date, time, weapon) and pick a size. Small is the cheapest; start there.</li>
+      <li><b>Tap "Build the package."</b> The app draws the pictures and gathers the facts. Nothing is sent yet, and you see what it will cost.</li>
+      <li><b>Tap "Open the Claude scout page."</b> It opens in Claude (sign in if asked). The package usually passes across by itself. If the page still says "Load the package," come back here, tap "Save the package file," then choose that file on the Claude page.</li>
+      <li><b>On the Claude page tap "Run the scan"</b> and allow it when Claude asks. It takes 1–2 minutes.</li>
+      <li><b>Get the pins.</b> Come back to this tab: the picks should already be here. If not, tap "Send picks to the map" on the Claude page, or "Copy picks" and paste them under "Bring picks back by hand" below.</li>
+      <li><b>In the woods,</b> the picks stay saved on this device and show under "Claude's picks" with no signal. Do the scan at home the night before.</li></ol></details>
     ${prev ? `<p class="now">You already have picks in this view from ${new Date(prev.res.t).toLocaleDateString([], { month: "short", day: "numeric" })}. <button class="btn sm ghost" id="aiReuse">Show them (no usage)</button></p>` : ""}
     <div class="aigrid"><label>Sit date<input type="date" id="aiDate" value="${iso(t)}"></label><label>When<select id="aiSes"><option>Morning</option><option>Midday</option><option>Evening</option><option>All day</option></select></label>
       <label>Weapon<select id="aiWpn"><option>Bow</option><option>Rifle</option></select></label></div>
@@ -237,6 +245,6 @@ window.psBench = async function(picks, pts, radiusYd){ const R = (radiusYd || 15
 window.psSelfTest = function(){ try { const e = aiEstimate("medium"), enc = aiB64.enc(JSON.stringify({ kind: "publicscout-ai-picks", id: "selftest", picks: [{ b: "A1", lat: 30.6, lng: -95.75, g: "B", s: 70, why: "test é" }] }));
     const keep = JSON.stringify(AI), ok = !!aiImport(enc) && e.tok > 1000 && e.pics === 10; AI = JSON.parse(keep); aiSave(); return { ok, medTok: e.tok }; } catch (err){ return { ok: false, err: String(err) }; } };
 (function aiStart(){ const sb = $("#scanBtn"); if (!sb) return;
-  sb.insertAdjacentHTML("afterend", ` <button class="btn ghost" id="aiBtn">AI scan: Claude picks</button><div id="aiPanel" hidden></div><div id="aiPicks"></div>`);
+  sb.insertAdjacentHTML("afterend", ` <button class="btn" id="aiBtn" style="background:#6d3fd1;border-color:#6d3fd1;color:#fff;margin-top:6px">AI scan: let Claude pick the spots</button><div id="aiPanel" hidden></div><div id="aiPicks"></div>`);
   $("#aiBtn").onclick = () => { const el = $("#aiPanel"); if (el.hidden || !el.innerHTML) aiPanel(); else el.hidden = true; };
   if (!aiFromHash()) aiShow(); window.addEventListener("hashchange", aiFromHash); })();

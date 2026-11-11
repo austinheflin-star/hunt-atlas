@@ -3694,6 +3694,7 @@ const QUICK = [
   ["Search anything", "The bar at the top takes towns, counties, public land names, \"GMU 34\" or coordinates."],
   ["Turn on layers", "▤ Layers (top right) has hunt units, property lines, burns, timber cuts, wetlands, trails and more. The legend (bottom left) explains every color."],
   ["Scan for spots", "Zoom in to a county or closer, open Spot finder and tap Scan. Each pin gets a grade, why it's good, and how to hunt it."],
+  ["Let Claude pick spots", "Open Spot finder and tap the purple AI scan button. The app packs up pictures and facts for the ground on screen, Claude ranks it on your own Claude account, and the picks come back as pins that work offline. The steps are listed under the button."],
   ["Long-press the map", "Or right-click on a computer: drop a waypoint, route there, check the wind, weather, sun and moon, or ask Claude."],
   ["Mark your sign", "Drop waypoints for rubs, scrapes, beds and trails, then tap Read my sign in My map."],
   ["Plan the trip", "The Trip tab prices fuel, licenses, lodging and food for each destination."],
@@ -4432,7 +4433,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "19.0 (Nov 10, 2026)";
+const APP_VERSION = "19.1 (Nov 10, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
