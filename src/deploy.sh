@@ -3,7 +3,7 @@
 set -e
 cd /home/claude/huntmap && python3 build.py >/dev/null
 node --check /tmp/claude-0/-home-claude/9b729957-bff7-5048-939c-b62d8fe72de5/scratchpad/chk.js
-cd /home/claude/hunt-atlas && cp ../huntmap/site/index.html . && cp ../huntmap/app.html ../huntmap/data.js ../huntmap/build.py ../huntmap/deploy.sh src/
+cd /home/claude/hunt-atlas && cp ../huntmap/site/index.html . && cp ../huntmap/app.html ../huntmap/ai.js ../huntmap/data.js ../huntmap/build.py ../huntmap/deploy.sh src/
 NODE_PATH=/tmp/claude-0/-home-claude/9b729957-bff7-5048-939c-b62d8fe72de5/scratchpad/node_modules:$(npm root -g) node tools/loadtest.js 2>&1 | grep -v "agent-proxy\|connect_rejected\|Allowed domains\|For details\|^$" | tee /tmp/claude-0/-home-claude/9b729957-bff7-5048-939c-b62d8fe72de5/scratchpad/loadtest.out
 grep -q "LOAD TEST PASSED" /tmp/claude-0/-home-claude/9b729957-bff7-5048-939c-b62d8fe72de5/scratchpad/loadtest.out || { echo "NOT DEPLOYED: load test failed"; git checkout -q index.html; exit 1; }
 git add -A && git commit -qm "$1

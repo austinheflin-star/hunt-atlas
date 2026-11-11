@@ -154,7 +154,7 @@ select{width:100%;font:15px var(--body);padding:7px;border:1px solid var(--rule)
 .item .dot{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 10px var(--mono);flex:none}
 .item .t{flex:1;min-width:0}.item .t small{display:block;color:var(--muted);font-size:12px}
 .item .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px}
-.pros{border:1px solid #d9cfb4;background:#fbf7ec;border-radius:8px;padding:6px 10px;margin:10px 0}.pros summary{font-weight:800;cursor:pointer}.pros .now{background:#fff3c4;border-radius:6px;padding:6px 8px;margin:6px 0}.thick{border:1px solid #c9d8c0;background:#f3f8ef;border-radius:10px;padding:8px 12px;margin:8px 0 12px;color:#1f2a1f}.thick summary{font-weight:800;cursor:pointer;font-size:15px}.thick ol{padding-left:20px;margin:8px 0}.thick li{margin:6px 0;line-height:1.4}.thb p{line-height:1.45}.thbtn{flex-wrap:wrap;gap:6px}
+.aibox{border:1px solid #b9a7e6;background:#f6f2ff;color:#1f1b2e;border-radius:8px;padding:8px 10px;margin:8px 0}.aibox label{display:block;font-size:13px;margin-top:4px}.aibox input[type=text],.aibox input[type=date],.aibox input[type=number],.aibox select,.aibox textarea{width:100%;box-sizing:border-box;font:16px var(--body);padding:5px;border:1px solid #b9a7e6;border-radius:4px;background:#fff;color:#111}.aigrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.aifocus .check,.aisz .check{display:block;margin:3px 0;font-size:13px}.aipick{border-top:1px solid #d9cef5;padding:6px 0}.aipick .grade{float:left;margin-right:6px}.aisteps{padding-left:20px;margin:8px 0}.aisteps li{margin:6px 0}.aibox .now{background:#fff3c4;border-radius:6px;padding:6px 8px;margin:6px 0}.pin.aipin{background:#6d3fd1;border-radius:6px}.pros{border:1px solid #d9cfb4;background:#fbf7ec;border-radius:8px;padding:6px 10px;margin:10px 0}.pros summary{font-weight:800;cursor:pointer}.pros .now{background:#fff3c4;border-radius:6px;padding:6px 8px;margin:6px 0}.thick{border:1px solid #c9d8c0;background:#f3f8ef;border-radius:10px;padding:8px 12px;margin:8px 0 12px;color:#1f2a1f}.thick summary{font-weight:800;cursor:pointer;font-size:15px}.thick ol{padding-left:20px;margin:8px 0}.thick li{margin:6px 0;line-height:1.4}.thb p{line-height:1.45}.thbtn{flex-wrap:wrap;gap:6px}
 .glimg{width:100%;max-width:560px;border-radius:8px;display:block;margin:6px 0}.glsvg{width:100%;max-width:420px;display:block;margin:6px 0;border-radius:8px}.glpic{font-size:12px}
 .glw{color:inherit;text-decoration:underline dotted #4a7a3a 2px;text-underline-offset:3px;cursor:help}.gloss{margin-top:12px;border-top:1px solid #c9d8c0;padding-top:8px}.gloss h4{margin:4px 0}.sh{padding-left:20px;margin:6px 0}.sh li{margin:5px 0}
 .glt{border-bottom:1px solid #dde6d6;padding:6px 0}.glt summary{font-weight:700;cursor:pointer}.glt p,.gld{margin:6px 0}.glt.flash{background:#fff3b0;transition:background .3s}
@@ -4432,7 +4432,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "18.5 (Nov 10, 2026)";
+const APP_VERSION = "19.0 (Nov 10, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
@@ -4933,6 +4933,7 @@ function v8Start(){
 
 renderState(PREF.state && D[PREF.state] ? PREF.state : "TX", false);
 refreshPad(); renderLayerPanel(); updateWhere(); refreshLandlock();
+/*AI*/
 showTab(PREF.tab || "rules"); if (isPhone()) sheetTo(0); renderLegend(); restoreScan(); window.__v8 = true; v8Start(); v9Start(); if (PREF.tab === "acct") renderAcct();
 if (!PREF.seenHelp) setTimeout(() => openHelp("start"), 600);
 </script>
