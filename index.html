@@ -5373,8 +5373,8 @@ async function aiBuild(size, sit, focus, notes, onProg){
   const [kx, ky] = aiK(c.lat); let blocks = [], bm = 300, dropped = 0;
   for (const m of [300, 350, 400, 500]){ bm = m; blocks = []; const nx = Math.max(1, Math.round(wM / m)), ny = Math.max(1, Math.round(hM / m)), dLng = (vb.getEast() - vb.getWest()) / nx, dLat = (vb.getNorth() - vb.getSouth()) / ny;
     for (let r = 0; r < ny; r++) for (let q = 0; q < nx; q++){ const n = vb.getNorth() - r * dLat, w = vb.getWest() + q * dLng, lat = n - dLat / 2, lng = w + dLng / 2, o = m / 3;
-      const ok = [[0, 0], [o, o], [o, -o], [-o, o], [-o, -o]].filter(([dx, dy]) => legal(lat + dy / ky, lng + dx / kx)).length;
-      if (ok >= 4) blocks.push({ id: String.fromCharCode(65 + r % 26) + (q + 1), lat, lng, n, s: n - dLat, w, e: w + dLng }); }
+      const ok = [[o, o], [o, -o], [-o, o], [-o, -o]].filter(([dx, dy]) => legal(lat + dy / ky, lng + dx / kx)).length;
+      if (legal(lat, lng) && ok >= 2) blocks.push({ id: String.fromCharCode(65 + r % 26) + (q + 1), lat, lng, n, s: n - dLat, w, e: w + dLng }); }
     if (blocks.length <= S.blocks) break; }
   if (!blocks.length) throw new Error("No ground open to public hunting fills a block in this view. Pan to a hunting unit and try again.");
   if (blocks.length > S.blocks){ blocks.sort((p, q) => map.distance([p.lat, p.lng], c) - map.distance([q.lat, q.lng], c)); dropped = blocks.length - S.blocks; blocks = blocks.slice(0, S.blocks); blocks.sort((p, q) => p.id.localeCompare(q.id, undefined, { numeric: true })); }
@@ -5473,7 +5473,7 @@ function aiPanel(){ const el = $("#aiPanel"); if (!el) return; const t = new Dat
       AI.scans.unshift({ id: aiPkg.id, t: Date.now(), area: aiPkg.area, size, sit: { date: aiPkg.sit.date, session: aiPkg.sit.session }, center: aiPkg.center, blocks: aiPkg.blocks.map(b => ({ id: b.id, lat: b.lat, lng: b.lng })) });
       AI.log.unshift({ id: aiPkg.id, t: Date.now(), size, area: aiPkg.area, est: e }); AI.scans = AI.scans.slice(0, 20); aiSave();
       st.textContent = ""; const fx = aiPkg.sit.wx;
-      $("#aiOut").innerHTML = `<div class="now"><b>Package ready: ${esc(aiPkg.area)}</b><br>${aiPkg.blocks.length} blocks of about ${aiPkg.blockYd} yd${aiPkg.dropped ? ` (${aiPkg.dropped} more didn't fit this size; zoom in or pick a bigger scan)` : ""}. Claude will look closely at ${e.look}.
+      $("#aiOut").innerHTML = `<div class="now"><b>Package ready: ${esc(aiPkg.area)}</b><br>${aiPkg.blocks.length} blocks of about ${aiPkg.blockYd} yd${aiPkg.dropped ? ` (${aiPkg.dropped} more blocks farther from the center were left out; zoom in so the tract fills the screen, or pick a bigger scan)` : ""}. Claude will look closely at ${e.look}.
         <br>Forecast for the sit: ${fx ? `wind from the ${fx.from} at ${fx.mph[0]}–${fx.mph[1]} mph, ${fx.temp[0]}–${fx.temp[1]}°F, rain chance ${fx.rain}%` : "not available yet for that date"}.
         <br><b>What gets sent:</b> ${e.pics} pictures and about ${Math.round((json.length - aiPkg.blocks.reduce((a, b) => a + b.img.length, 0) - aiPkg.overview.length - (aiPkg.topo || "").length) / 1000)}k characters of facts, in 2 requests. Estimated ${aiFmtTok(e.tok)} tokens.
         ${aiPkg.missing.length ? `<br><span class="meta">Couldn't load: ${esc(aiPkg.missing.join(", "))}. Claude is told these are missing.</span>` : ""}
