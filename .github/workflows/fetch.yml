@@ -5,15 +5,15 @@ on:
     paths: [tools/**, .github/workflows/fetch.yml]
 permissions:
   contents: write
-  actions: read
 jobs:
-  collect:
+  pkgtest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with: { run-id: 42687179178, github-token: "${{ github.token }}", path: art, pattern: "tx-*", merge-multiple: true }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
       - run: |
-          mkdir -p out/tx && cp art/*.txt out/tx/ && ls -la out/tx
+          npm i playwright@1.48.0 >/dev/null 2>&1 && npx playwright install --with-deps chromium >/dev/null 2>&1
+          node tools/pkgtest.js
           git config user.name "fetch-bot"; git config user.email "fetch-bot@users.noreply.github.com"
-          git add out/tx && git commit -m "Transcripts" && git push
+          git add out/pkg && git commit -m "Test package" && git push
