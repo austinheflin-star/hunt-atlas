@@ -211,8 +211,16 @@ function aiPanel(){ const el = $("#aiPanel"); if (!el) return; const t = new Dat
         <ol class="aisteps"><li><button class="btn sm" id="aiFile">Save the package file</button> <button class="btn sm ghost" id="aiCopy">or copy it</button></li>
         <li><a class="btn sm" id="aiOpen" href="${AI_URL}" target="_blank" rel="noopener">Open the Claude scout page</a> and load the file (or paste) there.</li><li>On that page, tap "Send picks to the map."</li></ol>`;
       $("#aiFile").onclick = () => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([json], { type: "application/json" })); a.download = `publicscout-scan-${aiPkg.sit.date}-${aiPkg.id.slice(0, 4)}.json`; a.click(); };
-      $("#aiCopy").onclick = async () => { try { await navigator.clipboard.writeText(json); toast("Package copied. Paste it on the Claude scout page."); } catch { toast("Couldn't copy something this large here. Use the file instead."); } };
+      $("#aiCopy").onclick = async () => { try { await navigator.clipboard.writeText(json); toast("Package copied. Paste it on the Claude scout page."); } catch { toast("This browser wouldn't allow the copy. Use the file instead."); } };
+      // One-tap hand-off: if the scout page opens in a tab of this browser, pass the package straight to it and take the picks back the same way
+      $("#aiOpen").onclick = () => { const w = window.open(AI_URL, "ps_scout"); if (!w) return true; aiWin = w; let n = 0; clearInterval(aiHello);
+        const hail = (x, d) => { try { x.postMessage({ kind: "publicscout-ai-hello" }, "*"); } catch {} if (d < 3) try { for (let i = 0; i < x.length; i++) hail(x[i], d + 1); } catch {} };
+        aiHello = setInterval(() => { if (++n > 120 || w.closed) return clearInterval(aiHello); hail(w, 0); }, 1500); return false; };
     } catch (err){ console.error(err); st.textContent = err.message || "Couldn't build the package. Check your connection."; } finally { bt.disabled = false; } }; }
+let aiWin = null, aiHello = null;
+window.addEventListener("message", ev => { const d = ev.data; if (!d || typeof d !== "object" || !aiWin) return;
+  if (d.kind === "publicscout-ai-ready" && aiPkg && ev.source){ clearInterval(aiHello); try { ev.source.postMessage(aiPkg, "*"); toast("Package handed to the Claude scout page."); } catch {} }
+  else if (d.kind === "publicscout-ai-picks" && AI.scans.some(s => s.id === d.id)){ const sc = aiImport(JSON.stringify(d)); if (sc){ showTab("scan"); aiShow(); aiPanel(); toast(sc.res.nothing ? "Claude found nothing strong in that view." : `Loaded ${sc.res.picks.length} picks from Claude.`); } } });
 function aiFromHash(){ const m = location.hash.match(/^#ai=(.+)$/); if (!m) return false; const sc = aiImport(m[1]); try { history.replaceState(null, "", location.pathname + location.search); } catch {}
   if (sc){ setTimeout(() => { showTab("scan"); aiShow(); const p = sc.res.picks[0]; if (p) map.setView([p.lat, p.lng], 15); else if (sc.center) map.setView(sc.center, 14); toast(sc.res.nothing ? "Claude found nothing strong in that view." : `Loaded ${sc.res.picks.length} picks from Claude.`); if (isPhone()) sheetTo(1); }, 400); }
   else setTimeout(() => toast("Couldn't read the picks in that link."), 400); return true; }
