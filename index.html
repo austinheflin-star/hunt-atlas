@@ -1964,7 +1964,7 @@ const WHY = {
   cover: () => "<b>Thick cover.</b> A Mississippi State GPS study of 60 bucks found the bedding areas they reused most had one thing in common: dense screening cover.",
   crossing: () => "<b>Creek crossing.</b> Deer cross creeks where banks are low and the ground is flat; trails from both sides converge there.",
   young: s => `<b>Young forest or old burn.</b> A timber cut or wildfire from roughly 3–15 years ago that grew back thick. ${s === "elk" || s === "turkey" ? "The new grass and browse draw elk and turkeys to feed." : "It's some of the best bedding cover and browse there is for deer."}`,
-  fence: () => "<b>Woods by private fields.</b> Public woods within about 200 yards of private pasture or crops. Does feed on the private fields at night and file back into the public thick at dawn, and in the rut bucks cross the fence chasing them (Austin's NW Sam Houston block; Texas Fish & Game on national-forest bucks).",
+  fence: () => "<b>Woods by private fields.</b> Public woods within about 200 yards of private pasture or crops. Does feed on the private fields at night and file back into the public thick at dawn, and in the rut bucks cross the fence chasing them (Texas Fish & Game on national-forest bucks).",
   creekside: () => "<b>Off the creek bank.</b> 30–150 yards back from a creek, in the timber. East Texas pros sit here: deer travel the bottom and the first bench above it, and sitting a little back keeps your scent off the trail (Destination Outdoors, Charles Jacobs).",
   junction: () => "<b>Cover types meet.</b> Thick bedding cover, an edge and a drain or young growth all within about 100 yards. Several trails tend to meet at spots like this; the Binghams and Sherry Mackey call them the best seat in the woods.",
   leeward: () => "<b>Downwind side of a point.</b> Mature bucks often bed just over the crest on the downwind side. Wind from behind covers their back, and they can watch downhill.",
@@ -2466,7 +2466,7 @@ function spotReadHtml(c, F){
   if (rd != null && rd > 700) pro.push("stage-hunt in: stop 15–20 minutes at any fresh sign on the way instead of walking past it");
   const nowD = new Date(), se = an === "deer" ? proSeason(nowD, c.ll[0], c.ll[1]) : null, mw = moonWindow(nowD);
   const seShort = se ? { early: "hunt it midday to evening, when the acorns are falling", prerut: "check it for fresh scrapes and try soft grunts and light rattling", rut: ckN ? "sit the crossing all day and move every 2–3 hours" : "sit it all day if you can; bucks cruise midday", post: "watch the trails between food and bedding", late: "focus on browse lines and the thickest cover" }[se.k] : "";
-  if (seShort) pro.push(`it's the ${se.name.toLowerCase()} in East Texas${mw.on ? " and inside the pros' moon window" : ""}, so ${seShort}`);
+  if (seShort) pro.push(`it's the ${se.name.toLowerCase()} in East Texas, so ${seShort}`);
   if (pro.length) P.push(`<b>What the pros would do here:</b> ${pro.slice(0, 4).join("; ")}.`);
   // 7. Rules that change things here
   if (F.tp && F.tp.kind === "aph") P.push("Check in and out of this unit in the Texas Hunt & Fish app (or at the sign-in box) every trip.");
@@ -2489,7 +2489,7 @@ async function fillAllSpotReads(cards){ const els = cards.map(c => [c, document.
   for (let i = 0; i < els.length; i += 3) await Promise.all(els.slice(i, i + 3).map(([c, el]) => fillSpotRead(c, el))); }
 function paintCards(cards, note){
   const _se = typeof proSeason === "function" && $("#species") && /deer|thick|white/i.test($("#species").value) ? proSeason(new Date(), map.getCenter().lat, map.getCenter().lng) : null, _mw = _se ? moonWindow(new Date()) : null;
-  $("#spots").innerHTML = (note ? `<p class="meta">${esc(note)}</p>` : "") + (_se && cards.length ? `<div class="pros"><p class="now"><b>${_se.name} (East Texas timing):</b> ${_se.tip} <b>Moon:</b> ${_mw.txt}${_mw.on ? ", inside Charles Jacobs' hunt-all-day window" : ""}.</p></div>` : "") + (cards.map(c => `<div class="spot" data-n="${c.n}" tabindex="0"><span class="grade ${c.gr}" title="Score ${c.sc} of 100">${c.gr}</span><span class="meta" style="float:right;margin:10px 4px 0 0">${c.sc}</span><b>Spot ${c.n+1}</b>
+  $("#spots").innerHTML = (note ? `<p class="meta">${esc(note)}</p>` : "") + (_se && cards.length ? `<div class="pros"><p class="now"><b>${_se.name} (East Texas timing):</b> ${_se.tip} <b>Moon:</b> ${_mw.txt}.</p></div>` : "") + (cards.map(c => `<div class="spot" data-n="${c.n}" tabindex="0"><span class="grade ${c.gr}" title="Score ${c.sc} of 100">${c.gr}</span><span class="meta" style="float:right;margin:10px 4px 0 0">${c.sc}</span><b>Spot ${c.n+1}</b>
     <div class="fchips">${c.topKeys.map(k => `<span class="fchip">${fIcon(k)}${esc(FEAT_LABEL[k] || k)}</span>`).join("") || '<span class="fchip">Overall terrain</span>'}</div>
     ${c.info.road != null ? `<div class="walk">${walkText(c.info.road)}</div>` : ""}
     <div class="why">${esc(c.facts.join(" · "))}</div>
@@ -2804,7 +2804,7 @@ function renderSun(){
   sb.innerHTML = `<div class="mini">☀ <span class="n">${t(rise)}–${t(set)}</span> · ${mo.icon} ${Math.round(mo.frac * 100)}%</div>
     <div class="full"><button class="ib-x sun-x" aria-label="Close">×</button><b>Today at map center</b><br>Sunrise <span class="n">${t(rise)}</span> · Sunset <span class="n">${t(set)}</span><br>
     Big game legal light <span class="n">${t(add(rise,-30))}–${t(add(set,30))}</span><br>Waterfowl <span class="n">${t(add(rise,-30))}–${t(set)}</span><br>
-    Moon ${mo.icon} ${esc(mo.name)}, ${Math.round(mo.frac * 100)}% lit${mo.day.rise ? " · rises " + t(mo.day.rise) : ""}${mo.day.set ? " · sets " + t(mo.day.set) : ""}${(w => w.on ? `<br><b>${esc(w.txt)}</b>: the pros' hunt-all-day window` : "")(moonWindow(now))}${(se => se ? `<br>Deer season: <b>${se.name}</b> (East Texas timing)` : "")(proSeason(now, c.lat, c.lng))}
+    Moon ${mo.icon} ${esc(mo.name)}, ${Math.round(mo.frac * 100)}% lit${mo.day.rise ? " · rises " + t(mo.day.rise) : ""}${mo.day.set ? " · sets " + t(mo.day.set) : ""}${(w => w.on ? `<br>${esc(w.txt)}` : "")(moonWindow(now))}${(se => se ? `<br>Deer season: <b>${se.name}</b> (East Texas timing)` : "")(proSeason(now, c.lat, c.lng))}
     <div style="color:#5b6656;font-size:11px">Typical hours in these states; times in your device's time zone. Check state rules.</div></div>`;
 }
 map.on("moveend", renderSun);
@@ -3054,13 +3054,17 @@ function PRO_SEASONS(){ return [
   { k: "post", from: 1201, to: 1209, name: "Post-rut", tip: "Bucks are worn out and feeding. Hunt the trails between food and bedding. A second rut hits about 4 weeks after the first, when does that didn't breed come back into heat." },
   { k: "late", from: 1210, to: 1231, name: "Late season", tip: "Food and thick cover: beautyberry, yaupon and greenbrier browse lines, the last acorns in the bottoms, and a pine thicket bedding next to a hardwood bottom. Jimmy Scott's biggest buck (142\") came on Dec 27 on that pattern." },
   { k: "late", from: 101, to: 131, name: "Late season", tip: "Food and thick cover: browse lines, the last acorns, south-facing thick cover on cold mornings. Hunt the warmest part of a cold day." }]; }
-function proSeason(date, lat, lng){ if (!(lat > 29 && lat < 34.6 && lng > -97.6 && lng < -88)) return null; // East Texas / Gulf pine woods timing
-  const x = (date.getMonth() + 1) * 100 + date.getDate(); return PRO_SEASONS().find(s => x >= s.from && x <= s.to) || null; }
+function proSeason(date, lat, lng){ // East Texas only. Phases are set from TPWD's peak-breeding date for the region, not one fixed calendar.
+  if (!(lat > 29 && lat < 34 && lng > -97.6 && lng < -93.5)) return null;
+  const reg = lng < -96 ? ["Post Oak Savannah", 10] : lat < 31.2 ? ["southern Pineywoods", 12] : ["northern Pineywoods", 22];
+  const y = date.getMonth() < 2 ? date.getFullYear() - 1 : date.getFullYear(), peak = new Date(y, 10, reg[1]), d = Math.round((date - peak) / 864e5);
+  const k = d < -56 || d > 80 ? null : d < -21 ? "early" : d < -7 ? "prerut" : d <= 14 ? "rut" : d <= 24 ? "post" : "late";
+  const s0 = k && PRO_SEASONS().find(x => x.k === k); return s0 ? Object.assign({}, s0, { region: reg[0], peak }) : null; }
 function prosHtml(){ const now = new Date(), c = typeof map !== "undefined" ? map.getCenter() : { lat: 31, lng: -95 }, se = proSeason(now, c.lat, c.lng), mw = moonWindow(now);
   return `<details class="pros"><summary>🎙 What Texas public-land pros do</summary>
   <p class="meta">Pulled from the Texas Public Podcast (Team Texas Wild: Jimmy Scott, Charles Jacobs, the Mackeys, the Binghams, Seth &amp; Rudy) and Destination Outdoors' Davy Crockett season. They hunt the same East Texas national forests.</p>
   ${se ? `<p class="now"><b>Right now (${se.name}):</b> ${se.tip}</p>` : ""}
-  <p class="now"><b>Moon:</b> ${mw.txt}.${mw.on ? " That's inside Charles Jacobs' window (3 days either side of the new or full moon), when he hunts all day. About half his bucks came then." : " Charles Jacobs hunts all day for 3 days either side of the new and full moon."}</p>
+  <p class="now"><b>Moon:</b> ${mw.txt}. One hunter here (Charles Jacobs) hunts all day within 3 days of the new or full moon. GPS-collar studies are mixed to negative on moon phase, so treat it as his habit, not a rule.</p>
   <ol>
   <li><b>Hunt the edge of the thick, not the open.</b> Mature bucks travel inside or along yaupon, beautyberry, greenbrier and young pine. Big open oak flats and plain pine plantations are where you catch a young buck chasing a doe, not a cruising mature one.</li>
   <li><b>Creeks are the terrain.</b> Watch where a steep bank flattens (the crossing), creek bends and oxbows, the head of a drain, and the ${gw("bench", "first bench above the bottom")}. Single tracks walking along a sandy creek bed are usually a buck (Jimmy Scott). Sit 50 yards off the creek on the downwind side so your scent isn't on the trail (Destination Outdoors).</li>
@@ -3083,7 +3087,7 @@ function sunMoonHtml(ll, date){
   return `<table style="font-size:13px"><tr><td>Sunrise / sunset</td><td class="n">${t(rise)} / ${t(set)}</td></tr>
     <tr><td>Big game legal light</td><td class="n">${t(add(rise, -30))}–${t(add(set, 30))}</td></tr>
     <tr><td>Moon</td><td>${mo.icon} ${esc(mo.name)}, ${Math.round(mo.frac * 100)}% lit</td></tr>
-    <tr><td>Moon window</td><td>${(w => esc(w.txt) + (w.on ? " · pros hunt all day" : ""))(moonWindow(date))}</td></tr>
+    <tr><td>Moon window</td><td>${esc(moonWindow(date).txt)}</td></tr>
     <tr><td>Moonrise / moonset</td><td class="n">${t(md.rise)} / ${t(md.set)}</td></tr>
     <tr><td>Major feeding times</td><td class="n">${majors.join("<br>") || "—"}</td></tr>
     <tr><td>Minor feeding times</td><td class="n">${minors.join("<br>") || "—"}</td></tr></table>
@@ -3605,7 +3609,9 @@ async function loadYoung(b){
       outFields: "*", returnGeometry: "true", outSR: "4326", f: "geojson", maxAllowableOffset: "0.0003", geometryPrecision: "5", resultRecordCount: "500" });
     const j = await (await fetch(url + "/query?" + p, { signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined })).json(); return j.features || []; };
   const res = await Promise.allSettled([get(FIRE_URL), get(HARVEST_URL)]);
-  return res.flatMap(r => r.status === "fulfilled" ? r.value : []).filter(ft => { const y = yearOf(ft.properties); return y && yr - y >= 2 && yr - y <= 15; });
+  return res.flatMap(r => r.status === "fulfilled" ? r.value : []).filter(ft => { const y = yearOf(ft.properties), act = String(ft.properties.activity_name || ft.properties.ACTIVITY_NAME || "");
+    if (/thin|salvage|sanitation|improvement cut|release/i.test(act)) return false; // thinned stands are not young thick regrowth
+    return y && yr - y >= 2 && yr - y <= 15; });
 }
 async function loadLandcover(gx0, gy0, w, h, f, z){
   const S = 40075016.686, n = 256 * 2 ** z, toM = (px, py) => [px / n * S - S / 2, S / 2 - py / n * S];
@@ -4557,7 +4563,7 @@ const GLOSS = [
   <li><b>Watch your back trail and your wind.</b> If the wind swings to your back, change direction or quit. Deer that smell you won't come back.</li>
   <li><b>Hunt the right hours.</b> Midday, when deer get up to stretch and browse in their bedding cover, and the first hour after other hunters walk out. Evenings, slip toward a food edge.</li>
   <li><b>Wear orange where required, and know where other hunters sit.</b> Moving hunters are easy to mistake for game in thick cover. Avoid walking past someone's stand, and never take a shot you can't fully see.</li>
-</ol><span class="meta">From a bowhunter's walk-hunting reel you saved (@thesouthern_outdoorsmen) plus standard still-hunting practice. Good ground for it: thick-woods spot finder spots near young growth, edges and creek crossings.</span>`, ""],
+</ol><span class="meta">From a bowhunter's walk-hunting video (@thesouthern_outdoorsmen) plus standard still-hunting practice. Good ground for it: thick-woods spot finder spots near young growth, edges and creek crossings.</span>`, ""],
  ["timber", "Timber / stand", "A <b>stand</b> is one patch of woods where the trees are about the same kind and age, like \"a 20-year-old pine stand.\" Foresters and hunters talk about woods in stands because each one looks and acts different to a deer.", "From above, a stand is a block of woods with one even texture and color, often with straight edges where it meets the next block."],
  ["clearcut", "Clearcut", "A patch where loggers cut down every tree at once. National forests and timber companies do this, then replant (usually pines).", "From satellite: a bare tan or light-green block with straight edges in the middle of dark woods.", "img/gloss/clearcut.jpg"],
  ["youngcut", "Young clearcut (regrowth)", "A clearcut a few years later. Weeds, briars, small pines and sprouts grow back so thick you can hardly walk through it. At about 1–3 years it's food (fresh leaves deer eat). At about 3–8 years it's waist-to-head-high and so thick deer bed in it. After about 10 years the pines get tall, shade it out, and it's not as useful.", "From satellite: a block that's lighter and more speckled than the woods around it, with straight edges.", "img/gloss/youngcut.jpg"],
@@ -4761,7 +4767,7 @@ setInterval(() => { if (liveWatch != null && liveAt && Date.now() - liveT > 6e5)
 function v9Start(){ if (PREF.liveScent) liveScent(true); sharedPin(); }
 
 /* ===================== v8: phone sheet · one box at a time · Account · Offline maps · Settings · Help ===================== */
-const APP_VERSION = "18.4 (Nov 9, 2026)";
+const APP_VERSION = "18.5 (Nov 10, 2026)";
 // Free email/password accounts run on Google Firebase (Spark plan, no card). Paste the web config here to switch them on.
 const FIREBASE_CONFIG = /*FIREBASE*/null;
 
