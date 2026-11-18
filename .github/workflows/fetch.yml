@@ -6,14 +6,13 @@ on:
 permissions:
   contents: write
 jobs:
-  pkgtest:
+  yt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
       - run: |
-          npm i playwright@1.48.0 >/dev/null 2>&1 && npx playwright install --with-deps chromium >/dev/null 2>&1
-          node tools/pkgtest.js
+          bash tools/yt.sh
           git config user.name "fetch-bot"; git config user.email "fetch-bot@users.noreply.github.com"
-          git add out/pkg && git commit -m "Test package" && git push
+          git add out/yt && git commit -m "YouTube transcript" && git push || true
