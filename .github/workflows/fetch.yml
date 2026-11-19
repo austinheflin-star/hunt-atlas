@@ -6,13 +6,11 @@ on:
 permissions:
   contents: write
 jobs:
-  yt:
+  route:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.11" }
       - run: |
-          bash tools/yt.sh
+          bash tools/route.sh
           git config user.name "fetch-bot"; git config user.email "fetch-bot@users.noreply.github.com"
-          git add out/yt && git commit -m "YouTube transcript" && git push || true
+          git add out/route && git commit -m "Route" && git push || true
